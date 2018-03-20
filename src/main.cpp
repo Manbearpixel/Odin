@@ -6060,6 +6060,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (pfrom->nVersion < CADDR_TIME_VERSION && addrman.size() > 1000)
             return true;
         if (vAddr.size() > 1000) {
+            LOCK(cs_main);
             LogPrintf("Misbehaving: Address older than 1000 %u\n", vAddr.size());
             Misbehaving(pfrom->GetId(), 20);
             return error("message addr size() = %u", vAddr.size());
