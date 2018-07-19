@@ -32,6 +32,7 @@
         <file alias="overview-active">res/icons/overview-active.png</file>
         <file alias="privacy">res/icons/privacy.png</file>
         <file alias="privacy-active">res/icons/privacy-active.png</file>
+        <file alias="proposal">res/icons/proposal.png</file>
         <file alias="qrcode">res/icons/qrcode.png</file>
         <file alias="quit">res/icons/quit.png</file>
         <file alias="receive">res/icons/receive.png</file>
