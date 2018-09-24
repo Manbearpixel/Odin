@@ -113,9 +113,9 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             explorerWindow(0),
                                                                             prevBlocks(0),
                                                                             spinnerFrame(0)
-
 {
     QFontDatabase::addApplicationFont(":/fonts/Hind-Bold");
+    QFontDatabase::addApplicationFont(":/fonts/Hind-Regular");
 	QFontDatabase::addApplicationFont(":/fonts/Montserrat-Bold");
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
@@ -296,10 +296,15 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
 
-    overviewAction = new QAction(QIcon(":/icons/overview-active"), tr(""), this);
+    QIcon overviewIcon;
+    overviewIcon.addFile(":/icons/overview",QSize(40,40),QIcon::Normal,QIcon::On);
+    overviewIcon.addFile(":/icons/overview_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
+    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
+    overviewAction->setIcon(overviewIcon);
 #ifdef Q_OS_MAC
     overviewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 #else
@@ -307,10 +312,15 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr(""), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a ODIN address"));
+    QIcon sendCoinsIcon;
+    sendCoinsIcon.addFile(":/icons/send",QSize(40,40),QIcon::Normal,QIcon::On);
+    sendCoinsIcon.addFile(":/icons/send_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
+    sendCoinsAction = new QAction(QIcon(), tr("&Send"), this);
+    sendCoinsAction->setStatusTip(tr("Send coins to an ODIN address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
+    sendCoinsAction->setIcon(sendCoinsIcon);
 #ifdef Q_OS_MAC
     sendCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
 #else
@@ -318,10 +328,15 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/receive"), tr(""), this);
+    QIcon receiveCoinsIcon;
+    receiveCoinsIcon.addFile(":/icons/receiving_addresses",QSize(40,40),QIcon::Normal,QIcon::On);
+    receiveCoinsIcon.addFile(":/icons/receiving_addresses_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
+    receiveCoinsAction = new QAction(QIcon(), tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and ODIN: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
+    receiveCoinsAction->setIcon(receiveCoinsIcon);
 #ifdef Q_OS_MAC
     receiveCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
 #else
@@ -329,10 +344,15 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(QIcon(":/icons/history"), tr(""), this);
+    QIcon historyIcon;
+    historyIcon.addFile(":/icons/history",QSize(40,40),QIcon::Normal,QIcon::On);
+    historyIcon.addFile(":/icons/history_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
+    historyAction = new QAction(QIcon(), tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
+    historyAction->setIcon(historyIcon);
 #ifdef Q_OS_MAC
     historyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
 #else
@@ -340,10 +360,15 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(historyAction);
 
-    privacyAction = new QAction(QIcon(":/icons/privacy"), tr(""), this);
+    QIcon privacyIcon;
+    privacyIcon.addFile(":/icons/privacy",QSize(40,40),QIcon::Normal,QIcon::On);
+    privacyIcon.addFile(":/icons/privacy_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
+    privacyAction = new QAction(QIcon(":/icons/privacy"), tr("&Privacy"), this);
     privacyAction->setStatusTip(tr("Privacy Actions for zODIN"));
     privacyAction->setToolTip(privacyAction->statusTip());
     privacyAction->setCheckable(true);
+    privacyAction->setIcon(privacyIcon);
 #ifdef Q_OS_MAC
     privacyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
 #else
@@ -355,10 +380,16 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr(""), this);
+
+        QIcon masternodeIcon;
+        masternodeIcon.addFile(":/icons/masternodes",QSize(40,40),QIcon::Normal,QIcon::On);
+        masternodeIcon.addFile(":/icons/masternodes_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
+        masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr("&Masternodes"), this);
         masternodeAction->setStatusTip(tr("Browse masternodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
+        masternodeAction->setIcon(masternodeIcon);
 #ifdef Q_OS_MAC
         masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
 #else
@@ -383,10 +414,15 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
 #endif // ENABLE_WALLET
 
+    QIcon proposalIcon;
+    proposalIcon.addFile(":/icons/proposal",QSize(40,40),QIcon::Normal,QIcon::On);
+    proposalIcon.addFile(":/icons/proposal_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
     proposalAction = new QAction(QIcon(":/icons/proposal"), tr("&Proposals"), this);
     proposalAction->setStatusTip(tr("Browse proposals"));
     proposalAction->setToolTip(proposalAction->statusTip());
     proposalAction->setCheckable(true);
+    proposalAction->setIcon(proposalIcon);
     proposalAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_7));
     tabGroup->addAction(proposalAction);
 
@@ -565,10 +601,11 @@ void BitcoinGUI::createToolBars()
         QToolBar* toolbar = new QToolBar(tr("Tabs toolbar"));
         toolbar->setObjectName("Main-Toolbar"); // Name for CSS addressing
         toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-//        // Add some empty space at the top of the toolbars
-//        QAction* spacer = new QAction(this);
-//        toolbar->addAction(spacer);
-//        toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
+       // Add some empty space at the top of the toolbars
+       QAction* spacer = new QAction(this);
+       toolbar->addAction(spacer);
+       toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
+
 
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
@@ -795,20 +832,6 @@ void BitcoinGUI::showHelpMessageClicked()
 
 #ifdef ENABLE_WALLET
 
-void BitcoinGUI::resetToolbarActionIcons()
-{
-  overviewAction->setIcon(QIcon(":/icons/overview"));
-  historyAction->setIcon(QIcon(":/icons/history"));
-  receiveCoinsAction->setIcon(QIcon(":/icons/receive"));
-  sendCoinsAction->setIcon(QIcon(":/icons/send"));
-  privacyAction->setIcon(QIcon(":/icons/privacy"));
-
-  QSettings settings;
-  if (settings.value("fShowMasternodesTab").toBool()) {
-    masternodeAction->setIcon(QIcon(":/icons/masternodes"));
-  }
-}
-
 void BitcoinGUI::openClicked()
 {
     OpenURIDialog dlg(this);
@@ -820,16 +843,12 @@ void BitcoinGUI::openClicked()
 void BitcoinGUI::gotoOverviewPage()
 {
     overviewAction->setChecked(true);
-    resetToolbarActionIcons();
-    overviewAction->setIcon(QIcon(":/icons/overview-active"));
     if (walletFrame) walletFrame->gotoOverviewPage();
 }
 
 void BitcoinGUI::gotoHistoryPage()
 {
     historyAction->setChecked(true);
-    resetToolbarActionIcons();
-    historyAction->setIcon(QIcon(":/icons/history-active"));
     if (walletFrame) walletFrame->gotoHistoryPage();
 }
 
@@ -838,8 +857,6 @@ void BitcoinGUI::gotoMasternodePage()
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setChecked(true);
-        resetToolbarActionIcons();
-        masternodeAction->setIcon(QIcon(":/icons/masternodes-active"));
         if (walletFrame) walletFrame->gotoMasternodePage();
     }
 }
@@ -847,24 +864,18 @@ void BitcoinGUI::gotoMasternodePage()
 void BitcoinGUI::gotoReceiveCoinsPage()
 {
     receiveCoinsAction->setChecked(true);
-    resetToolbarActionIcons();
-    receiveCoinsAction->setIcon(QIcon(":/icons/receive-active"));
     if (walletFrame) walletFrame->gotoReceiveCoinsPage();
 }
 
 void BitcoinGUI::gotoPrivacyPage()
 {
     privacyAction->setChecked(true);
-    resetToolbarActionIcons();
-    privacyAction->setIcon(QIcon(":/icons/privacy-active"));
     if (walletFrame) walletFrame->gotoPrivacyPage();
 }
 
 void BitcoinGUI::gotoSendCoinsPage(QString addr)
 {
     sendCoinsAction->setChecked(true);
-    resetToolbarActionIcons();
-    sendCoinsAction->setIcon(QIcon(":/icons/send-active"));
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
 }
 
@@ -991,7 +1002,7 @@ void BitcoinGUI::setNumBlocks(int count)
         if (masternodeSync.IsSynced()) {
             progressBarLabel->setVisible(false);
             progressBar->setVisible(false);
-            labelBlocksIcon->setPixmap(QIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+            labelBlocksIcon->setPixmap(QIcon(":/icons/synced").pixmap(QSize(16,16)));
         } else {
             int nAttempt;
             int progress = 0;
@@ -999,7 +1010,7 @@ void BitcoinGUI::setNumBlocks(int count)
             labelBlocksIcon->setPixmap(QIcon(QString(
                                                  ":/movies/spinner-%1")
                                                  .arg(spinnerFrame, 3, 10, QChar('0')))
-                                           .pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+                                           .pixmap(QSize(16,16)));
             spinnerFrame = (spinnerFrame + 1) % SPINNER_FRAMES;
 
 #ifdef ENABLE_WALLET
@@ -1214,11 +1225,11 @@ void BitcoinGUI::setStakingStatus()
 
     if (nLastCoinStakeSearchInterval) {
         labelStakingIcon->show();
-        labelStakingIcon->setPixmap(QIcon(":/icons/staking_active").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+        labelStakingIcon->setPixmap(QIcon(":/icons/staking_active").pixmap(QSize(16,16)));
         labelStakingIcon->setToolTip(tr("Staking is active\n MultiSend: %1").arg(fMultiSend ? tr("Active") : tr("Not Active")));
     } else {
         labelStakingIcon->show();
-        labelStakingIcon->setPixmap(QIcon(":/icons/staking_inactive").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+        labelStakingIcon->setPixmap(QIcon(":/icons/staking_inactive").pixmap(QSize(16,16)));
         labelStakingIcon->setToolTip(tr("Staking is not active\n MultiSend: %1").arg(fMultiSend ? tr("Active") : tr("Not Active")));
     }
 }
@@ -1268,7 +1279,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         break;
     case WalletModel::Locked:
         labelEncryptionIcon->show();
-        labelEncryptionIcon->setIcon(QIcon(":/icons/lock_closed").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+        labelEncryptionIcon->setIcon(QIcon(":/icons/lock_closed").pixmap(QSize(16,16)));
         labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>locked</b>"));
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
@@ -1410,9 +1421,9 @@ void UnitDisplayStatusBarControl::setOptionsModel(OptionsModel* optionsModel)
 void UnitDisplayStatusBarControl::updateDisplayUnit(int newUnits)
 {
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
-        setPixmap(QIcon(":/icons/unit_" + BitcoinUnits::id(newUnits)).pixmap(39, STATUSBAR_ICONSIZE));
+        setPixmap(QIcon(":/icons/unit_" + BitcoinUnits::id(newUnits)).pixmap(QSize(39,16)));
     } else {
-        setPixmap(QIcon(":/icons/unit_t" + BitcoinUnits::id(newUnits)).pixmap(39, STATUSBAR_ICONSIZE));
+        setPixmap(QIcon(":/icons/unit_t" + BitcoinUnits::id(newUnits)).pixmap(QSize(39,16)));
     }
 }
 
