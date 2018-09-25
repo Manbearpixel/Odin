@@ -42,15 +42,20 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle* networkStyle) 
     QString copyrightTextPIVX = QChar(0xA9) + QString(" 2015-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The PIVX Core developers"));
     QString copyrightTextPhore = QChar(0xA9) + QString(" 2017-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The Phore Core developers"));
     QString copyrightTextODIN = QChar(0xA9) + QString(" 2018-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The ODIN Core developers"));
-    
+
     QString titleAddText = networkStyle->getTitleAddText();
 
     QString font = QApplication::font().toString();
 
     // load the bitmap for writing some text over it
+
     pixmap = networkStyle->getSplashImage();
+    pixmap = pixmap.scaled(QSize(400,400), Qt::KeepAspectRatio,Qt::SmoothTransformation);
+
 
     QPainter pixPaint(&pixmap);
+    pixPaint.setRenderHint(QPainter::Antialiasing);
+    pixPaint.setRenderHint(QPainter::HighQualityAntialiasing);
     pixPaint.setPen(QColor(65, 192, 209));
 
     // check font size and drawing with
