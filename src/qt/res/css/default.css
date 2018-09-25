@@ -1897,7 +1897,6 @@ QPushButton#pushButtonSpentReset, QPushButton#pushButtonMintReset {
 	padding-right: 20px;
 }
 
-
 QGroupBox {
     margin-top: 6px;
 }
@@ -1908,13 +1907,11 @@ QGroupBox::title {
     font-size:18px;
 }
 
-
 #resetButton, #cancelButton {
     background-color: transparent;
 	border: 2px solid #707780;
     color: #707780;
 }
-
 
 #labelBalancez, #labelTotalz {
     font-size:40px;
@@ -1926,4 +1923,8 @@ QGroupBox::title {
 
 #labelBalance, #labelUnconfirmed, #labelImmature, #labelLockedBalance, #labelTotal, #labelzBalanceMature, #labelzBalance{
     font-size:24px;
+}
+
+.negative-sum {
+    color:#fff;
 }
