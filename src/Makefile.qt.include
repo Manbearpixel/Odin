@@ -38,20 +38,20 @@ QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/bip38tooldialog.ui \
-  qt/forms/coincontroldialog.ui \
   qt/forms/blockexplorer.ui \
-  qt/forms/obfuscationconfig.ui \
+  qt/forms/coincontroldialog.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
   qt/forms/masternodelist.ui \
   qt/forms/multisenddialog.ui \
   qt/forms/multisigdialog.ui\
+  qt/forms/obfuscationconfig.ui \
   qt/forms/openuridialog.ui \
   qt/forms/optionsdialog.ui \
   qt/forms/overviewpage.ui \
-  qt/forms/receivecoinsdialog.ui \
   qt/forms/privacydialog.ui \
+  qt/forms/receivecoinsdialog.ui \
   qt/forms/receiverequestdialog.ui \
   qt/forms/rpcconsole.ui \
   qt/forms/sendcoinsdialog.ui \
@@ -74,8 +74,8 @@ QT_MOC_CPP = \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
+  qt/moc_columnalignedlayout.cpp \
   qt/moc_csvmodelwriter.cpp \
-  qt/moc_obfuscationconfig.cpp \
   qt/moc_editaddressdialog.cpp \
   qt/moc_guiutil.cpp \
   qt/moc_intro.cpp \
@@ -85,20 +85,20 @@ QT_MOC_CPP = \
   qt/moc_multisenddialog.cpp \
   qt/moc_multisigdialog.cpp\
   qt/moc_notificator.cpp \
+  qt/moc_obfuscationconfig.cpp \
   qt/moc_openuridialog.cpp \
   qt/moc_optionsdialog.cpp \
   qt/moc_optionsmodel.cpp \
   qt/moc_overviewpage.cpp \
-  qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
-  qt/moc_columnalignedlayout.cpp \
+  qt/moc_peertablemodel.cpp \
+  qt/moc_privacydialog.cpp \
   qt/moc_proposalfilterproxy.cpp \
-  qt/moc_proposaltablemodel.cpp \
   qt/moc_proposallist.cpp \
+  qt/moc_proposaltablemodel.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
   qt/moc_receivecoinsdialog.cpp \
-  qt/moc_privacydialog.cpp \
   qt/moc_receiverequestdialog.cpp \
   qt/moc_recentrequeststablemodel.cpp \
   qt/moc_rpcconsole.cpp \
@@ -152,8 +152,8 @@ BITCOIN_QT_H = \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
+  qt/columnalignedlayout.h \
   qt/csvmodelwriter.h \
-  qt/obfuscationconfig.h \
   qt/editaddressdialog.h \
   qt/guiconstants.h \
   qt/guiutil.h \
@@ -165,23 +165,23 @@ BITCOIN_QT_H = \
   qt/multisigdialog.h\
   qt/networkstyle.h \
   qt/notificator.h \
+  qt/obfuscationconfig.h \
   qt/openuridialog.h \
   qt/optionsdialog.h \
   qt/optionsmodel.h \
   qt/overviewpage.h \
   qt/paymentrequestplus.h \
   qt/paymentserver.h \
-  qt/columnalignedlayout.h \
+  qt/peertablemodel.h \
+  qt/platformstyle.h \
+  qt/privacydialog.h \
   qt/proposalfilterproxy.h \
   qt/proposallist.h \
   qt/proposalrecord.h \
   qt/proposaltablemodel.h \
-  qt/peertablemodel.h \
-  qt/platformstyle.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
   qt/receivecoinsdialog.h \
-  qt/privacydialog.h \
   qt/receiverequestdialog.h \
   qt/recentrequeststablemodel.h \
   qt/rpcconsole.h \
@@ -207,6 +207,8 @@ BITCOIN_QT_H = \
 RES_ICONS = \
   qt/res/icons/add.png \
   qt/res/icons/address-book.png \
+  qt/res/icons/address-book.svg \
+  qt/res/icons/bitcoin.icns \
   qt/res/icons/bitcoin.ico \
   qt/res/icons/bitcoin.png \
   qt/res/icons/bitcoin_testnet.ico \
@@ -224,7 +226,6 @@ RES_ICONS = \
   qt/res/icons/clock5.png \
   qt/res/icons/configure.png \
   qt/res/icons/debugwindow.png \
-  qt/res/icons/proposal.png \   
   qt/res/icons/edit.png \
   qt/res/icons/editcopy.png \
   qt/res/icons/editpaste.png \
@@ -238,13 +239,17 @@ RES_ICONS = \
   qt/res/icons/history-active.png \
   qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
+  qt/res/icons/lock_closed.svg \
   qt/res/icons/lock_open.png \
+  qt/res/icons/lock_open.svg \
   qt/res/icons/masternodes.png \
   qt/res/icons/masternodes-active.png \
   qt/res/icons/overview.png \
   qt/res/icons/overview-active.png\
   qt/res/icons/privacy.png \
   qt/res/icons/privacy-active.png \
+  qt/res/icons/proposal.png \
+  qt/res/icons/proposal_off.png \
   qt/res/icons/qrcode.png \
   qt/res/icons/quit.png \
   qt/res/icons/receive.png \
@@ -257,14 +262,20 @@ RES_ICONS = \
   qt/res/icons/staking_active.png \
   qt/res/icons/staking_inactive.png \
   qt/res/icons/synced.png \
+  qt/res/icons/synced.svg \
   qt/res/icons/trade.png \
   qt/res/icons/transaction0.png \
+  qt/res/icons/transaction0.psv \
   qt/res/icons/transaction2.png \
+  qt/res/icons/transaction2.svg \
   qt/res/icons/transaction_conflicted.png \
   qt/res/icons/tx_inout.png \
+  qt/res/icons/tx_inout.svg \
   qt/res/icons/tx_input.png \
+  qt/res/icons/tx_masternode.png \
   qt/res/icons/tx_mined.png \
   qt/res/icons/tx_output.png \
+  qt/res/icons/tx_staked.png \
   qt/res/icons/unit_odin.png \
   qt/res/icons/unit_modin.png \
   qt/res/icons/unit_uodin.png \
@@ -310,16 +321,16 @@ BITCOIN_QT_CPP += \
   qt/blockexplorer.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
-  qt/obfuscationconfig.cpp \
+  qt/columnalignedlayout.cpp \
   qt/editaddressdialog.cpp \
   qt/masternodelist.cpp \
   qt/multisenddialog.cpp \
   qt/multisigdialog.cpp\
+  qt/obfuscationconfig.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
-  qt/columnalignedlayout.cpp \
   qt/proposalfilterproxy.cpp \
   qt/proposallist.cpp \
   qt/proposalrecord.cpp \
