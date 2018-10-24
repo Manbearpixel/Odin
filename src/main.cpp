@@ -946,7 +946,7 @@ int GetZerocoinStartHeight()
 }
 
 libzerocoin::ZerocoinParams* GetZerocoinParams(int nHeight) {
-    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params(); 
+    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params();
 }
 
 void FindMints(vector<CMintMeta> vMintsToFind, vector<CMintMeta>& vMintsToUpdate, vector<CMintMeta>& vMissingMints)
@@ -1712,7 +1712,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 hash.ToString(),
                 nFees, ::minRelayTxFee.GetFee(nSize) * 10000);
 
-        
+
         unsigned int scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
         if (!Params().RequireStandard()) {
             scriptVerifyFlags = GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
@@ -1834,7 +1834,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
             }
         }
     }
-    
+
     // Check for conflicts with in-memory transactions
     if (!tx.IsZerocoinSpend()) {
         LOCK(pool.cs); // protect pool.mapNextTx
@@ -2162,14 +2162,14 @@ int64_t GetBlockValue(int nHeight, bool fBudgetBlock)
    * Y2 Midgard:    Block   665,485 -   1,192,526 =      20 Ø ~366 days
    * Y3 Nidhogg:    Block 1,192,526 -             =      15 Ø ~365 days
    * Y4 ONWARDS:    Block 1,192,526               =      15 Ø
-   * 
+   *
    * PoW Schedule -  0% to proposals
    * PoS Schedule - 10% to proposals for all phases starting in Ragnarök
    * 90% distributed to Stake wallet and Masternode
-   * 
+   *
    * 1 Day    =  ~1440 Blocks
    * 1 Month  = ~43800 Blocks
-   * 
+   *
    * ~1.4813x faster in initial blockchain growth
    */
 
@@ -3048,7 +3048,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             if (!view.HaveInputs(tx))
                 return state.DoS(100, error("ConnectBlock() : inputs missing/spent"),
                     REJECT_INVALID, "bad-txns-inputs-missingorspent");
-            
+
             // Check that zODIN mints are not already known
             if (tx.IsZerocoinMint()) {
                 for (auto& out : tx.vout) {
@@ -4279,11 +4279,13 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 static int GetWitnessCommitmentIndex(const CBlock& block)
 {
     int commitpos = -1;
-    for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
-        if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 && block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[0].vout[o].scriptPubKey[1] == 0x24 && block.vtx[0].vout[o].scriptPubKey[2] == 0xaa && block.vtx[0].vout[o].scriptPubKey[3] == 0x21 && block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
-            commitpos = o;
-        }
-    }
+    if(block.vtx.size() > 1) {
+		for (size_t o = 0; o < block.vtx[1].vout.size(); o++) {
+			if (block.vtx[1].vout[o].scriptPubKey.size() >= 38 && block.vtx[1].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[1].vout[o].scriptPubKey[1] == 0x24 && block.vtx[1].vout[o].scriptPubKey[2] == 0xaa && block.vtx[1].vout[o].scriptPubKey[3] == 0x21 && block.vtx[1].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[1].vout[o].scriptPubKey[5] == 0xed) {
+				commitpos = o;
+			}
+		}
+	}
     return commitpos;
 }
 
@@ -4366,7 +4368,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
         if(block.nVersion < Params().Zerocoin_HeaderVersion())
             return state.DoS(50, error("CheckBlockHeader() : block version must be above 4 after ZerocoinStartHeight"),
             REJECT_INVALID, "block-version");
-        
+
         vector<CBigNum> vBlockSerials;
         for (const CTransaction& tx : block.vtx) {
             if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime))
