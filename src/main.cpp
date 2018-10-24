@@ -4128,7 +4128,12 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
         }
         // Coinbase output should be empty if proof-of-stake block
+<<<<<<< HEAD
         if (!block.vtx[0].vout[0].IsEmpty())
+=======
+        int commitpos = GetWitnessCommitmentIndex(block);
+        if (block.vtx[0].vout.size() != (commitpos == -1 ? 1 : 2) || !block.vtx[0].vout[0].IsEmpty())
+>>>>>>> 0370d7be8... Fixed staking on bech32 address issue
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
 
         // Second transaction must be coinstake, the rest must not be
