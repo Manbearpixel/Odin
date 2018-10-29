@@ -4112,10 +4112,10 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
     if (block.IsProofOfStake()) {
         // Since we have moved segwit to second transaction, the first transaction vout size should be always 1
-        //int commitpos = GetWitnessCommitmentIndex(block);
-        //if (block.vtx[0].vout.size() != (commitpos == -1 ? 1 : 2) || !block.vtx[0].vout[0].IsEmpty())
+        int commitpos = GetWitnessCommitmentIndex(block);
+        if (block.vtx[0].vout.size() != (commitpos == -1 ? 1 : 2) || !block.vtx[0].vout[0].IsEmpty())
         // Coinbase output should be empty if proof-of-stake block
-        if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
+        //if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
 
         // Second transaction must be coinstake, the rest must not be
@@ -4286,8 +4286,8 @@ static int GetWitnessCommitmentIndex(const CBlock& block)
 {
     int commitpos = -1;
     if(block.vtx.size() > 1) {
-		for (size_t o = 0; o < block.vtx[1].vout.size(); o++) {
-			if (block.vtx[1].vout[o].scriptPubKey.size() >= 38 && block.vtx[1].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[1].vout[o].scriptPubKey[1] == 0x24 && block.vtx[1].vout[o].scriptPubKey[2] == 0xaa && block.vtx[1].vout[o].scriptPubKey[3] == 0x21 && block.vtx[1].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[1].vout[o].scriptPubKey[5] == 0xed) {
+		for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
+			if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 && block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[0].vout[o].scriptPubKey[1] == 0x24 && block.vtx[0].vout[o].scriptPubKey[2] == 0xaa && block.vtx[0].vout[o].scriptPubKey[3] == 0x21 && block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
 				commitpos = o;
 			}
 		}
@@ -4435,10 +4435,14 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
             // The malleation check is ignored; as the transaction tree itself
             // already does not permit it, it is impossible to trigger in the
             // witness tree.
-            if (block.vtx[0].wit.vtxinwit.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
+            if (block.vtx[0].wit.vtxinwit.size() != 1 ||
+                block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.size() != 1 ||
+                block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
                 return state.DoS(100, error("%s : invalid witness nonce size", __func__), REJECT_INVALID, "bad-witness-nonce-size", true);
             }
+
             CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
+
             if (memcmp(hashWitness.begin(), &block.vtx[0].vout[commitpos].scriptPubKey[6], 32)) {
                 return state.DoS(100, error("%s : witness merkle commitment mismatch", __func__), REJECT_INVALID, "bad-witness-merkle-match", true);
             }
