@@ -1957,3 +1957,11 @@ QGroupBox::title {
 .negative-sum {
     color:#fff;
 }
+
+#BlockExplorer, #BlockExplorer QScrollArea *, #BlockExplorer #content {
+	background-color: #132232;
+}
+
+QAbstractScrollArea::corner {
+    background: transparent;
+}
