@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2018 The Phore developers
+// Copyright (c) 2019 The ODIN developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -114,6 +116,66 @@ void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
+}
+
+void setupAliasWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a Masternode Alias (e.g. %1)").arg("mn1"));
+#endif
+}
+
+void setupIPWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a VPS IP (e.g. %1)").arg("127.0.0.2:11771"));
+#endif
+}
+
+void setupPrivKeyWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a Private Key (e.g. %1)").arg("93HaYBVUCYjEMeeH1Y4sBGLALQZE1Yc1K64xiqgX37tGBDQL8Xt"));
+#endif
+}
+
+void setupTXIDWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a TX Output (e.g. %1)").arg("2bcd3c84c84f87eaa86e4e56834c92937a07f9e18718810b92e0d0324456a57c"));
+#endif
+}
+
+void setupTXIDIndexWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a TX Index (e.g. %1)").arg("1"));
+#endif
 }
 
 void setupAmountWidget(QLineEdit* widget, QWidget* parent)

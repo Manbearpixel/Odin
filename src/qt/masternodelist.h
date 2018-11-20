@@ -1,3 +1,6 @@
+// Copyright (c) 2018-2018 The Phore developers
+// Copyright (c) 2019 The ODIN developers
+
 #ifndef MASTERNODELIST_H
 #define MASTERNODELIST_H
 
@@ -5,10 +8,16 @@
 #include "platformstyle.h"
 #include "sync.h"
 #include "util.h"
+#include "wallet.h"
 
 #include <QMenu>
 #include <QTimer>
 #include <QWidget>
+
+#include "walletmodel.h"
+
+#include <QDialog>
+#include <QString>
 
 #define MY_MASTERNODELIST_UPDATE_SECONDS 60
 #define MASTERNODELIST_UPDATE_SECONDS 15
@@ -39,6 +48,7 @@ public:
     void setWalletModel(WalletModel* walletModel);
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
+	void deleteAlias(std::string Alias);
 
 private:
     QMenu* contextMenu;
@@ -61,9 +71,16 @@ private:
 
 private Q_SLOTS:
     void showContextMenu(const QPoint&);
+	void deleteAlias();
+	void copyAlias();
     void on_startButton_clicked();
+    void on_editConfigureMasternode_clicked();
     void on_startAllButton_clicked();
     void on_startMissingButton_clicked();
+	void on_configureMasternodeButton_clicked();
+	void openEditConfigureMasternodePage(QString strAlias, QString strIP, QString strPrivKey, QString strTxHash, QString strOutputIndex, int count);
+    void on_getMNPrivKeyButton_clicked();
+	void on_getOutputsButton_clicked();
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
 };
