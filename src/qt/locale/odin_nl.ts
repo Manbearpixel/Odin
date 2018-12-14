@@ -2661,7 +2661,7 @@ Wees alsjeblieft geduldig...</translation>
         <translation>Hoeveelheid</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. %1)</source>
+        <source>Enter an ODIN address (e.g. %1)</source>
         <translation>Voer een ODIN adres in (b.v. %1)</translation>
     </message>
     <message>
@@ -6128,7 +6128,7 @@ zODIN are mature when they have more than 20 confirmations AND more than 1 mint 
         <translation>Kies een eerder gebruikt adres</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. OCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</source>
+        <source>Enter an ODIN address (e.g. OCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</source>
         <translation>Voer een ODIN adres in (bv.: OCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</translation>
     </message>
     <message>

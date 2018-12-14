@@ -239,7 +239,7 @@
         <translation>&amp;BIP 38 암호화</translation>
     </message>
     <message>
-        <source>Enter a ODIN Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter an ODIN address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>BIP 38을 사용하여 암호화 할 ODIN 주소를 입력하십시오. 중간 입력창에 암호를 입력하십시오. 암호화를 누르면 암호화된 개인 키가 계산됩니다.</translation>
     </message>
     <message>
@@ -2410,7 +2410,7 @@ https://www.transifex.com/</translation>
 </translation>
     </message>
     <message>
-        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware. 
+        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware.
 Please be patient...</source>
         <translation>제로코인 생성 초기화 진행중... : 전체 블록체인을 다시 검색합니다. 하드웨어에 따라 최대 30분이 걸릴수 있습니다.
 기다려주세요...</translation>
@@ -2467,7 +2467,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>Spending Zerocoin.
-Computationally expensive, might need several minutes depending on the selected Security Level and your hardware. 
+Computationally expensive, might need several minutes depending on the selected Security Level and your hardware.
 Please be patient...</source>
         <translation>제로코인 전송중입니다.
 시큐리티 레벨과 여러분의 하드웨어에 따라 수 분이 걸립니다.
@@ -2525,7 +2525,7 @@ Please be patient...</source>
         <translation>금액</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. %1)</source>
+        <source>Enter an ODIN address (e.g. %1)</source>
         <translation>ODIN 주소를 입력하세요 (예 %1)</translation>
     </message>
     <message>

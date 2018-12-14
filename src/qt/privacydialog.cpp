@@ -35,8 +35,8 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent),
     ui->securityLevel->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->payTo->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->addAsLabel->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    ui->zPHRpayAmount->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    
+    // ui->zODINpayAmount->setAttribute(Qt::WA_MacShowFocusRect, 0);
+
 
     // "Spending 999999 zODIN ought to be enough for anybody." - Bill Gates, 2017
     ui->zODINpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );

@@ -239,7 +239,7 @@
         <translation>&amp;BIP 38 Шифриране</translation>
     </message>
     <message>
-        <source>Enter a ODIN Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter an ODIN address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>Въведете ODIN адрес, който искате да шифрирате с BIP 38. Въведете парола в средното поле. Натиснете 'шифрирай', за да се изчисли шифррания личен ключ.</translation>
     </message>
     <message>
@@ -2406,7 +2406,7 @@ https://www.transifex.com/ODIN-project/ODIN-project-translations</translation>
 </translation>
     </message>
     <message>
-        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware. 
+        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware.
 Please be patient...</source>
         <translation>Стартиране на ResetMintZerocoin: сканираме цялия блокчейн, това ще изисква около 30 минути, в зависимост от вашия компютър.
 Моля изчакате...</translation>
@@ -2463,7 +2463,7 @@ Please be patient...</source>
     </message>
     <message>
         <source>Spending Zerocoin.
-Computationally expensive, might need several minutes depending on the selected Security Level and your hardware. 
+Computationally expensive, might need several minutes depending on the selected Security Level and your hardware.
 Please be patient...</source>
         <translation>Харчене на Zerocoin.
 Математически скъп превод, който може да има нужда от няколко минути за потвърждение, в зависимост от избраното Ниво на Сигурност и Вашият хардуер.
@@ -2521,7 +2521,7 @@ Please be patient...</source>
         <translation>Сума</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. %1)</source>
+        <source>Enter an ODIN address (e.g. %1)</source>
         <translation>Задайте ODIN адрес (например %1)</translation>
     </message>
     <message>

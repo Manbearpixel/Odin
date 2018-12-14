@@ -5,7 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/phore-config.h"
+#include "config/odin-config.h"
 #endif
 
 #include "configuremasternodepage.h"
