@@ -4,6 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "activemasternode.h"
+#include "base58.h"
 #include "db.h"
 #include "init.h"
 #include "main.h"
