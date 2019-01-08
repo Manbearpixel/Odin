@@ -44,6 +44,34 @@ UniValue getpoolinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("entries_accepted", obfuScationPool.GetCountEntriesAccepted()));
     return obj;
 }
+Value allocatefunds(const Array& params, bool fHelp)
+{
+	if (fHelp || params.size() != 3)
+		throw runtime_error(
+			"allocatefunds purpose alias amount ( \"pay wallet\" ( \"voting wallet\" ) )\n"
+			"\nStarts escrows funds for some purpose.\n"
+
+			"\nArguments:\n"
+			"0. purpose			(string, required) Helpful identifier to recognize this allocation later.  Currently only masternode is recognized. \n"
+			"1. accountaddress      (string, required) address being paid to."
+			"2. amount			25k"
+			"      <future>     (numeric, required) amount of odin funded will also be accepted for partially funding master nodes and other purposes.\n"
+
+			"\nResult:\n"
+			"\"vin\"			(string) funding transaction id necessary for next step.\n");
+
+    if (params[0].get_str() != "masternode")
+        throw runtime_error("Surely you meant the first argument to be ""masternode"" . . . . ");
+	CBitcoinAddress acctAddr = GetAccountAddress("alloc->" + params[1].get_str());
+	string strAmt = params[2].get_str();
+
+	CWalletTx wtx;
+    SendMoney(acctAddr.Get(), strAmt, wtx);
+
+	Object obj;
+    obj.push_back(Pair("txhash", wtx.GetHash().GetHex()));
+	return obj;
+}
 
 // This command is retained for backwards compatibility, but is deprecated.
 // Future removal of this command is planned to keep things clean.
