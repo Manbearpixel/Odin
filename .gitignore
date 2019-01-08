@@ -3,6 +3,7 @@
 .vscode
 todo.txt
 reset-files.bash
+.vs
 
 *.tar.gz
 
