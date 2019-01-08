@@ -44,7 +44,7 @@ UniValue getpoolinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("entries_accepted", obfuScationPool.GetCountEntriesAccepted()));
     return obj;
 }
-Value allocatefunds(const Array& params, bool fHelp)
+UniValue allocatefunds(const Array& params, bool fHelp)
 {
 	if (fHelp || params.size() != 3)
 		throw runtime_error(
@@ -72,6 +72,75 @@ Value allocatefunds(const Array& params, bool fHelp)
     obj.push_back(Pair("txhash", wtx.GetHash().GetHex()));
 	return obj;
 }
+
+UniValue fundmasternode(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+		throw runtime_error(
+			"fundmasternode alias amount TxID masternode"
+			"\nVerifies the escrowed funds for the masternode and returns the necessary info for your and its configuration files.\n"
+
+			"\nArguments:\n"
+			"0. alias			(string, required) helpful identifier to recognize this allocation later.\n"
+			"      <future>     (numeric, required) amount of odin funded will also be accepted for partially funding master nodes and other purposes.\n"
+			"1. TxID			(string, required) funding transaction id .\n"
+            "2. masternode		(string, required) ip address of masternode.\n"
+
+			"\nResult:\n"
+			"\"config line\"	(string) the above details for the masternode & wallet config files & cryptographic signature proving that you authorized this.\n");
+
+    auto alias = params[0].get_str();
+    
+    uint256 txHash = uint256(params[1].get_str());
+	std::string mnAddress = params[2].get_str();
+
+	bool found = false;
+    auto nAmount = "25000"
+    bool outputIndex = -1;
+    if(auto wtx = pwalletMain->GetWalletTx(txHash))
+    {
+        for(size_t i = 0; i < wtx->vout.size(); ++i)
+        {
+            if(wtx->vout[i].nValue == nAmount && !pwalletMain->IsSpent(txHash, i))
+            {
+                found = true;
+                outputIndex = i;
+                break;
+            }
+        }
+    }
+
+    if (!found) {
+        throw JSONRPCError(RPC_VERIFY_ERROR, "Couldn't verify transaction");
+    }
+
+    if (!pwalletMain->IsLocked())
+        pwalletMain->TopUpKeyPool();
+
+    // Generate a new key that is added to wallet
+    CBitcoinAddress address = GetAccountAddress("reserved->" + alias);
+
+    CKeyID keyID;
+    if (!address.GetKeyID(keyID))
+        throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
+
+    CKey vchSecret;
+    if (!pwalletMain->GetKey(keyID, vchSecret))
+        throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + CBitcoinAddress(keyID).ToString() + " is not known");
+
+    auto tokens = {
+        alias,
+        mnAddress + ":" + std::to_string(Params().GetDefaultPort()),
+        CBitcoinSecret(vchSecret).ToString(),
+        txHash.ToString(),
+        std::to_string(outputIndex)
+    };
+
+	Object obj;
+    obj.push_back(Pair("config line", boost::algorithm::join(tokens, " ")));
+	return obj;
+}
+
 
 // This command is retained for backwards compatibility, but is deprecated.
 // Future removal of this command is planned to keep things clean.
