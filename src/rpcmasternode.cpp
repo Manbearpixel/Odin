@@ -63,7 +63,7 @@ Value allocatefunds(const Array& params, bool fHelp)
     if (params[0].get_str() != "masternode")
         throw runtime_error("Surely you meant the first argument to be ""masternode"" . . . . ");
 	CBitcoinAddress acctAddr = GetAccountAddress("alloc->" + params[1].get_str());
-	string strAmt = "25000";
+	string strAmt = params[2].get_str();
 
 	CWalletTx wtx;
     SendMoney(acctAddr.Get(), strAmt, wtx);
