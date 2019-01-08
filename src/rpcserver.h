@@ -315,6 +315,7 @@ extern UniValue getmasternodewinners(const UniValue& params, bool fHelp);
 extern UniValue getmasternodescores(const UniValue& params, bool fHelp);
 extern UniValue allocatefunds(const UniValue& params,bool fHelp);
 extern UniValue fundmasternode(const UniValue& params, bool fHelp);
+extern CBitcoinAddress GetAccountAddress(string strAccount, bool bForceNew = false);
 
 extern UniValue mnbudget(const UniValue& params, bool fHelp); // in rpcmasternode-budget.cpp
 extern UniValue preparebudget(const UniValue& params, bool fHelp);

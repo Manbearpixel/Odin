@@ -54,7 +54,7 @@ UniValue allocatefunds(const UniValue& params, bool fHelp)
 			"\nArguments:\n"
 			"0. purpose			(string, required) Helpful identifier to recognize this allocation later.  Currently only masternode is recognized. \n"
 			"1. accountaddress      (string, required) address being paid to."
-			"2. amount			25k"
+			"2. amount			25k for Masternode"
 			"      <future>     (numeric, required) amount of odin funded will also be accepted for partially funding master nodes and other purposes.\n"
 
 			"\nResult:\n"
@@ -62,13 +62,14 @@ UniValue allocatefunds(const UniValue& params, bool fHelp)
 
     if (params[0].get_str() != "masternode")
         throw runtime_error("Surely you meant the first argument to be ""masternode"" . . . . ");
-	CBitcoinAddress acctAddr = GetAccountAddress("alloc->" + params[1].get_str());
+	CBitcoinAddress acctAddr = GetAccountAddress(params[1].get_str());
 	string strAmt = params[2].get_str();
 
 	CWalletTx wtx;
     SendMoney(acctAddr.Get(), strAmt, wtx);
 
-	Object obj;
+	//Object obj;
+	UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("txhash", wtx.GetHash().GetHex()));
 	return obj;
 }
@@ -82,14 +83,14 @@ UniValue fundmasternode(const UniValue& params, bool fHelp)
 
 			"\nArguments:\n"
 			"0. alias			(string, required) helpful identifier to recognize this allocation later.\n"
-			"      <future>     (numeric, required) amount of odin funded will also be accepted for partially funding master nodes and other purposes.\n"
+			"      <future>     "
 			"1. TxID			(string, required) funding transaction id .\n"
             "2. masternode		(string, required) ip address of masternode.\n"
 
 			"\nResult:\n"
 			"\"config line\"	(string) the above details for the masternode & wallet config files & cryptographic signature proving that you authorized this.\n");
 
-    auto alias = params[0].get_str();
+    string alias = params[0].get_str();
     
     uint256 txHash = uint256(params[1].get_str());
 	std::string mnAddress = params[2].get_str();
