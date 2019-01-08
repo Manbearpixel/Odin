@@ -10,6 +10,7 @@
 #include "amount.h"
 #include "rpcprotocol.h"
 #include "uint256.h"
+#include "base58.h"
 
 #include <list>
 #include <map>
