@@ -354,6 +354,7 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "setmocktime", &setmocktime, true, false, false},
 
         /* ODIN features */
+		{"odin", "allocatefunds", &allocatefunds, true, true, false },
         {"odin", "masternode", &masternode, true, true, false},
         {"odin", "listmasternodes", &listmasternodes, true, true, false},
         {"odin", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},

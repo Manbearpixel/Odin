@@ -313,6 +313,7 @@ extern UniValue listmasternodeconf(const UniValue& params, bool fHelp);
 extern UniValue getmasternodestatus(const UniValue& params, bool fHelp);
 extern UniValue getmasternodewinners(const UniValue& params, bool fHelp);
 extern UniValue getmasternodescores(const UniValue& params, bool fHelp);
+extern Value allocatefunds(const Array& params,bool fHelp);
 
 extern UniValue mnbudget(const UniValue& params, bool fHelp); // in rpcmasternode-budget.cpp
 extern UniValue preparebudget(const UniValue& params, bool fHelp);
