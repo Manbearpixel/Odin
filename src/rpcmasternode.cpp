@@ -44,7 +44,7 @@ UniValue getpoolinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("entries_accepted", obfuScationPool.GetCountEntriesAccepted()));
     return obj;
 }
-UniValue allocatefunds(const Array& params, bool fHelp)
+UniValue allocatefunds(const UniValue& params, bool fHelp)
 {
 	if (fHelp || params.size() != 3)
 		throw runtime_error(
@@ -73,7 +73,7 @@ UniValue allocatefunds(const Array& params, bool fHelp)
 	return obj;
 }
 
-UniValue fundmasternode(const Array& params, bool fHelp)
+UniValue fundmasternode(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 4)
 		throw runtime_error(
