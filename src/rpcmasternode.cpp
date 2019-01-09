@@ -2,9 +2,35 @@
 // Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+//
+#include "amount.h"
 
-#include "activemasternode.h"
 #include "base58.h"
+#include "core_io.h"
+#include "init.h"
+#include "net.h"
+#include "netbase.h"
+#include "rpcserver.h"
+#include "timedata.h"
+#include "util.h"
+#include "utilmoneystr.h"
+#include "wallet.h"
+#include "walletdb.h"
+
+#include <stdint.h>
+
+#include "libzerocoin/Coin.h"
+#include "primitives/deterministicmint.h"
+#include "spork.h"
+#include <boost/assign/list_of.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/algorithm/string/join.hpp>
+
+
+//
+
+#include "base58.h"
+#include "activemasternode.h"
 #include "db.h"
 #include "init.h"
 #include "main.h"
@@ -45,6 +71,37 @@ UniValue getpoolinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("entries_accepted", obfuScationPool.GetCountEntriesAccepted()));
     return obj;
 }
+void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew, bool fUseIX = false)
+{
+    // Check amount
+    if (nValue <= 0)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid amount");
+
+    if (nValue > pwalletMain->GetBalance())
+        throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
+
+    string strError;
+    if (pwalletMain->IsLocked()) {
+        strError = "Error: Wallet locked, unable to create transaction!";
+        LogPrintf("SendMoney() : %s", strError);
+        throw JSONRPCError(RPC_WALLET_ERROR, strError);
+    }
+
+    // Parse ODIN address
+    CScript scriptPubKey = GetScriptForDestination(address);
+
+    // Create and send the transaction
+    CReserveKey reservekey(pwalletMain);
+    CAmount nFeeRequired;
+    if (!pwalletMain->CreateTransaction(scriptPubKey, nValue, wtxNew, reservekey, nFeeRequired, strError, NULL, ALL_COINS, fUseIX, (CAmount)0)) {
+        if (nValue + nFeeRequired > pwalletMain->GetBalance())
+            strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!", FormatMoney(nFeeRequired));
+        LogPrintf("SendMoney() : %s\n", strError);
+        throw JSONRPCError(RPC_WALLET_ERROR, strError);
+    }
+    if (!pwalletMain->CommitTransaction(wtxNew, reservekey, (!fUseIX ? NetMsgType::TX : NetMsgType::IX)))
+        throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
+}
 UniValue allocatefunds(const UniValue& params, bool fHelp)
 {
 	if (fHelp || params.size() != 3)
@@ -64,10 +121,13 @@ UniValue allocatefunds(const UniValue& params, bool fHelp)
     if (params[0].get_str() != "masternode")
         throw runtime_error("Surely you meant the first argument to be ""masternode"" . . . . ");
 	CBitcoinAddress acctAddr = GetAccountAddress(params[1].get_str());
-	string strAmt = params[2].get_str();
+int intAmount = std::stoi( params[2].get_str() );
+	CAmount strAmt = intAmount;
+
 
 	CWalletTx wtx;
     SendMoney(acctAddr.Get(), strAmt, wtx);
+	
 
 	//Object obj;
 	UniValue obj(UniValue::VOBJ);
@@ -97,7 +157,7 @@ UniValue fundmasternode(const UniValue& params, bool fHelp)
 	std::string mnAddress = params[2].get_str();
 
 	bool found = false;
-    auto nAmount = "25000"
+    int nAmount = 25000;
     bool outputIndex = -1;
     if(auto wtx = pwalletMain->GetWalletTx(txHash))
     {
@@ -138,8 +198,11 @@ UniValue fundmasternode(const UniValue& params, bool fHelp)
         std::to_string(outputIndex)
     };
 
-	Object obj;
+	UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("config line", boost::algorithm::join(tokens, " ")));
+    
+    //obj.push_back(Pair("txhash", ));
+    
 	return obj;
 }
 
