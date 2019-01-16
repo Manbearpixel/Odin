@@ -3237,7 +3237,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (fAddrIndex)
         if (!pblocktree->AddAddrIndex(vPosAddrid))
             return state.Error("Failed to write address index");
-    
+
     // add new entries
     for (const CTransaction tx: block.vtx) {
         if (tx.IsCoinBase() || tx.IsZerocoinSpend())
@@ -3251,8 +3251,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     for (auto it = mapStakeSpent.begin(); it != mapStakeSpent.end(); ++it) {
         if (it->second < pindex->nHeight - Params().MaxReorganizationDepth()) {
             mapStakeSpent.erase(it->first);
-        } else {
-            LogPrintf("stake out hash = %s height = %d\n", it->first.ToString(), it->second);
         }
     }
 
@@ -4660,54 +4658,53 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
 
     int nHeight = pindex->nHeight;
 
-    // @todo - Pixxlated (56cae26854351206a0db8df5a34e897f14e099c9)
-    // if (block.IsProofOfStake()) {
-    //     LOCK(cs_main);
+    if (block.IsProofOfStake()) {
+        LOCK(cs_main);
 
-    //     CCoinsViewCache coins(pcoinsTip);
+        CCoinsViewCache coins(pcoinsTip);
 
-    //     if (!coins.HaveInputs(block.vtx[1])) {
-    //         // the inputs are spent at the chain tip so we should look at the recently spent outputs
+        if (!coins.HaveInputs(block.vtx[1])) {
+            // the inputs are spent at the chain tip so we should look at the recently spent outputs
 
-    //         for (CTxIn in : block.vtx[1].vin) {
-    //             auto it = mapStakeSpent.find(in.prevout);
-    //             if (it == mapStakeSpent.end()) {
-    //                 return false;
-    //             }
-    //             if (it->second < pindexPrev->nHeight) {
-    //                 return false;
-    //             }
-    //         }
-    //     }
+            for (CTxIn in : block.vtx[1].vin) {
+                auto it = mapStakeSpent.find(in.prevout);
+                if (it == mapStakeSpent.end()) {
+                    return false;
+                }
+                if (it->second <= pindexPrev->nHeight) {
+                    return false;
+                }
+            }
+        }
 
-    //     // if this is on a fork
-    //     if (!chainActive.Contains(pindexPrev) && pindexPrev != NULL) {
-    //         // start at the block we're adding on to
-    //         CBlockIndex *last = pindexPrev;
+        // if this is on a fork
+        if (!chainActive.Contains(pindexPrev) && pindexPrev != NULL) {
+            // start at the block we're adding on to
+            CBlockIndex *last = pindexPrev;
 
-    //         // while that block is not on the main chain
-    //         while (!chainActive.Contains(last) && last != NULL) {
-    //             CBlock bl;
-    //             ReadBlockFromDisk(bl, last);
-    //             // loop through every spent input from said block
-    //             for (CTransaction t : bl.vtx) {
-    //                 for (CTxIn in: t.vin) {
-    //                     // loop through every spent input in the staking transaction of the new block
-    //                     for (CTxIn stakeIn : block.vtx[1].vin) {
-    //                         // if they spend the same input
-    //                         if (stakeIn.prevout == in.prevout) {
-    //                             // reject the block
-    //                             return false;
-    //                         }
-    //                     }
-    //                 }
-    //             }
+            // while that block is not on the main chain
+            while (!chainActive.Contains(last) && last != NULL) {
+                CBlock bl;
+                ReadBlockFromDisk(bl, last);
+                // loop through every spent input from said block
+                for (CTransaction t : bl.vtx) {
+                    for (CTxIn in: t.vin) {
+                        // loop through every spent input in the staking transaction of the new block
+                        for (CTxIn stakeIn : block.vtx[1].vin) {
+                            // if they spend the same input
+                            if (stakeIn.prevout == in.prevout) {
+                                // reject the block
+                                return false;
+                            }
+                        }
+                    }
+                }
 
-    //             // go to the parent block
-    //             last = last->pprev;
-    //         }
-    //     }
-    // }
+                // go to the parent block
+                last = last->pprev;
+            }
+        }
+    }
 
     // Write block to history file
     try {
