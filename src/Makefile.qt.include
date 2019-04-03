@@ -55,6 +55,7 @@ QT_FORMS_UI = \
   qt/forms/overviewpage.ui \
   qt/forms/privacydialog.ui \
   qt/forms/receivecoinsdialog.ui \
+  qt/forms/proposaldialog.ui \
   qt/forms/receiverequestdialog.ui \
   qt/forms/rpcconsole.ui \
   qt/forms/sendcoinsdialog.ui \
@@ -99,6 +100,7 @@ QT_MOC_CPP = \
   qt/moc_paymentserver.cpp \
   qt/moc_peertablemodel.cpp \
   qt/moc_privacydialog.cpp \
+  qt/moc_proposaldialog.cpp \
   qt/moc_proposalfilterproxy.cpp \
   qt/moc_proposallist.cpp \
   qt/moc_proposaltablemodel.cpp \
@@ -181,6 +183,7 @@ BITCOIN_QT_H = \
   qt/peertablemodel.h \
   qt/platformstyle.h \
   qt/privacydialog.h \
+  qt/proposaldialog.h \
   qt/proposalfilterproxy.h \
   qt/proposallist.h \
   qt/proposalrecord.h \
@@ -303,6 +306,7 @@ BITCOIN_QT_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
+  qt/proposaldialog.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
@@ -336,6 +340,7 @@ BITCOIN_QT_CPP += \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
+  qt/proposaldialog.cpp \
   qt/proposalfilterproxy.cpp \
   qt/proposallist.cpp \
   qt/proposalrecord.cpp \

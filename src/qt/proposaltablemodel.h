@@ -1,7 +1,8 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2017-2018 The Bulwark Developers
+// Copyright (c) 2018 The Curium developers
 // Copyright (c) 2018-2018 The Phore developers
 // Copyright (c) 2019 The ODIN developers
-// Distributed under the MIT software license, see the accompanying
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_PROPOSALTABLEMODEL_H
@@ -43,10 +44,12 @@ public:
         Amount = 1,
         StartDate = 2,
         EndDate = 3,
-        YesVotes = 4,
-        NoVotes = 5,
-        AbstainVotes = 6,
-        VotesNeeded = 7
+        TotalPaymentCount = 4,
+        RemainingPaymentCount = 5,
+        YesVotes = 6,
+        NoVotes = 7,
+        AbstainVotes = 8,
+        VotesNeeded = 9
     };
 
     enum RoleIndex {
@@ -54,12 +57,14 @@ public:
         AmountRole,
         StartDateRole,
         EndDateRole,
+        TotalPaymentCountRole,
+        RemainingPaymentCountRole,
         YesVotesRole,
         NoVotesRole,
         AbstainVotesRole,
         VotesNeededRole,
         ProposalUrlRole,
-        ProposalHashRole,
+        ProposalHashRole
     };
 
     int rowCount(const QModelIndex &parent) const;
@@ -68,6 +73,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+    void setProposalType(const int &type);
 
 private:
     QNetworkAccessManager *networkManager;
@@ -76,8 +82,9 @@ private:
     QList<ProposalRecord*> proposalRecords;
     QStringList columns;
 
-public Q_SLOTS:
+    int proposalType = 0;
 
+public Q_SLOTS:
     void onResult(QNetworkReply *result);
 };
 
