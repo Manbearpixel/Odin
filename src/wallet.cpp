@@ -5420,3 +5420,42 @@ bool CWallet::DatabaseMint(CDeterministicMint& dMint)
     zodinTracker->Add(dMint, true);
     return true;
 }
+
+/** Block value calculations */
+CAmount CWallet::TestGetBlockValue(int nHeight)
+{
+  return GetBlockValue(nHeight);
+}
+
+/** Block value calculations */
+CAmount CWallet::TestGetBudgetValue(int nHeight)
+{
+  return GetBlockValue(nHeight, true);
+}
+
+/** Block reward/payment calculations */
+CAmount CWallet::TestGetMasternodePayment(int nHeight)
+{
+  return GetMasternodePayment(nHeight);
+}
+
+CAmount CWallet::TestGetStakePayment(int nHeight)
+{
+  return GetStakePayment(nHeight);
+}
+
+/** Reward percentages/modifiers */
+CAmount CWallet::TestGetBudgetPercent(int nHeight)
+{
+  return GetBudgetPercent(nHeight);
+}
+
+CAmount CWallet::TestGetMasternodeRewardPercent(int nHeight)
+{
+  return GetMasternodeRewardPercent(nHeight);
+}
+
+CAmount CWallet::TestGetSeesawModifier(int nHeight)
+{
+  return GetSeesawModifier(nHeight);
+}

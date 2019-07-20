@@ -493,6 +493,104 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
     return EncodeHexTx(rawTx, PROTOCOL_VERSION | RPCSerializationFlags());
 }
 
+//JSON value is not an integer as expected
+UniValue testheightvalues(const UniValue& params, bool fHelp)
+{
+  int height = params[0].get_int();
+
+  int64_t blockValue    = pwalletMain->TestGetBlockValue(height);
+  int64_t budgetValue   = pwalletMain->TestGetBudgetValue(height);
+  int64_t mnPayment     = pwalletMain->TestGetMasternodePayment(height);
+  int64_t stakePayment  = pwalletMain->TestGetStakePayment(height);
+  int64_t budgetPercent = pwalletMain->TestGetBudgetPercent(height);
+  int64_t mnPercent     = pwalletMain->TestGetMasternodeRewardPercent(height);
+  int64_t modifier      = pwalletMain->TestGetSeesawModifier(height);
+
+
+  UniValue result(UniValue::VOBJ);
+  result.push_back(Pair("height", height));
+  result.push_back(Pair("blockValue", ValueFromAmount(blockValue)));
+  result.push_back(Pair("budgetValue", ValueFromAmount(budgetValue)));
+  result.push_back(Pair("masternodeRaw", mnPayment));
+  result.push_back(Pair("masternode", ValueFromAmount(mnPayment)));
+  result.push_back(Pair("staking", ValueFromAmount(stakePayment)));
+  result.push_back(Pair("stakingRaw", stakePayment));
+  result.push_back(Pair("modifier", modifier));
+  result.push_back(Pair("budget%", budgetPercent));
+  result.push_back(Pair("mn%", mnPercent));
+  
+  return result;
+}
+
+UniValue testgetblockvalue(const UniValue& params, bool fHelp)
+{
+  int height = params[0].get_int();
+  int64_t blockValue = pwalletMain->TestGetBlockValue(height);
+
+  UniValue result(UniValue::VOBJ);
+  result.push_back(Pair("height", height));
+  result.push_back(Pair("amount", blockValue));
+  result.push_back(Pair("value", ValueFromAmount(blockValue)));
+  return result;
+}
+
+UniValue testgetmasternodepayment(const UniValue& params, bool fHelp)
+{
+  int height = params[0].get_int();
+  int64_t blockValue = pwalletMain->TestGetMasternodePayment(height);
+
+  UniValue result(UniValue::VOBJ);
+  result.push_back(Pair("height", height));
+  result.push_back(Pair("amount", blockValue));
+  result.push_back(Pair("value", ValueFromAmount(blockValue)));
+  return result;
+}
+
+UniValue testgetstakepayment(const UniValue& params, bool fHelp)
+{
+  int height = params[0].get_int();
+  int64_t blockValue = pwalletMain->TestGetStakePayment(height);
+
+  UniValue result(UniValue::VOBJ);
+  result.push_back(Pair("height", height));
+  result.push_back(Pair("amount", blockValue));
+  result.push_back(Pair("value", ValueFromAmount(blockValue)));
+  return result;
+}
+
+UniValue testgetbudgetpercent(const UniValue& params, bool fHelp)
+{
+  int height = params[0].get_int();
+  int64_t percentValue = pwalletMain->TestGetBudgetPercent(height);
+
+  UniValue result(UniValue::VOBJ);
+  result.push_back(Pair("height", height));
+  result.push_back(Pair("percent", percentValue));
+  return result;
+}
+
+UniValue testgetmasternodepercent(const UniValue& params, bool fHelp)
+{
+  int height = params[0].get_int();
+  int64_t percentValue = pwalletMain->TestGetMasternodeRewardPercent(height);
+
+  UniValue result(UniValue::VOBJ);
+  result.push_back(Pair("height", height));
+  result.push_back(Pair("percent", percentValue));
+  return result;
+}
+
+UniValue testgetseesawpercent(const UniValue& params, bool fHelp)
+{
+  int height = params[0].get_int();
+  int64_t percentValue = pwalletMain->TestGetSeesawModifier(height);
+
+  UniValue result(UniValue::VOBJ);
+  result.push_back(Pair("height", height));
+  result.push_back(Pair("percent", percentValue));
+  return result;
+}
+
 UniValue decoderawtransaction(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)

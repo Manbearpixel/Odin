@@ -340,6 +340,15 @@ static const CRPCCommand vRPCCommands[] =
         {"rawtransactions", "sendrawtransaction", &sendrawtransaction, false, false, false},
         {"rawtransactions", "signrawtransaction", &signrawtransaction, false, false, false}, /* uses wallet if enabled */
 
+        /* Test functions */
+        {"util", "testheightvalues", &testheightvalues, true, false, true},
+        {"util", "testgetblockvalue", &testgetblockvalue, true, false, true},
+        {"util", "testgetmasternodepayment", &testgetmasternodepayment, true, false, true},
+        {"util", "testgetstakepayment", &testgetstakepayment, true, false, true},
+        {"util", "testgetbudgetpercent", &testgetbudgetpercent, true, false, true},
+        {"util", "testgetmasternodepercent", &testgetmasternodepercent, true, false, true},
+        {"util", "testgetseesawpercent", &testgetseesawpercent, true, false, true},
+
         /* Utility functions */
         {"util", "createmultisig", &createmultisig, true, true, false},
         {"util", "createwitnessaddress", &createwitnessaddress, true, true, false},
@@ -385,6 +394,7 @@ static const CRPCCommand vRPCCommands[] =
         {"odin", "spork", &spork, true, true, false},
         {"odin", "getpoolinfo", &getpoolinfo, true, true, false},
         {"odin", "makekeypair", &makekeypair, true, true, false},
+
 #ifdef ENABLE_WALLET
         /* Wallet */
         {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},

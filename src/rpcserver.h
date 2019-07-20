@@ -276,6 +276,13 @@ extern UniValue signrawtransaction(const UniValue& params, bool fHelp);
 extern UniValue sendrawtransaction(const UniValue& params, bool fHelp);
 extern UniValue searchrawtransactions(const UniValue& params, bool fHelp);
 
+extern UniValue testheightvalues(const UniValue& params, bool fHelp);
+extern UniValue testgetblockvalue(const UniValue& params, bool fHelp);
+extern UniValue testgetmasternodepayment(const UniValue& params, bool fHelp);
+extern UniValue testgetstakepayment(const UniValue& params, bool fHelp);
+extern UniValue testgetbudgetpercent(const UniValue& params, bool fHelp);
+extern UniValue testgetmasternodepercent(const UniValue& params, bool fHelp);
+extern UniValue testgetseesawpercent(const UniValue& params, bool fHelp);
 
 extern UniValue findserial(const UniValue& params, bool fHelp); // in rpcblockchain.cpp
 extern UniValue getblockcount(const UniValue& params, bool fHelp);
