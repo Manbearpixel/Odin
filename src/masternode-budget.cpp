@@ -769,71 +769,83 @@ struct sortProposalsByVotes {
 //Need to review this function
 std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
 {
-    LOCK(cs);
+  LOCK(cs);
 
-    // ------- Sort budgets by Yes Count
+  // ------- Sort budgets by Yes Count
 
-    std::vector<std::pair<CBudgetProposal*, int> > vBudgetPorposalsSort;
+  std::vector<std::pair<CBudgetProposal*, int> > vBudgetPorposalsSort;
 
-    std::map<uint256, CBudgetProposal>::iterator it = mapProposals.begin();
-    while (it != mapProposals.end()) {
-        (*it).second.CleanAndRemove(false);
-        vBudgetPorposalsSort.push_back(make_pair(&((*it).second), (*it).second.GetYeas() - (*it).second.GetNays()));
-        ++it;
-    }
+  std::map<uint256, CBudgetProposal>::iterator it = mapProposals.begin();
+  while (it != mapProposals.end()) {
+    (*it).second.CleanAndRemove(false);
+    vBudgetPorposalsSort.push_back(make_pair(&((*it).second), (*it).second.GetYeas() - (*it).second.GetNays()));
+    ++it;
+  }
 
-    std::sort(vBudgetPorposalsSort.begin(), vBudgetPorposalsSort.end(), sortProposalsByVotes());
+  std::sort(vBudgetPorposalsSort.begin(), vBudgetPorposalsSort.end(), sortProposalsByVotes());
 
-    // ------- Grab The Budgets In Order
+  // ------- Grab The Budgets In Order
 
-    std::vector<CBudgetProposal*> vBudgetProposalsRet;
+  std::vector<CBudgetProposal*> vBudgetProposalsRet;
 
-    CAmount nBudgetAllocated = 0;
-    CBlockIndex* pindexPrev = chainActive.Tip();
-    if (pindexPrev == NULL) return vBudgetProposalsRet;
+  CAmount nBudgetAllocated = 0;
+  CBlockIndex* pindexPrev = chainActive.Tip();
+  if (pindexPrev == NULL) return vBudgetProposalsRet;
 
-    int nBlockStart = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
-    int nBlockEnd = nBlockStart + GetBudgetPaymentCycleBlocks() - 1;
-    CAmount nTotalBudget = GetTotalBudget(nBlockStart);
+  int nBlockStart = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+  int nBlockEnd = nBlockStart + GetBudgetPaymentCycleBlocks() - 1;
+  CAmount nTotalBudget = GetTotalBudget(nBlockStart);
 
+  // todo remove temp
+  CAmount nSubsidy = GetBlockValue(nBlockStart, true);
+  // return nSubsidy * Params().GetBudgetPercent() * GetBudgetPaymentCycleBlocks();
 
-    std::vector<std::pair<CBudgetProposal*, int> >::iterator it2 = vBudgetPorposalsSort.begin();
-    while (it2 != vBudgetPorposalsSort.end()) {
-        CBudgetProposal* pbudgetProposal = (*it2).first;
+  LogPrint("mnbudget","CBudgetManager::GetBudget() - nBlockStart=%d ... nBlockEnd=%d ... nSubsidy=%d ... BudgetPercent=%d ... BudgetPaymentCycles=%d ... nTotalBudget=%d",
+    nBlockStart,
+    nBlockEnd,
+    nSubsidy,
+    GetBudgetPercent(nBlockStart),
+    GetBudgetPaymentCycleBlocks(),
+    nTotalBudget
+  );
 
-        LogPrint("mnbudget","CBudgetManager::GetBudget() - Processing Budget %s\n", pbudgetProposal->strProposalName.c_str());
-        //prop start/end should be inside this period
-        if (pbudgetProposal->fValid && pbudgetProposal->nBlockStart <= nBlockStart &&
-            pbudgetProposal->nBlockEnd >= nBlockEnd &&
-            pbudgetProposal->GetYeas() - pbudgetProposal->GetNays() > mnodeman.CountEnabled(ActiveProtocol()) / 10 &&
-            pbudgetProposal->IsEstablished()) {
+  std::vector<std::pair<CBudgetProposal*, int> >::iterator it2 = vBudgetPorposalsSort.begin();
+  while (it2 != vBudgetPorposalsSort.end()) {
+      CBudgetProposal* pbudgetProposal = (*it2).first;
 
-            LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 passed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
-                      pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
-                      nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
-                      pbudgetProposal->IsEstablished());
+      LogPrint("mnbudget","CBudgetManager::GetBudget() - Processing Budget %s\n", pbudgetProposal->strProposalName.c_str());
+      //prop start/end should be inside this period
+      if (pbudgetProposal->fValid && pbudgetProposal->nBlockStart <= nBlockStart &&
+          pbudgetProposal->nBlockEnd >= nBlockEnd &&
+          pbudgetProposal->GetYeas() - pbudgetProposal->GetNays() > mnodeman.CountEnabled(ActiveProtocol()) / 10 &&
+          pbudgetProposal->IsEstablished()) {
 
-            if (pbudgetProposal->GetAmount() + nBudgetAllocated <= nTotalBudget) {
-                pbudgetProposal->SetAllotted(pbudgetProposal->GetAmount());
-                nBudgetAllocated += pbudgetProposal->GetAmount();
-                vBudgetProposalsRet.push_back(pbudgetProposal);
-                LogPrint("mnbudget","CBudgetManager::GetBudget() -     Check 2 passed: Budget added\n");
-            } else {
-                pbudgetProposal->SetAllotted(0);
-                LogPrint("mnbudget","CBudgetManager::GetBudget() -     Check 2 failed: no amount allotted\n");
-            }
-        }
-        else {
-            LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 failed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
-                      pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
-                      nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
-                      pbudgetProposal->IsEstablished());
-        }
+          LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 passed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
+                    pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
+                    nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
+                    pbudgetProposal->IsEstablished());
 
-        ++it2;
-    }
+          if (pbudgetProposal->GetAmount() + nBudgetAllocated <= nTotalBudget) {
+              pbudgetProposal->SetAllotted(pbudgetProposal->GetAmount());
+              nBudgetAllocated += pbudgetProposal->GetAmount();
+              vBudgetProposalsRet.push_back(pbudgetProposal);
+              LogPrint("mnbudget","CBudgetManager::GetBudget() -     Check 2 passed: Budget added\n");
+          } else {
+              pbudgetProposal->SetAllotted(0);
+              LogPrint("mnbudget","CBudgetManager::GetBudget() -     Check 2 failed: no amount allotted\n");
+          }
+      }
+      else {
+          LogPrint("mnbudget","CBudgetManager::GetBudget() -   Check 1 failed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
+                    pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
+                    nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
+                    pbudgetProposal->IsEstablished());
+      }
 
-    return vBudgetProposalsRet;
+      ++it2;
+  }
+
+  return vBudgetProposalsRet;
 }
 
 struct sortFinalizedBudgetsByVotes {
@@ -906,8 +918,7 @@ CAmount CBudgetManager::GetTotalBudget(int nHeight)
   if (chainActive.Tip() == NULL) return 0;
 
   CAmount nSubsidy = GetBlockValue(nHeight, true);
-
-  return nSubsidy * Params().GetBudgetPercent() * GetBudgetPaymentCycleBlocks();
+  return nSubsidy * GetBudgetPaymentCycleBlocks();
 }
 
 void CBudgetManager::NewBlock()

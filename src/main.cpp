@@ -2152,6 +2152,10 @@ double ConvertBitsToDouble(unsigned int nBits)
 
 int64_t GetBlockValue(int nHeight, bool fBudgetBlock)
 {
+  if (Params().NetworkID() == CBaseChainParams::TESTNET) {
+    return GetBlockValueTestnet(nHeight, fBudgetBlock);
+  }
+
   /**
    * ODIN Block Reward Structure:
    * PoW Premine:   Block         0 -         200 = 495,000 Ø ~3 hours
@@ -2174,8 +2178,15 @@ int64_t GetBlockValue(int nHeight, bool fBudgetBlock)
    */
 
   int64_t nBudgetMultiplier = COIN;
-  if (!fBudgetBlock)
-    nBudgetMultiplier = COIN - (Params().GetBudgetPercent() * CENT);
+  CAmount nBudgetPercent = GetBudgetPercent(nHeight);
+
+  // For budget "Super" blocks, nBudgetMultiplier should be (COIN - (the remainder of allocation))
+  // For regular blocks, nBudgetMultiplier should be (COIN - budget%)
+  if (fBudgetBlock) {
+    nBudgetMultiplier = COIN - ((100 - nBudgetPercent) * CENT);
+  } else {
+    nBudgetMultiplier = COIN - (nBudgetPercent * CENT);
+  }
 
   CAmount nSubsidy = 15 * nBudgetMultiplier;
 
@@ -2202,13 +2213,153 @@ int64_t GetBlockValue(int nHeight, bool fBudgetBlock)
     nSubsidy = 15 * nBudgetMultiplier;
   }
 
-  LogPrintf("GetBlockValue Subsidy=%d, CommunityBudget=%d\n", nSubsidy, Params().GetBudgetPercent());
+  LogPrintf("GetBlockValue Subsidy=%d, CommunityBudget=%d\n", nSubsidy, nBudgetPercent);
   return nSubsidy;
 }
 
-int64_t GetMasternodePayment(CAmount nTotalBlockReward)
+int64_t GetBlockValueTestnet(int nHeight, bool fBudgetBlock)
 {
-  return (nTotalBlockReward / COIN) * (Params().GetMasternodeRewardPercent() * CENT);
+  int64_t nBudgetMultiplier = COIN;
+  CAmount nBudgetPercent = GetBudgetPercent(nHeight);
+
+  // For budget "Super" blocks, nBudgetMultiplier should be (COIN - (the remainder of allocation))
+  // For regular blocks, nBudgetMultiplier should be (COIN - budget%)
+  if (fBudgetBlock) {
+    nBudgetMultiplier = COIN - ((100 - nBudgetPercent) * CENT);
+  } else {
+    nBudgetMultiplier = COIN - (nBudgetPercent * CENT);
+  }
+
+  // default to 100
+  CAmount nSubsidy = 100 * nBudgetMultiplier;
+
+  if (nHeight <= 200) {
+    // Premine, no budget multipliers
+    nSubsidy = 495000 * COIN;
+  } else if (nHeight >= 201 && nHeight <= 100000) {
+    nSubsidy = 1000 * nBudgetMultiplier;
+  }
+
+  LogPrintf("GetBlockValue::TESTNET Subsidy=%d, CommunityBudget=%d\n", nSubsidy, nBudgetPercent);
+  return nSubsidy;
+}
+
+/**
+ * Returns a raw amount for Masternode rewards (Value * 1e8) based on the
+ * given blockheight (`nHeight`)
+ * 
+ * Example:
+ * 
+ * nMasternodePercent = 60
+ * nTotalBlockReward  = 1000000000 (10 Ø)
+ * 
+ * nValue = (nTotalBlockReward / COIN) * (nMasternodePercent * CENT)
+ * nValue = (10) * (60000000)
+ * nValue = 600000000 (6.0 Ø)
+ * 
+ * @param nHeight Optional. The height to determine the masternode reward
+ */
+CAmount GetMasternodePayment(int nHeight)
+{
+  if (nHeight == 0) nHeight = chainActive.Height();
+  
+  CAmount nTotalBlockReward   = GetBlockValue(nHeight); // total reward for block (-budget alloc)
+  CAmount nMasternodePercent  = GetMasternodeRewardPercent(nHeight); // % masternode reward
+  CAmount nPayment            = (nTotalBlockReward * nMasternodePercent) / 100;
+
+  LogPrintf("GetMasternodePayment nTotalBlockReward=%d, nMasternodePercent=%d, nPayment=%d\n",
+    nTotalBlockReward,
+    nMasternodePercent,
+    nPayment);
+
+  return nPayment;
+}
+
+/**
+ * Returns a raw amount for general staking rewards (Value * 1e8) based on the
+ * given blockheight (`nHeight`) and any active seesaw modifiers
+ * 
+ * Example:
+ * 
+ * nModifier = 5
+ * nStakePercent = 40
+ * nTotalBlockReward = 1000000000 (10 Ø)
+ * 
+ * nValue = (nTotalBlockReward / COIN) * ((nStakePercent - nModifier) * CENT)
+ * nValue = (10) * ((35) * CENT)
+ * nValue = (10) * ((35) * CENT)
+ * nValue = (10) * (35000000)
+ * nValue = 350000000 (3.5)
+ * 
+ * @param nHeight Optional. The height to determine the staking reward
+ */
+int64_t GetStakePayment(int nHeight)
+{
+  if (nHeight == 0) nHeight = chainActive.Height();
+  
+  CAmount nTotalBlockReward   = GetBlockValue(nHeight); // total reward for block (-budget alloc)
+  CAmount nMasternodePercent  = GetMasternodeRewardPercent(nHeight); // % masternode reward
+  CAmount nPercentModifier    = GetSeesawModifier(nHeight); // % modifier
+  CAmount nStakePercent       = (100 - nMasternodePercent) - nPercentModifier;
+  CAmount nPayment            = (nTotalBlockReward * nStakePercent) / 100;
+
+  LogPrintf("GetStakePayment nTotalBlockReward=%d, nMasternodePercent=%d, nPercentModifier=%d, nPayment=%d\n",
+    nTotalBlockReward,
+    nPercentModifier,
+    nMasternodePercent,
+    nPayment);
+
+  return nPayment;
+}
+
+/**
+ * Returns the current percent for the blockchain budget/proposals. Will use the current
+ * Seesaw Modifier to adjust the value.
+ * 
+ * @param nHeight Optional. The height to determine a budget percent
+ */
+int64_t GetBudgetPercent(int nHeight)
+{
+  if (nHeight == 0) nHeight = chainActive.Height();
+
+  CAmount nModifier = GetSeesawModifier(nHeight);
+  return (Params().GetBudgetPercent() + nModifier);
+}
+
+/**
+ * Returns the current percent for Masternode rewards.
+ * Masternodes are unaffected by the SeeSaw mechanism.
+ * 
+ * @param nHeight Optional. The height to determine a Masternode reward percent
+ */
+int64_t GetMasternodeRewardPercent(int nHeight)
+{
+  if (!nHeight) nHeight = chainActive.Height();
+  return Params().GetMasternodeRewardPercent();
+}
+
+/**
+ * Returns the modifier (if any) to be used when determining rewards for the blockchain.
+ */
+int64_t GetSeesawModifier(int nHeight)
+{
+  if (!IsSporkActive(SPORK_18_REWARD_SEESAW_ENFORCEMENT)) {
+    return 0;
+  }
+
+  if (nHeight == 0) nHeight = chainActive.Height();
+
+  if (nHeight >= 139884 && nHeight <= 665484) {
+    // Yggdrasil 365 days
+    return 5;
+  } else if (nHeight >= 665485 && nHeight <= 1192525) {
+    // Midgard 366 days
+    return 10;
+  } else if (nHeight >= 1192526) {
+    // Nidhogg
+    return 15;
+  }
+  return 0;
 }
 
 bool IsInitialBlockDownload()

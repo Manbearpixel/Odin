@@ -241,13 +241,23 @@ bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashBlock, b
 
 bool DisconnectBlocksAndReprocess(int blocks);
 
-// ***TODO***
 double ConvertBitsToDouble(unsigned int nBits);
-int64_t GetMasternodePayment(CAmount nTotalBlockReward);
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock, bool fProofOfStake);
 
 bool ActivateBestChain(CValidationState& state, CBlock* pblock = NULL, bool fAlreadyChecked = false);
+
+/** Block value calculations */
 CAmount GetBlockValue(int nHeight, bool fBudgetBlock = false);
+CAmount GetBlockValueTestnet(int nHeight, bool fBudgetBlock = false);
+
+/** Block reward/payment calculations */
+CAmount GetMasternodePayment(int nHeight = 0);
+CAmount GetStakePayment(int nHeight = 0);
+
+/** Reward percentages/modifiers */
+CAmount GetBudgetPercent(int nHeight = 0);
+CAmount GetMasternodeRewardPercent(int nHeight = 0);
+CAmount GetSeesawModifier(int nHeight = 0);
 
 /** Create a new block index entry for a given block hash */
 CBlockIndex* InsertBlockIndex(uint256 hash);

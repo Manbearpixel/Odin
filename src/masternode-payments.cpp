@@ -297,10 +297,11 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
     if (!pindexPrev) return;
 
     bool hasPayment = true;
+    CAmount nBlockHeight = pindexPrev->nHeight;
     CScript payee;
 
     //spork
-    if (!masternodePayments.GetBlockPayee(pindexPrev->nHeight + 1, payee)) {
+    if (!masternodePayments.GetBlockPayee(nBlockHeight + 1, payee)) {
         //no masternode detected
         CMasternode* winningNode = mnodeman.GetCurrentMasterNode(1);
         if (winningNode) {
@@ -311,9 +312,9 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
         }
     }
 
-    CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
-    // TODO adjust reward schema to lower regular staking and heighten proposal rewards
-    CAmount masternodePayment = GetMasternodePayment(blockValue);
+    CAmount blockValue = GetBlockValue(nBlockHeight);
+    // todo - seesaw implementation
+    CAmount masternodePayment = GetMasternodePayment(nBlockHeight);
 
     if (!fProofOfStake) {
         txNew.vout[0].nValue = blockValue - (hasPayment ? masternodePayment : 0);
@@ -530,6 +531,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
 
     std::string strPayeesPossible = "";
 
+    // todo - seesaw implementation
     CAmount nReward = GetBlockValue(nBlockHeight);
 
     if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
@@ -543,7 +545,8 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
         nMasternode_Drift_Count = mnodeman.size() + Params().MasternodeCountDrift();
     }
 
-    CAmount requiredMasternodePayment = GetMasternodePayment(nReward);
+    // todo - seesaw implementation
+    CAmount requiredMasternodePayment = GetMasternodePayment(nBlockHeight);
 
     //require at least 6 signatures
     BOOST_FOREACH (CMasternodePayee& payee, vecPayments)
