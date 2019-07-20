@@ -2174,8 +2174,15 @@ int64_t GetBlockValue(int nHeight, bool fBudgetBlock)
    */
 
   int64_t nBudgetMultiplier = COIN;
-  if (!fBudgetBlock)
-    nBudgetMultiplier = COIN - (Params().GetBudgetPercent() * CENT);
+  CAmount nBudgetPercent = Params().GetBudgetPercent();
+
+  // For budget "Super" blocks, nBudgetMultiplier should be (COIN - (the remainder of allocation))
+  // For regular blocks, nBudgetMultiplier should be (COIN - budget%)
+  if (fBudgetBlock) {
+    nBudgetMultiplier = COIN - ((100 - nBudgetPercent) * CENT);
+  } else {
+    nBudgetMultiplier = COIN - (nBudgetPercent * CENT);
+  }
 
   CAmount nSubsidy = 15 * nBudgetMultiplier;
 
