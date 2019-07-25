@@ -2131,7 +2131,7 @@ bool CWallet::MintableCoins()
             nTxTime = mapBlockIndex.at(out.tx->hashBlock)->GetBlockTime();
         }
 
-        LogPrintf("rpc", "adjustedTime=%d nTxTime=%d minStakeAge=%d\n", GetAdjustedTime(), nTxTime, Params().GetMinStakeAge());
+        LogPrint("rpc", "adjustedTime=%d nTxTime=%d minStakeAge=%d\n", GetAdjustedTime(), nTxTime, Params().GetMinStakeAge());
         if (GetAdjustedTime() - nTxTime > Params().GetMinStakeAge())
             return true;
     }
@@ -4675,7 +4675,7 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
     libzerocoin::CoinDenomination denomination = zerocoinSelected.GetDenomination();
     libzerocoin::PublicCoin pubCoinSelected(paramsCoin, zerocoinSelected.GetValue(), denomination);
     //LogPrintf("%s : selected mint %s\n pubcoinhash=%s\n", __func__, zerocoinSelected.ToString(), GetPubCoinHash(zerocoinSelected.GetValue()).GetHex());
-    
+
     if (!pubCoinSelected.validate()) {
         receipt.SetStatus(_("The selected mint coin is an invalid coin"), ZODIN_INVALID_COIN);
         return false;
