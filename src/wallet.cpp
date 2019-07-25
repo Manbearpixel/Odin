@@ -2131,6 +2131,7 @@ bool CWallet::MintableCoins()
             nTxTime = mapBlockIndex.at(out.tx->hashBlock)->GetBlockTime();
         }
 
+        LogPrintf("rpc", "adjustedTime=%d nTxTime=%d minStakeAge=%d\n", GetAdjustedTime(), nTxTime, Params().GetMinStakeAge());
         if (GetAdjustedTime() - nTxTime > Params().GetMinStakeAge())
             return true;
     }
