@@ -317,7 +317,7 @@ public:
         bnProofOfWorkLimit      = ~uint256(0) >> 1;
         nLastPOWBlock           = 200;      // Last Proof-of-Work block
         nModifierUpdateBlock    = 200;
-        nMinStakeAge            = 60 * 60;  // 1 minute
+        nMinStakeAge            = 60;       // 1 minute
 
         // Modifier interval: time to elapse before new modifier is computed
         // Set to 3-hour for production network and 20-minute for test network
