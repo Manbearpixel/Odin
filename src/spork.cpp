@@ -269,7 +269,7 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if (strName == "SPORK_13_ENABLE_SUPERBLOCKS") return SPORK_13_ENABLE_SUPERBLOCKS;
     if (strName == "SPORK_16_ZEROCOIN_MAINTENANCE_MODE") return SPORK_16_ZEROCOIN_MAINTENANCE_MODE;
     if (strName == "SPORK_17_SEGWIT_ACTIVATION") return SPORK_17_SEGWIT_ACTIVATION;
-
+    if (strName == "SPORK_19_SEGWIT_ON_COINBASE") return SPORK_19_SEGWIT_ON_COINBASE;
     return -1;
 }
 
@@ -285,6 +285,6 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if (id == SPORK_13_ENABLE_SUPERBLOCKS) return "SPORK_13_ENABLE_SUPERBLOCKS";
     if (id == SPORK_16_ZEROCOIN_MAINTENANCE_MODE) return "SPORK_16_ZEROCOIN_MAINTENANCE_MODE";
     if (id == SPORK_17_SEGWIT_ACTIVATION) return "SPORK_17_SEGWIT_ACTIVATION";
-
+    if (id == SPORK_19_SEGWIT_ON_COINBASE) return "SPORK_19_SEGWIT_ON_COINBASE";
     return "Unknown";
 }
