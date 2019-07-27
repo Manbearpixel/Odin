@@ -2,7 +2,7 @@
 // Copyright (c) 2012-2013 The PPCoin developers
 // Copyright (c) 2015-2017 The PIVX developers
 // Copyright (c) 2017-2018 The Phore developers
-// Copyright (c) 2018 The ODIN developers 
+// Copyright (c) 2018 The ODIN developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -242,19 +242,10 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
 // modifier about a selection interval later than the coin generating the kernel
 bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int& nStakeModifierHeight, int64_t& nStakeModifierTime, bool fPrintProofOfStake)
 {
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() - hashBlockFrom:%s\n", hashBlockFrom.ToString().c_str());
-
     nStakeModifier = 0;
     if (!mapBlockIndex.count(hashBlockFrom))
         return error("GetKernelStakeModifier() : block not indexed");
     const CBlockIndex* pindexFrom = mapBlockIndex[hashBlockFrom];
-
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() - pindexFrom:%s\n", pindexFrom->ToString().c_str());
-
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() chainActive height:%d\n", chainActive.Height());
 
     nStakeModifierHeight = pindexFrom->nHeight;
     nStakeModifierTime = pindexFrom->GetBlockTime();
@@ -262,16 +253,17 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
     const CBlockIndex* pindex = pindexFrom;
     CBlockIndex* pindexNext = chainActive[pindexFrom->nHeight + 1];
 
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() - height:%d, pindexNext:%s\n", pindexFrom->nHeight, pindexNext->ToString().c_str());
-
     // loop to find the stake modifier later by a selection interval
     while (nStakeModifierTime < pindexFrom->GetBlockTime() + nStakeModifierSelectionInterval) {
-      //TODO:pixel
-      // LogPrintf(">>GetKernelStakeModifier() - LOOP nStakeModifierTime=%d < pindexFromBlockTime=%d + nStakeModifierSelectionInterval=%d\n", nStakeModifierTime, pindexFrom->GetBlockTime(), nStakeModifierSelectionInterval);
-      
       if (!pindexNext) {
           // Should never happen
+          LogPrint("stake", "GetKernelStakeModifier() pindexFrom.height=%d pindexFrom.blockTime=%d nStakeModifierTime=%d nStakeModifierSelectionInterval=%d\n",
+            pindexFrom->nHeight,
+            pindexFrom->GetBlockTime(),
+            nStakeModifierTime,
+            nStakeModifierSelectionInterval
+          );
+
           return error("Null pindexNext\n");
       }
 
@@ -329,7 +321,12 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTra
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
     if (!GetKernelStakeModifier(blockFrom.GetHash(), nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake)) {
-        LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier \n");
+        LogPrint("stake", "CheckStakeKernelHash(): failed to get kernel stake modifier... nStakeModifier=%d nStakeModifierHeight=%d, nStakeModifierTime=%d, fPrintProofOfStake=%d \n",
+            nStakeModifier,
+            nStakeModifierHeight,
+            nStakeModifierTime,
+            fPrintProofOfStake
+        );
         return false;
     }
 
