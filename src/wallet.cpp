@@ -2660,8 +2660,11 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
             while (true) {
                 txNew.vin.clear();
                 txNew.vout.clear();
-                // added to fix "assert(tx.wit.vtxinwit.size() <= tx.vin.size())" problem
-                txNew.wit.vtxinwit.clear();
+                // @todo remove after segwit activation
+                if(IsSporkActive(SPORK_17_SEGWIT_ACTIVATION)) {
+                    // added to fix "assert(tx.wit.vtxinwit.size() <= tx.vin.size())" problem
+                    txNew.wit.vtxinwit.clear();
+                }
 
                 wtxNew.fFromMe = true;
 
@@ -2967,13 +2970,21 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 LogPrintf("CreateCoinStake : failed to parse kernel\n");
                 break;
             }
+
             if (fDebug && GetBoolArg("-printcoinstake", false))
                 LogPrintf("CreateCoinStake : parsed kernel type=%d\n", whichType);
-            if (whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH && whichType != TX_WITNESS_V0_KEYHASH) {
+
+            // @todo remove after segwit activation
+            bool badKernelType = (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION))
+                ? whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH && whichType != TX_WITNESS_V0_KEYHASH
+                : whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH;
+
+            if (badKernelType) {
                 if (fDebug && GetBoolArg("-printcoinstake", false))
                     LogPrintf("CreateCoinStake : no support for kernel type=%d\n", whichType);
                 break; // only support pay to public key and pay to address
             }
+
             if (whichType == TX_PUBKEYHASH) // pay to address type
             {
                 //convert to pay to public key type

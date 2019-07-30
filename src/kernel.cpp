@@ -14,6 +14,7 @@
 #include "kernel.h"
 #include "script/interpreter.h"
 #include "timedata.h"
+#include "spork.h"
 #include "util.h"
 
 using namespace std;
@@ -384,9 +385,6 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTra
 // Check kernel hash target and coinstake signature
 bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
 {
-    //TODO:pixel
-    // LogPrintf(">>CheckProofOfStake() block:%s\n", block.ToString().c_str());
-
     const CTransaction tx = block.vtx[1];
     if (!tx.IsCoinStake())
         return error("CheckProofOfStake() : called on non-coinstake %s", tx.GetHash().ToString().c_str());
@@ -401,9 +399,15 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
         return error("CheckProofOfStake() : INFO: read txPrev failed");
 
     //verify signature and script
-    if (!VerifyScript(txin.scriptSig, txPrev.vout[txin.prevout.n].scriptPubKey,
-		tx.wit.vtxinwit.size() > 0 ? &tx.wit.vtxinwit[0].scriptWitness : NULL, STANDARD_SCRIPT_VERIFY_FLAGS, TransactionSignatureChecker(&tx, 0, txPrev.vout[txin.prevout.n].nValue)))
+    // @todo remove after segwit activation
+    bool hasWitness = (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && tx.wit.vtxinwit.size() > 0);
+    if (!VerifyScript(txin.scriptSig,
+                        txPrev.vout[txin.prevout.n].scriptPubKey,
+                        hasWitness ? &tx.wit.vtxinwit[0].scriptWitness : NULL,
+                        STANDARD_SCRIPT_VERIFY_FLAGS,
+                        TransactionSignatureChecker(&tx, 0, txPrev.vout[txin.prevout.n].nValue))) {
         return error("CheckProofOfStake() : VerifySignature failed on coinstake %s", tx.GetHash().ToString().c_str());
+    }
 
     CBlockIndex* pindex = NULL;
     BlockMap::iterator it = mapBlockIndex.find(hashBlock);

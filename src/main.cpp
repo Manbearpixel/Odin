@@ -4120,29 +4120,39 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
     }
 
     if (block.IsProofOfStake()) {
-        int commitpos = GetWitnessCommitmentIndex(block);
-        if (commitpos >= 0) {
-            if (IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
-                if (block.vtx[0].vout.size() != 2)
-                    return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
-                if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
-                    return state.DoS(100, error("CheckBlock() : coinbase must be unspendable for proof-of-stake block"));
+        // @todo remove after segwit activation
+        if (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION)) {
+            int commitpos = GetWitnessCommitmentIndex(block);
+            if (commitpos >= 0) {
+                if (IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
+                    if (block.vtx[0].vout.size() != 2)
+                        return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+                    if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
+                        return state.DoS(100, error("CheckBlock() : coinbase must be unspendable for proof-of-stake block"));
+                }
+                else {
+                    return state.DoS(100, error("CheckBlock() : staking-on-segwit is not enabled"));
+                }
             }
             else {
-                return state.DoS(100, error("CheckBlock() : staking-on-segwit is not enabled"));
+                if (block.vtx[0].vout.size() != 1)
+                    return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+            }
+            // Coinbase output should be empty if proof-of-stake block
+            if (!block.vtx[0].vout[0].IsEmpty()) {
+                return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
+            }
+        } else {
+            if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty()) {
+                return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
             }
         }
-        else {
-            if (block.vtx[0].vout.size() != 1)
-                return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
-        }
-        // Coinbase output should be empty if proof-of-stake block
-        if (!block.vtx[0].vout[0].IsEmpty())
-            return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
 
         // Second transaction must be coinstake, the rest must not be
-        if (block.vtx.empty() || !block.vtx[1].IsCoinStake())
+        if (block.vtx.empty() || !block.vtx[1].IsCoinStake()) {
             return state.DoS(100, error("CheckBlock() : second tx is not coinstake"));
+        }
+
         for (unsigned int i = 2; i < block.vtx.size(); i++) {
             if (block.vtx[i].IsCoinStake())
                 return state.DoS(100, error("CheckBlock() : more than one coinstake"));
@@ -4214,23 +4224,11 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
 bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 {
-    const CChainParams& chainParams = Params();
-    // const Consensus::Params& consensusParams = chainParams.GetConsensus();
     if (pindexPrev == NULL)
       return error("%s: null pindexPrev for block %s", __func__, block.GetHash().GetHex());
 
     unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
-    // unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block, consensusParams, block.IsProofOfStake());
-
-    // if (block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= 68589)) {
-    //   double n1 = ConvertBitsToDouble(block.nBits);
-    //   double n2 = ConvertBitsToDouble(nBitsRequired);
-
-    //   if (abs(n1 - n2) > n1 * 0.5)
-    //     return error("%s : incorrect proof of work (DGW pre-fork) - %f %f %f at %d", __func__, abs(n1 - n2), n1, n2, pindexPrev->nHeight + 1);
-
-    //   return true;
-    // }
+    const CChainParams& chainParams = Params();
 
     if (block.IsProofOfWork() && pindexPrev->nHeight + 1 > chainParams.LAST_POW_BLOCK())
       return error("%s: reject proof-of-work at height %d", __func__, pindexPrev->nHeight + 1);
@@ -4239,16 +4237,16 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
       return error("%s: incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
 
     if (block.IsProofOfStake()) {
-      uint256 hashProofOfStake;
-      uint256 hash = block.GetHash();
+        uint256 hashProofOfStake;
+        uint256 hash = block.GetHash();
 
-      if(!CheckProofOfStake(block, hashProofOfStake)) {
-        LogPrintf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
-        return false;
-      }
+        if(!CheckProofOfStake(block, hashProofOfStake)) {
+            LogPrintf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
+            return false;
+        }
 
-      if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
-        mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
+        if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
+            mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
     }
 
     return true;
@@ -4308,13 +4306,23 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 static int GetWitnessCommitmentIndex(const CBlock& block)
 {
     int commitpos = -1;
-    if(block.vtx.size() > 1) {
-		for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
-			if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 && block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[0].vout[o].scriptPubKey[1] == 0x24 && block.vtx[0].vout[o].scriptPubKey[2] == 0xaa && block.vtx[0].vout[o].scriptPubKey[3] == 0x21 && block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
-				commitpos = o;
-			}
-		}
-	}
+    // @todo remove after segwit activation
+    if (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && block.vtx.size() <= 0) {
+        return commitpos;
+    }
+
+    for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
+        if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 &&
+            block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN &&
+            block.vtx[0].vout[o].scriptPubKey[1] == 0x24 &&
+            block.vtx[0].vout[o].scriptPubKey[2] == 0xaa &&
+            block.vtx[0].vout[o].scriptPubKey[3] == 0x21 &&
+            block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 &&
+            block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
+            commitpos = o;
+        }
+    }
+
     return commitpos;
 }
 
@@ -6731,8 +6739,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 //       it was the one which was commented out
 int ActiveProtocol()
 {
-    // if (IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
-    if (IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
+    // if (IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
+    if (IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
       return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }
