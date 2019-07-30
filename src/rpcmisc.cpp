@@ -100,8 +100,9 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("version", CLIENT_VERSION));
     obj.push_back(Pair("protocolversion", PROTOCOL_VERSION));
+    obj.push_back(Pair("activeprotocol", ActiveProtocol()));
 #ifdef ENABLE_WALLET
-    if (pwalletMain) {
+    if (pwalletMain) {;
         obj.push_back(Pair("walletversion", pwalletMain->GetVersion()));
         obj.push_back(Pair("balance", ValueFromAmount(pwalletMain->GetBalance())));
         obj.push_back(Pair("zerocoinbalance", ValueFromAmount(pwalletMain->GetZerocoinBalance(true))));
@@ -127,7 +128,7 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     }
     zodinObj.push_back(Pair("total", ValueFromAmount(chainActive.Tip()->GetZerocoinSupply())));
     obj.push_back(Pair("zODINsupply", zodinObj));
-    
+
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
         obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTime()));
@@ -574,7 +575,7 @@ UniValue verifymessage(const UniValue& params, bool fHelp)
 
     if (!IsValidDestinationString(strAddress))
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid address");
-    
+
     CTxDestination addr = DecodeDestination(strAddress);
 
     CKeyID *keyID = boost::get<CKeyID>(&addr);
