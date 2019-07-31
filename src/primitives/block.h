@@ -139,6 +139,11 @@ public:
         return block;
     }
 
+    int32_t GetBlockTime() const
+    {
+        return (int32_t)nTime;
+    }
+
     // ppcoin: two types of block: proof-of-work or proof-of-stake
     bool IsProofOfStake() const
     {

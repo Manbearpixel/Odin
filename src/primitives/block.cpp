@@ -176,8 +176,50 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
     }
     else
     {
-		    // from Lux coin		
-        return vtx[0].vout[0].IsEmpty() && vtx.size() > 1 && vtx[1].IsCoinStake();
+        LogPrintf("SignBlock = %d\n", GetBlockTime());
+
+        // @todo remove after segwit
+        if (GetBlockTime() >= 1564523102) {
+		    // from Lux coin
+            return vtx[0].vout[0].IsEmpty() && vtx.size() > 1 && vtx[1].IsCoinStake();
+        } else {
+            const CTxOut& txout = vtx[1].vout[1];
+
+            if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+                return false;
+
+            if (whichType == TX_PUBKEYHASH)
+            {
+
+                CKeyID keyID;
+                keyID = CKeyID(uint160(vSolutions[0]));
+
+                CKey key;
+                if (!keystore.GetKey(keyID, key))
+                    return false;
+
+                //vector<unsigned char> vchSig;
+                if (!key.Sign(GetHash(), vchBlockSig))
+                    return false;
+
+                return true;
+
+            }
+            else if(whichType == TX_PUBKEY)
+            {
+                CKeyID keyID;
+                keyID = CPubKey(vSolutions[0]).GetID();
+                CKey key;
+                if (!keystore.GetKey(keyID, key))
+                    return false;
+
+                //vector<unsigned char> vchSig;
+                if (!key.Sign(GetHash(), vchBlockSig))
+                    return false;
+
+                return true;
+            }
+        }
     }
 
     LogPrintf("Sign failed\n");
@@ -189,11 +231,12 @@ bool CBlock::CheckBlockSignature() const
     if (IsProofOfWork())
         return vchBlockSig.empty();
 
-    if (IsProofOfStake()) {
-		// from Lux coin		
+    // @todo remove after segwit
+    if (IsProofOfStake() && GetBlockTime() >= 1564523102) {
+		// from Lux coin
         return vtx[0].vout[0].IsEmpty();
     }
-    
+
     std::vector<valtype> vSolutions;
     txnouttype whichType;
 
@@ -214,7 +257,7 @@ bool CBlock::CheckBlockSignature() const
 
         return pubkey.Verify(GetHash(), vchBlockSig);
     }
-    else if(whichType == TX_PUBKEYHASH)
+    else if(GetBlockTime() >= 1564523102 && whichType == TX_PUBKEYHASH) // @todo remove after segwit
     {
         valtype& vchPubKey = vSolutions[0];
         CKeyID keyID;
@@ -243,7 +286,7 @@ bool CBlock::CheckBlockSignature() const
 		if (!pubkey.IsValid()) {
 			return false;
 		}
-		
+
 		if(vtx.size() > 1 && vtx[1].wit.vtxinwit.size() > 0 && vtx[1].wit.vtxinwit[0].scriptWitness.stack.size() > 1) {
 			CPubKey pkey(vtx[1].wit.vtxinwit[0].scriptWitness.stack[1]);
 			if(pubkey != pkey) {
