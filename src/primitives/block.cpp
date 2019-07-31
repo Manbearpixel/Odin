@@ -176,13 +176,16 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
     }
     else
     {
-        LogPrintf("SignBlock = %d\n", GetBlockTime());
+        LogPrintf("Signing block... nTime=%d\n", GetBlockTime());
 
         // @todo remove after segwit
-        if (GetBlockTime() >= 1564523102) {
+        if (GetBlockTime() >= SEGWIT_ACTIVATION_TIME)
+        {
 		    // from Lux coin
             return vtx[0].vout[0].IsEmpty() && vtx.size() > 1 && vtx[1].IsCoinStake();
-        } else {
+        }
+        else
+        {
             const CTxOut& txout = vtx[1].vout[1];
 
             if (!Solver(txout.scriptPubKey, whichType, vSolutions))
@@ -232,7 +235,8 @@ bool CBlock::CheckBlockSignature() const
         return vchBlockSig.empty();
 
     // @todo remove after segwit
-    if (IsProofOfStake() && GetBlockTime() >= 1564523102) {
+    if (IsProofOfStake() && GetBlockTime() >= SEGWIT_ACTIVATION_TIME)
+    {
 		// from Lux coin
         return vtx[0].vout[0].IsEmpty();
     }
@@ -257,7 +261,7 @@ bool CBlock::CheckBlockSignature() const
 
         return pubkey.Verify(GetHash(), vchBlockSig);
     }
-    else if(GetBlockTime() >= 1564523102 && whichType == TX_PUBKEYHASH) // @todo remove after segwit
+    else if (whichType == TX_PUBKEYHASH)
     {
         valtype& vchPubKey = vSolutions[0];
         CKeyID keyID;
@@ -272,8 +276,9 @@ bool CBlock::CheckBlockSignature() const
 
         return pubkey.Verify(GetHash(), vchBlockSig);
     }
-    else if(whichType == TX_WITNESS_V0_KEYHASH)
-    {
+    else if (GetBlockTime() >= SEGWIT_ACTIVATION_TIME && whichType == TX_WITNESS_V0_KEYHASH)
+    {   // @todo remove after segwit
+
         CPubKey pubkey;
         if (vchBlockSig.empty()) {
             return false;
