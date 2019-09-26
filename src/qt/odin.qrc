@@ -37,6 +37,8 @@
         <file alias="receive">res/icons/receive.png</file>
         <file alias="receive-active">res/icons/receive-active.png</file>
         <file alias="receive_dark">res/icons/receive_dark.png</file>
+        <file alias="receiving_addresses">res/icons/receive.png</file>
+        <file alias="receiving_addresses_dark">res/icons/receive_dark.png</file>
         <file alias="remove">res/icons/remove.png</file>
         <file alias="send">res/icons/send.png</file>
         <file alias="send-active">res/icons/send-active.png</file>
@@ -123,5 +125,13 @@
         <file alias="spinner-032">res/movies/spinner-032.png</file>
         <file alias="spinner-033">res/movies/spinner-033.png</file>
         <file alias="spinner-034">res/movies/spinner-034.png</file>
+    </qresource>
+    <qresource prefix="/fonts">
+        <file alias="Hind-Bold">res/fonts/Hind-Bold.ttf</file>
+        <file alias="Hind-Light">res/fonts/Hind-Light.ttf</file>
+        <file alias="Hind-Medium">res/fonts/Hind-Medium.ttf</file>
+        <file alias="Hind-Regular">res/fonts/Hind-Regular.ttf</file>
+        <file alias="Hind-SemiBold">res/fonts/Hind-SemiBold.ttf</file>
+        <file alias="Montserrat-Bold">res/fonts/Montserrat-Bold.ttf</file>
     </qresource>
 </RCC>
