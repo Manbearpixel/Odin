@@ -207,7 +207,6 @@ BITCOIN_QT_H = \
 RES_ICONS = \
   qt/res/icons/add.png \
   qt/res/icons/address-book.png \
-  qt/res/icons/address-book.svg \
   qt/res/icons/bitcoin.icns \
   qt/res/icons/bitcoin.ico \
   qt/res/icons/bitcoin.png \
@@ -239,13 +238,11 @@ RES_ICONS = \
   qt/res/icons/history-active.png \
   qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
-  qt/res/icons/lock_closed.svg \
   qt/res/icons/lock_open.png \
-  qt/res/icons/lock_open.svg \
   qt/res/icons/masternodes.png \
   qt/res/icons/masternodes-active.png \
   qt/res/icons/overview.png \
-  qt/res/icons/overview-active.png\
+  qt/res/icons/overview-active.png \
   qt/res/icons/privacy.png \
   qt/res/icons/privacy-active.png \
   qt/res/icons/proposal.png \
@@ -265,12 +262,9 @@ RES_ICONS = \
   qt/res/icons/synced.svg \
   qt/res/icons/trade.png \
   qt/res/icons/transaction0.png \
-  qt/res/icons/transaction0.psv \
   qt/res/icons/transaction2.png \
-  qt/res/icons/transaction2.svg \
   qt/res/icons/transaction_conflicted.png \
   qt/res/icons/tx_inout.png \
-  qt/res/icons/tx_inout.svg \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_masternode.png \
   qt/res/icons/tx_mined.png \
