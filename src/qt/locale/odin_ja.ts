@@ -1729,8 +1729,8 @@ Please check the address and try again.</source>
         <translation>(0 = auto, &lt;0 = 必要なだけ利用)</translation>
     </message>
     <message>
-        <source>Enable zPHR Automint</source>
-        <translation>zPHRへの自動変換の有効化</translation>
+        <source>Enable zODIN Automint</source>
+        <translation>zODINへの自動変換の有効化</translation>
     </message>
     <message>
         <source>W&amp;allet</source>
@@ -5750,8 +5750,8 @@ zODIN are mature when they have more than 20 confirmations AND more than 1 mint 
         <translation>以前利用したアドレスを選択</translation>
     </message>
     <message>
-        <source>Enter a Phore address (e.g. PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</source>
-        <translation>Phoreアドレスを入力(例: PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</translation>
+        <source>Enter a ODIN address (e.g. OCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</source>
+        <translation>ODINアドレスを入力(例: OCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</translation>
     </message>
     <message>
         <source>Paste address from clipboard</source>
