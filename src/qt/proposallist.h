@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2018 The Phore developers
+// Copyright (c) 2018-2018 The Phore developers
+// Copyright (c) 2019 The ODIN developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -51,7 +52,7 @@ public:
 
     enum ColumnWidths {
         PROPOSAL_COLUMN_WIDTH = 150,
-        AMOUNT_COLUMN_WIDTH = 150,		
+        AMOUNT_COLUMN_WIDTH = 150,
         START_DATE_COLUMN_WIDTH = 100,
         END_DATE_COLUMN_WIDTH = 100,
         YES_VOTES_COLUMN_WIDTH = 100,

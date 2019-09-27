@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin Core developers
-// Copyright (c) 2018 The Phore developers
+// Copyright (c) 2018-2018 The Phore developers
+// Copyright (c) 2019 The ODIN developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -26,7 +27,7 @@ public:
     void setProposalStart(const CAmount& minimum);
     void setProposalEnd(const CAmount& minimum);
     void setProposal(const QString &proposal);
-    
+
     void setMinAmount(const CAmount& minimum);
     void setVotesNeeded(const CAmount& minimum);
     void setMinYesVotes(const CAmount& minimum);
