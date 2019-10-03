@@ -50,7 +50,8 @@ QToolBar {
 QToolBar > QToolButton {
 	background-color: transparent;
 	border: 0px solid #333;
-	min-height: 2.75em;
+    min-height: 2.75em;
+    max-height: 70px;
 	/* padding: 0em 1em; */
 	font-weight: 100;
 	color: #747c83;
@@ -59,7 +60,7 @@ QToolBar > QToolButton {
 	padding: 6px 0 6px;
 	box-sizing: border-box;
 	border-right: 3px solid transparent;
-	margin-bottom: 18px;
+	/* margin-bottom: 18px; */
 	/* border-image: url(':/images/downArrow') 0 0 0 0 stretch stretch; */
 }
 QIcon {
@@ -68,7 +69,6 @@ QIcon {
 	display: none;
 	background: none;
 	border: 0;
-	margin-bottom: 10px;
 }
 QToolBar > QToolButton > img {
 	display: none;

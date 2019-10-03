@@ -68,7 +68,7 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
     fontHeaderLeft.setPointSize(20);
     fontHeaderLeft.setBold(true);
     fontHeaderLeft.setWeight(75);
-    pageHeading__labelOverviewHeaderLeft->setFont(fontHeaderLeft);
+    labelOverviewHeaderLeft->setFont(fontHeaderLeft);
 
     horizontalLayout_Header->addWidget(labelOverviewHeaderLeft);
     // QSpacerItem* horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -134,7 +134,7 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
         masternodeListPage = new MasternodeList();
         addWidget(masternodeListPage);
     }
-	    
+
     QVBoxLayout* vbox_2 = new QVBoxLayout();
     proposalList = new ProposalList(this);
     vbox_2->addWidget(proposalList);

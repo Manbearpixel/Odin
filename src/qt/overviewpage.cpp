@@ -228,7 +228,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     CAmount sumTotalBalance = nTotalBalance + zerocoinBalance;
 
     // ODIN labels
-    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, phrAvailableBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, odinAvailableBalance, false, BitcoinUnits::separatorAlways));
     ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
     ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorAlways));
     ui->labelLockedBalance->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nLockedBalance, false, BitcoinUnits::separatorAlways));

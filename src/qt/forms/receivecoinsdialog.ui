@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>974</width>
+    <width>962</width>
     <height>616</height>
    </rect>
   </property>
@@ -34,7 +34,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_Header" stretch="1">
           <item>
-           <widget class="QLabel" name="pageHeading__labelOverviewHeaderLeft">
+           <widget class="QLabel" name="labelOverviewHeaderLeft">
             <property name="minimumSize">
              <size>
               <width>464</width>
@@ -114,86 +114,19 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QLabel" name="heading3__GenerateRequestLabel">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate an ODIN Payment Request. All fields are &lt;span style=&quot; font-weight:600;&quot;&gt;optional&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <layout class="QGridLayout" name="gridLayout">
              <item row="7" column="2">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QPushButton" name="receiveButton">
-                 <property name="minimumSize">
-                  <size>
-                   <width>150</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>&amp;Request payment</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icons/receive_dark</normaloff>:/icons/receive_dark</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="clearButton">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="toolTip">
-                  <string>Clear all fields of the form.</string>
-                 </property>
-                 <property name="text">
-                  <string>Clear</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
-                 </property>
-                 <property name="autoDefault">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-             <item row="8" column="2">
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
+              <widget class="QCheckBox" name="reuseAddress">
+               <property name="toolTip">
+                <string>Reuse one of the previously used receiving addresses.&lt;br&gt;Reusing addresses has security and privacy issues.&lt;br&gt;Do not use this unless re-generating a payment request made before.</string>
                </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
+               <property name="text">
+                <string>R&amp;euse an existing receiving address (not recommended)</string>
                </property>
-              </spacer>
+              </widget>
              </item>
              <item row="7" column="0">
-              <widget class="QLabel" name="label_7">
+              <widget class="QLabel" name="label_4">
                <property name="text">
                 <string/>
                </property>
@@ -276,16 +209,16 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the ODIN network.</string>
+                <string>An optional amount to request. Leave this empty or zero to not request a specific amount.</string>
                </property>
                <property name="text">
-                <string>&amp;Message:</string>
+                <string>&amp;Amount:</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
                <property name="buddy">
-                <cstring>reqMessage</cstring>
+                <cstring>reqAmount</cstring>
                </property>
               </widget>
              </item>
@@ -334,7 +267,7 @@
                   <enum>Qt::StrongFocus</enum>
                  </property>
                  <property name="toolTip">
-                  <string>Bech32 addresses (BIP-173) are cheaper to spend from and offer better protection against typos. When unchecked a P2SH wrapped SegWit address will be created, compatible with the latest ODIN-Qt wallets.</string>
+                  <string>Bech32 addresses (BIP-173) are cheaper to spend from and offer better protection against typos. When unchecked a P2SH wrapped SegWit address will be created, compatible with older wallets.</string>
                  </property>
                  <property name="text">
                   <string>Generate Bech32 address</string>
@@ -363,19 +296,13 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="2">
-              <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item row="8" column="2">
+              <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
-                <widget class="BitcoinAmountField" name="reqAmount">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
+                <widget class="QPushButton" name="receiveButton">
                  <property name="minimumSize">
                   <size>
-                   <width>80</width>
+                   <width>150</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -392,21 +319,18 @@
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="useBech32">
+                <widget class="QPushButton" name="clearButton">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>1000</width>
-                   <height>16777215</height>
-                  </size>
+                 <property name="toolTip">
+                  <string>Clear all fields of the form.</string>
                  </property>
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
+                 <property name="text">
+                  <string>Clear</string>
                  </property>
                  <property name="autoDefault">
                   <bool>false</bool>
@@ -414,24 +338,24 @@
                 </widget>
                </item>
                <item>
-                <spacer name="horizontalSpacer_3">
+                <spacer name="horizontalSpacer">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>0</width>
-                   <height>0</height>
+                   <width>40</width>
+                   <height>20</height>
                   </size>
                  </property>
                 </spacer>
                </item>
               </layout>
              </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="userInput__label_2">
-               <property name="toolTip">
-                <string>An optional label to associate with the new receiving address.</string>
+             <item row="9" column="2">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -439,46 +363,7 @@
                  <height>60</height>
                 </size>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="buddy">
-                <cstring>reqLabel</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="userInput__label">
-               <property name="toolTip">
-                <string>An optional amount to request. Leave this empty or zero to not request a specific amount.</string>
-               </property>
-               <property name="text">
-                <string>&amp;Amount:</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="buddy">
-                <cstring>reqAmount</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="QLabel" name="label_4">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="2">
-              <widget class="QCheckBox" name="reuseAddress">
-               <property name="toolTip">
-                <string>Reuse one of the previously used receiving addresses.&lt;br&gt;Reusing addresses has security and privacy issues.&lt;br&gt;Do not use this unless re-generating a payment request made before.</string>
-               </property>
-               <property name="text">
-                <string>R&amp;euse an existing receiving address (not recommended)</string>
-               </property>
-              </widget>
+              </spacer>
              </item>
             </layout>
            </item>
@@ -486,7 +371,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QFrame" name="cardFrame__frame">
+         <widget class="QFrame" name="frame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -501,7 +386,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QLabel" name="heading3__RequestedPaymentsLabel">
+            <widget class="QLabel" name="label_6">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -602,7 +487,7 @@
                 <string>Show</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../odin.qrc">
                  <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
                </property>
                <property name="autoDefault">
@@ -622,7 +507,7 @@
                 <string>Remove</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../odin.qrc">
                  <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
                </property>
                <property name="autoDefault">
@@ -674,6 +559,8 @@
   <tabstop>showRequestButton</tabstop>
   <tabstop>removeRequestButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../odin.qrc"/>
+ </resources>
  <connections/>
 </ui>

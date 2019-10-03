@@ -49,7 +49,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_Header" stretch="1">
           <item>
-           <widget class="QLabel" name="pageHeading__labelOverviewHeaderLeft">
+           <widget class="QLabel" name="labelOverviewHeaderLeft">
             <property name="minimumSize">
              <size>
               <width>464</width>

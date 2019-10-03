@@ -898,17 +898,22 @@ QString loadStyleSheet()
     QSettings settings;
     QString cssFilePath;
 
-    QString theme             = settings.value("theme", "").toString();
+    QString theme             = settings.value("theme", "default").toString();
+    if (theme == "") {
+        theme = "default";
+    }
+    LogPrintf("[THEME] Theme Loaded '%s'\n", theme.toStdString());
+
     QString localThemePath    = QString(":/css/") + theme;
     QString externalThemePath = (GetDataDir() / "themes/").string().c_str() + theme;
 
     if (QFile::exists(localThemePath)) {
-        LogPrintf("[THEME] Detected Local Theme '%s'\n", theme.toStdString());
+        LogPrintf("[THEME] Detected Local Theme Path '%s'\n", localThemePath.toStdString());
         settings.setValue("fCSSexternal", false);
         cssFilePath = localThemePath;
     }
     else if (QFile::exists(externalThemePath)) {
-        LogPrintf("[THEME] Detected External Theme '%s'\n", theme.toStdString());
+        LogPrintf("[THEME] Detected External Theme Path '%s'\n", externalThemePath.toStdString());
         settings.setValue("fCSSexternal", true);
         cssFilePath = externalThemePath;
     }

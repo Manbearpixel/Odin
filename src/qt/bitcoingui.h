@@ -79,7 +79,6 @@ protected:
     bool eventFilter(QObject* object, QEvent* event);
 
 private:
-
     ClientModel* clientModel;
     WalletFrame* walletFrame;
 
@@ -129,14 +128,13 @@ private:
     QAction* openBlockExplorerAction;
     QAction* showHelpMessageAction;
     QAction* multiSendAction;
-	QAction *proposalAction;
+    QAction *proposalAction;
 
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
     Notificator* notificator;
     RPCConsole* rpcConsole;
     BlockExplorer* explorerWindow;
-
 
     /** Keep track of previous number of blocks, to detect progress */
     int prevBlocks;
@@ -201,8 +199,6 @@ public slots:
 
 private slots:
 #ifdef ENABLE_WALLET
-    /** Reset iconography for primary toolbar action menu */
-    void resetToolbarActionIcons();
     /** Switch to overview (home) page */
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
