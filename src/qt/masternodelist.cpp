@@ -1,11 +1,12 @@
-// Copyright (c) 2018-2018 The Phore developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The Phore Developers
 // Copyright (c) 2019 The ODIN developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "masternodelist.h"
 #include "ui_masternodelist.h"
 
-#include "privkeypage.h"
-#include "outputspage.h"
 #include "configuremasternodepage.h"
 
 #include "activemasternode.h"
@@ -102,18 +103,6 @@ void MasternodeList::showContextMenu(const QPoint& point)
 {
     QTableWidgetItem* item = ui->tableWidgetMyMasternodes->itemAt(point);
     if (item) contextMenu->exec(QCursor::pos());
-}
-
-void MasternodeList::on_getMNPrivKeyButton_clicked()
-{
-    PrivKeyPage dlg(this);
-    dlg.exec();
-}
-
-void MasternodeList::on_getOutputsButton_clicked()
-{
-    OutPutsPage dlg(this);
-    dlg.exec();
 }
 
 void MasternodeList::StartAlias(std::string strAlias)
