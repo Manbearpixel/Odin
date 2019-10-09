@@ -4,11 +4,6 @@
 
 /****************************************************************************************/
 
-/*
-132232 Old color theme
-353c42
-*/
-
 WalletFrame {
 	border-image: url(':/images/walletFrame_bg') 0 0 0 0 stretch stretch;
   border-top: 0px solid #000;
@@ -189,46 +184,50 @@ QLabel#progressBarLabel {
 
 
 QTabWidget {
-    /* background-color: #f2f2f2; */
-    background-color:transparent;
+  background-color: transparent;
 }
+
 QTabWidget::pane {
-    /* background-color: #f2f2f2; */
-    background-color:transparent;
-    /* border: 1px solid #c2c2c2; */
-    border:0;
+  background-color:transparent;
+  border:0;
 }
+
 QTabBar {
 	background-color: transparent;;
 	color: #fff;
 }
+
 QTabBar::tab:hover:!selected {
-    background-color: #dedbe5;
-    background:none;
+  background-color: #dedbe5;
+  background: none;
 }
+
 QTabBar::tab {
-    color:#fff;
-    border-top-color:transparent;
-    border-left-color:transparent;
-    border-right-color:transparent;
+    color: #fff;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
 }
 QTabBar::tab:selected {
-    border-bottom: 3px solid #00d188;
-    background-color:transparent;
+    border-bottom: 3px solid $primary;
+    background-color: transparent;
 }
 QTabBar::tab:pressed {
-    outline:0;
+  outline: 0;
 }
+
 QGroupBox {
-    background-color: transparent;
-    color: #fff;
-    border:0;
-    outline:0;
+  background-color: transparent;
+  color: #fff;
+  border:0;
+  outline:0;
 }
+
 QToolTip {
 	background-color: #dedbe5;
 	color: #333;
 }
+
 QTextEdit {
 	background-color: #fff;
 	color: #333;
@@ -486,15 +485,16 @@ QAbstractSpinBox::down-arrow {
 }
 /****************************************************************************************/
 
+/* Table Header */
 QHeaderView {
-	/* Table Header */
 	background-color: transparent;
-    outline: 0;
+  outline: 0;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	qproperty-defaultAlignment: AlignVCenter;
 }
+
+/* Table Header Sections */
 QHeaderView::section {
-	/* Table Header Sections */
 	/* qproperty-alignment: AlignVCenter;
 	qproperty-defaultAlignment: AlignLeft AlignVCenter;
 	qproperty-defaultAlignment: AlignVCenter; */
@@ -529,138 +529,151 @@ QHeaderView::section:hover {
 	background: transparent;
 	border: 0;
 }
+
+/* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
 .QTableView,
 #transactionView,
 #tableWidgetMyMasternodes {
-	/* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
-	background: transparent;
-	border: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid $gray-1;
 	alternate-background-color: transparent;
 	padding-right: 12px;
 }
+
+/* Table Item */
 QTableView::item,
 #transactionView::item,
 #tableWidgetMyMasternodes::item {
-	/* Table Item */
 	background-color: transparent;
 	font-size: 12px;
 	color: white;
 	border: 0;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-	/* border-top: 1px solid rgba(255, 255, 255, 0.05); */
 	padding-right: 12px;
 	qproperty-alignment: 'AlignLeft';
-    text-align: left;
-
+  text-align: left;
 }
+
+/* Table Item Selected */
 QTableView::item:selected {
-	/* Table Item Selected */
 	/* background-color:#00CD8D; */
 	/* background-color:rgba(0,209,136,0.25); */
 	background: #313d4b;
-    color: #fff;
-
+  color: #fff;
 }
+
+/* Table Background */
 QTableWidget {
-	/* Table Background */
-	background-color: red;
-	/*#fcfcfc;*/
+	background-color: $background;
 	border: 1px solid #333;
 }
+
+/* Remove focus outline */
 QTableWidget:focus,
 QTableView,
 QTableView:focus {
-	/* Remove focus outline */
 	outline: 0;
 	background: transparent;
 }
+
+/* Tree Background */
 QTreeWidget {
-	/* Tree Background */
 	background-color: #fcfcfc;
 	alternate-background-color: #f2f2f2;
 	color: #333;
 }
+
+/* Scroll Bar */
 QScrollBar {
-	/* Scroll Bar */
 }
+
+/* Vertical Scroll Bar Attributes */
 QScrollBar:vertical {
-	/* Vertical Scroll Bar Attributes */
 	border: 0;
 	background: transparent;
 	width: 12px;
-    margin: 0;
-
+  margin: 0;
 }
+
+/* Horizontal Scroll Bar Attributes */
 QScrollBar:horizontal {
-	/* Horizontal Scroll Bar Attributes */
 	border: 0;
 	background: transparent;
 	height: 12px;
-    /* margin: 0px 18px 0px 18px; */
-    margin:0;
-
+  /* margin: 0px 18px 0px 18px; */
+  margin:0;
 }
+
+/* Scroll Bar Slider - vertical */
 QScrollBar::handle:vertical {
-	/* Scroll Bar Slider - vertical */
 	background: #333b46;
-    border-radius: 6px;
-    min-height:50px;
-    width:3px;
-    /* border:2px solid transparent; */
+  border-radius: 6px;
+  min-height:50px;
+  width:3px;
+  /* border:2px solid transparent; */
 }
 
+/* Scroll Bar Slider - horizontal */
 QScrollBar::handle:horizontal {
-	/* Scroll Bar Slider - horizontal */
 	background: #333b46;
     min-width: 50px;
     border-radius: 6px;
 }
+
+/* Scroll Bar Background */
 QScrollBar::add-page,
 QScrollBar::sub-page {
-	/* Scroll Bar Background */
 	background: transparent;
 }
+
+/* Define Arrow Button Dimensions */
 QScrollBar::add-line:vertical,
 QScrollBar::sub-line:vertical,
 QScrollBar::add-line:horizontal,
 QScrollBar::sub-line:horizontal {
-	/* Define Arrow Button Dimensions */
 	background: none;
 	border: 0;
 	width: 16px;
 	height: 16px;
 }
+
 QScrollBar::add-line:vertical:pressed,
 QScrollBar::sub-line:vertical:pressed,
 QScrollBar::add-line:horizontal:pressed,
 QScrollBar::sub-line:horizontal:pressed {
 	background-color: #e0e0e0;
 }
+
+/* Vertical - top button position */
 QScrollBar::sub-line:vertical {
-	/* Vertical - top button position */
 	subcontrol-position: top;
 	subcontrol-origin: margin;
 }
+
+/* Vertical - bottom button position */
 QScrollBar::add-line:vertical {
-	/* Vertical - bottom button position */
 	subcontrol-position: bottom;
 	subcontrol-origin: margin;
 }
+
+/* Vertical - left button position */
 QScrollBar::sub-line:horizontal {
-	/* Vertical - left button position */
 	subcontrol-position: left;
 	subcontrol-origin: margin;
 }
+
+/* Vertical - right button position */
 QScrollBar::add-line:horizontal {
-	/* Vertical - right button position */
 	subcontrol-position: right;
 	subcontrol-origin: margin;
 }
+
+/* Arrows Icon */
 QScrollBar:up-arrow,
 QScrollBar:down-arrow,
 QScrollBar:left-arrow,
 QScrollBar:right-arrow {
-	/* Arrows Icon */
 	width: 10px;
 	height: 10px;
 	display: none;
@@ -670,16 +683,16 @@ QScrollBar:up-arrow {
 	background: none;
 }
 QScrollBar:down-arrow {
-    /* background-image: url(':/images/downArrow_small'); */
-    background: none;
+  /* background-image: url(':/images/downArrow_small'); */
+  background: none;
 }
 QScrollBar:left-arrow {
-    /* background-image: url(':/images/leftArrow_small'); */
-    background: none;
+  /* background-image: url(':/images/leftArrow_small'); */
+  background: none;
 }
 QScrollBar:right-arrow {
-    /* background-image: url(':/images/rightArrow_small'); */
-    background: none;
+  /* background-image: url(':/images/rightArrow_small'); */
+  background: none;
 }
 QSlider::handle:horizontal {
 	background-color: #8a8a8a;
@@ -715,22 +728,22 @@ QDialog .QTabWidget {
 	border-bottom: 1px solid #333;
 }
 QDialog .QTabWidget::pane {
-    /* border: 1px solid #d7d7d7; */
-    border:0;
+  /* border: 1px solid #d7d7d7; */
+  border:0;
 }
 QDialog .QTabWidget QTabBar::tab {
-	/* background-color: #f2f0f0;
-    color: #333; */
-    color:#747c83;
-    font-size:14px;
-    background-color:transparent;
-	padding-left: 4px;
-	padding-right: 4px;
-	padding-top: 5px;
-    padding-bottom: 5px;
-    min-width: 100px;
-    /* border-top: 1px solid #d7d7d7; */
-    /* border:0; */
+  /* background-color: #f2f0f0;
+  color: #333; */
+  color:#747c83;
+  font-size:14px;
+  background-color:transparent;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  min-width: 100px;
+  /* border-top: 1px solid #d7d7d7; */
+  /* border:0; */
 }
 /* QDialog .QTabWidget QTabBar::tab:first {
 	border-left: 1px solid #d7d7d7;
@@ -744,10 +757,9 @@ QDialog .QTabWidget QTabBar::tab:hover {
     color: #333; */
     color:#fff;
 }
-/* todo */
 QDialog .QTabWidget .QWidget {
-	background-color: red;
-	color: #333;
+	background-color: $background;
+	color: $text;
 }
 QDialog .QTabWidget .QWidget QAbstractSpinBox {
 	min-height: 15px;
@@ -792,11 +804,11 @@ QDialog#SignVerifyMessageDialog QPushButton#addressBookButton_SM {
 	padding-left: 10px;
 	padding-right: 10px;
 }
-/* todo */
+/* Message Signing Text */
 QDialog#SignVerifyMessageDialog QPlainTextEdit {
-	/* Message Signing Text */
-	border: 1px solid #00CD8D;
-	background-color: red;
+	border: 1px solid $primary;
+  background-color: $background;
+  color: $text;
 }
 QDialog#SignVerifyMessageDialog QPushButton#pasteButton_SM {
 	/* Paste Button */
@@ -855,9 +867,8 @@ QDialog#SignVerifyMessageDialog QPushButton#clearButton_VM:pressed {
 }
 /**************************** SEND AND RECEIVE DIALOG ***********************************/
 
-/* todo */
 QWidget#AddressBookPage {
-	background-color: red;
+	background-color: $background;
 }
 QWidget#AddressBookPage QPushButton#newAddress {
 	/* New Address Button */
@@ -1070,9 +1081,9 @@ QDialog#RPCConsole .QGroupBox #line_2 {
 /**************************** HELP MENU *************************************************/
 
 /* Command Line Options Dialog */
-/* todo */
 QDialog#HelpMessageDialog QScrollArea * {
-	background-color: red;
+  background-color: $background;
+  color: $text;
 }
 QDialog#HelpMessageDialog QScrollBar:vertical,
 QDialog#HelpMessageDialog QScrollBar:horizontal {
@@ -1601,11 +1612,10 @@ QWidget#ReceiveCoinsDialog .QFrame#frame .QLabel#label_6 {
 }
 /**************************** RECEIVE COINS DIALOG **************************************/
 
-/* todo */
+/* Contents of Receive Coin Dialog */
 QDialog#ReceiveRequestDialog QTextEdit {
-	/* Contents of Receive Coin Dialog */
 	border: 0;
-	background-color: red;
+	background-color: $background;
 	color:#FFFFFF;
 }
 
@@ -1826,20 +1836,18 @@ QGroupBox::title {
     color:#fff;
 }
 
-/* todo */
 #BlockExplorer, #BlockExplorer QScrollArea *,
 #BlockExplorer #content {
-	background-color: red;
+  background-color: $background;
 }
 
 QAbstractScrollArea::corner {
-    background: transparent;
+  background: transparent;
 }
 
-/* todo */
 #MultiSendDialog #message, #MultisigDialog QScrollArea, #MultisigDialog #signButtonStatus, #MultisigDialog #createButtonStatus, #MultisigDialog #addMultisigStatus, #MultisigDialog #addAddressScrollArea {
 	border:0;
-	background-color: red;
+	background-color: $background;
 }
 
 #txInputsScrollArea {
@@ -1848,7 +1856,7 @@ QAbstractScrollArea::corner {
 }
 
 #MultisigDialog .QTabWidget QTabBar::tab {
-    min-width: 200px;
+  min-width: 200px;
 }
 
 #selectFileButton {
