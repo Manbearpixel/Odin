@@ -41,6 +41,12 @@ ConfigureMasternodePage::ConfigureMasternodePage(Mode mode, QWidget* parent) : Q
 {
     ui->setupUi(this);
 
+    ui->aliasEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    ui->vpsIpEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    ui->privKeyEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    ui->outputEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    ui->outputIdEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
+
 	GUIUtil::setupAliasWidget(ui->aliasEdit, this);
 	GUIUtil::setupIPWidget(ui->vpsIpEdit, this);
 	GUIUtil::setupPrivKeyWidget(ui->privKeyEdit, this);
