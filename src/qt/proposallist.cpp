@@ -148,8 +148,7 @@ ProposalList::ProposalList(QWidget *parent) :
 
     /* Header - Info/Projection */
     QPushButton *createButton = new QPushButton(this);
-    createButton->setIcon(QIcon(":/icons/add"));
-    createButton->setText("Create");
+    createButton->setText("Create Proposal");
     createButton->setToolTip(tr("Create budget proposal."));
 
     proposalTypeCombo = new QComboBox(this);
@@ -157,23 +156,26 @@ ProposalList::ProposalList(QWidget *parent) :
     proposalTypeCombo->addItem("All Proposals", 0);
     proposalTypeCombo->addItem("Budget Projection", 1);
 
-    headLayout = new QHBoxLayout();
+    viewHeader = new QHBoxLayout();
+
+    QFont fontHeaderLeft;
+    fontHeaderLeft.setPointSize(20);
+    fontHeaderLeft.setBold(true);
+    fontHeaderLeft.setWeight(75);
 
     QLabel* labelOverviewHeaderLeft = new QLabel();
     labelOverviewHeaderLeft->setObjectName(QStringLiteral("labelOverviewHeaderLeft"));
     labelOverviewHeaderLeft->setMinimumSize(QSize(464, 60));
     labelOverviewHeaderLeft->setMaximumSize(QSize(16777215, 60));
     labelOverviewHeaderLeft->setText(tr("Proposals"));
-    QFont fontHeaderLeft;
-    fontHeaderLeft.setPointSize(20);
-    fontHeaderLeft.setBold(true);
-    fontHeaderLeft.setWeight(75);
+    labelOverviewHeaderLeft->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
     labelOverviewHeaderLeft->setFont(fontHeaderLeft);
 
+    viewHeader->addWidget(labelOverviewHeaderLeft);
+
+    headLayout = new QHBoxLayout();
     headLayout->setContentsMargins(0, 0, 0, 10);
     headLayout->addWidget(createButton);
-    headLayout->addStretch(1);
-    headLayout->addWidget(labelOverviewHeaderLeft);
     headLayout->addStretch(1);
     headLayout->addWidget(proposalTypeCombo);
     /* End Header - Info/Projection */
@@ -189,6 +191,7 @@ ProposalList::ProposalList(QWidget *parent) :
     view->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     view->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
 
+    vlayout->addLayout(viewHeader);
     vlayout->addLayout(headLayout);
     vlayout->addLayout(hlayout);
     vlayout->addWidget(view);

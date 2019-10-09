@@ -95,6 +95,7 @@ private:
 
     /* Header - Info/Projection */
     QComboBox *proposalTypeCombo;
+    QHBoxLayout *viewHeader;
     QHBoxLayout *headLayout;
     /* End Header - Info/Projection */
 
