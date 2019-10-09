@@ -931,14 +931,15 @@ QString loadStyleSheet()
         styleSheet = QLatin1String(qFile.readAll());
     }
 
-    // replace colors
-    styleSheet.replace("$primary", "$blue");
-    styleSheet.replace("$info", "$dark-blue");
-    styleSheet.replace("$success", "$green");
-    styleSheet.replace("$warning", "$orange");
-    styleSheet.replace("$danger", "$yellow");
-    styleSheet.replace("$background", "$dark");
-    styleSheet.replace("$text", "$white");
+    // buttons
+    styleSheet.replace("$button-default-fill", "$gray-2");
+    styleSheet.replace("$button-default-hover", "transparent");
+    styleSheet.replace("$button-default-text", "$gray-2");
+    styleSheet.replace("$button-default-hover-text", "$gray-1");
+
+    styleSheet.replace("$button-primary-fill", "$primary");
+    styleSheet.replace("$button-primary-hover", "#369EAC");
+    styleSheet.replace("$button-primary-text", "$white");
 
     // bottom status bar
     styleSheet.replace("$statusbarbg", "$black");
@@ -948,6 +949,15 @@ QString loadStyleSheet()
     styleSheet.replace("$progressbarbg", "$dark");
     styleSheet.replace("$progressbarfill", "$blue");
     styleSheet.replace("$progressbartext", "$white");
+
+    // replace colors
+    styleSheet.replace("$primary", "$blue");
+    styleSheet.replace("$info", "$dark-blue");
+    styleSheet.replace("$success", "$green");
+    styleSheet.replace("$warning", "$orange");
+    styleSheet.replace("$danger", "$yellow");
+    styleSheet.replace("$background", "$dark");
+    styleSheet.replace("$text", "$white");
 
     // colors
     styleSheet.replace("$dark", BRAND_COLOR_DARK);

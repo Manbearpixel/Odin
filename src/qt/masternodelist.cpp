@@ -259,7 +259,7 @@ void MasternodeList::on_startButton_clicked()
     std::string strAlias = ui->tableWidgetMyMasternodes->item(nSelectedRow, 0)->text().toStdString();
 
     // Display message box
-    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm masternode start"),
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm Masternode Start"),
         tr("Are you sure you want to start masternode %1?").arg(QString::fromStdString(strAlias)),
         QMessageBox::Yes | QMessageBox::Cancel,
         QMessageBox::Cancel);

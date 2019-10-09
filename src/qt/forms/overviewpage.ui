@@ -91,7 +91,7 @@
               <number>6</number>
              </property>
              <item>
-              <widget class="QLabel" name="pageHeading__labelOverviewHeaderLeft">
+              <widget class="QLabel" name="labelOverviewHeaderLeft">
                <property name="minimumSize">
                 <size>
                  <width>464</width>
