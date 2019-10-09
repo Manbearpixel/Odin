@@ -18,6 +18,19 @@ static const int STATUSBAR_ICONSIZE = 32;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
 
+/* Brand colors */
+static const char *BRAND_COLOR_DARK             = "#1D2323";
+static const char *BRAND_COLOR_BLACK            = "#011612";
+static const char *BRAND_COLOR_WHITE            = "#FCF9F1";
+static const char *BRAND_COLOR_BLUE             = "#41C0D1";
+static const char *BRAND_COLOR_BLUE_DARKER      = "#00A8B6";
+static const char *BRAND_COLOR_ORANGE           = "#DD6B40";
+static const char *BRAND_COLOR_RED              = "#CC4F49";
+static const char *BRAND_COLOR_RED_LIGHTER      = "#CC6666";
+static const char *BRAND_COLOR_YELLOW           = "#C4943F";
+static const char *BRAND_COLOR_GREEN            = "#619772";
+static const char *BRAND_COLOR_GREEN_LIGHTER    = "#88A881";
+
 /* Invalid field background style */
 #define STYLE_INVALID "background:#FF8080"
 

@@ -6,6 +6,7 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "guiconstants.h"
 #include "guiutil.h"
 
 #include "bitcoinaddressvalidator.h"
@@ -898,7 +899,7 @@ QString loadStyleSheet()
     QSettings settings;
     QString cssFilePath;
 
-    QString theme             = settings.value("theme", "default").toString();
+    QString theme = settings.value("theme", "default").toString();
     if (theme == "") {
         theme = "default";
     }
@@ -929,6 +930,47 @@ QString loadStyleSheet()
     if (qFile.open(QFile::ReadOnly)) {
         styleSheet = QLatin1String(qFile.readAll());
     }
+
+    // replace colors
+    styleSheet.replace("$primary", "$blue");
+    styleSheet.replace("$info", "$dark-blue");
+    styleSheet.replace("$success", "$green");
+    styleSheet.replace("$warning", "$orange");
+    styleSheet.replace("$danger", "$yellow");
+    styleSheet.replace("$background", "$dark");
+    styleSheet.replace("$text", "$white");
+
+    // bottom status bar
+    styleSheet.replace("$statusbarbg", "$black");
+    styleSheet.replace("$statusbartext", "$gray-4");
+
+    // progress bars
+    styleSheet.replace("$progressbarbg", "$dark");
+    styleSheet.replace("$progressbarfill", "$blue");
+    styleSheet.replace("$progressbartext", "$white");
+
+    // colors
+    styleSheet.replace("$dark", BRAND_COLOR_DARK);
+    styleSheet.replace("$blue", BRAND_COLOR_BLUE);
+    styleSheet.replace("$dark-blue", BRAND_COLOR_BLUE_DARKER);
+    styleSheet.replace("$orange", BRAND_COLOR_ORANGE);
+    styleSheet.replace("$red", BRAND_COLOR_RED);
+    styleSheet.replace("$red-lighter", BRAND_COLOR_RED_LIGHTER);
+    styleSheet.replace("$yellow", BRAND_COLOR_YELLOW);
+    styleSheet.replace("$green", BRAND_COLOR_GREEN);
+    styleSheet.replace("$light-green", BRAND_COLOR_GREEN_LIGHTER);
+
+    // light/dark tones
+    styleSheet.replace("$white", BRAND_COLOR_WHITE);
+    styleSheet.replace("$black", BRAND_COLOR_BLACK);
+    styleSheet.replace("$light-gray", "#F9F7F3");
+    styleSheet.replace("$gray-1", "#7F7F8E");
+    styleSheet.replace("$gray-2", "#9E9EA9");
+    styleSheet.replace("$gray-3", "#BFBFC6");
+    styleSheet.replace("$gray-4", "#DDE1E3");
+    styleSheet.replace("$gray-5", "#EAEAEE");
+    styleSheet.replace("$gray-6", "#F4F4F6");
+    styleSheet.replace("$gray-7", "F9F9F9");
 
     return styleSheet;
 }

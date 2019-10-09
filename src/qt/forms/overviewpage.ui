@@ -197,7 +197,7 @@
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0">
                        <item>
-                        <widget class="QLabel" name="heading1__combinedBalance">
+                        <widget class="QLabel" name="combinedBalance">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -262,7 +262,7 @@
                         <number>0</number>
                        </property>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="heading3__labelBalanceTextz">
+                        <widget class="QLabel" name="labelBalanceTextz">
                          <property name="text">
                           <string>Available:</string>
                          </property>
@@ -294,7 +294,7 @@
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QLabel" name="heading3__labelTotalTextz">
+                        <widget class="QLabel" name="labelTotalTextz">
                          <property name="text">
                           <string>Total:</string>
                          </property>
@@ -368,7 +368,7 @@
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_4">
                        <item>
-                        <widget class="QLabel" name="heading1__odinBalance">
+                        <widget class="QLabel" name="odinBalance">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -438,7 +438,7 @@
                         </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="heading3__labelBalanceText">
+                        <widget class="QLabel" name="labelBalanceText">
                          <property name="text">
                           <string>Available:</string>
                          </property>
@@ -495,7 +495,7 @@
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QLabel" name="heading3__labelPendingText">
+                        <widget class="QLabel" name="labelPendingText">
                          <property name="text">
                           <string>Pending:</string>
                          </property>
@@ -552,7 +552,7 @@
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QLabel" name="heading3__labelImmatureText">
+                        <widget class="QLabel" name="labelImmatureText">
                          <property name="text">
                           <string>Immature:</string>
                          </property>
@@ -609,7 +609,7 @@
                         </widget>
                        </item>
                        <item row="4" column="0">
-                        <widget class="QLabel" name="heading3__labelLockedBalanceText">
+                        <widget class="QLabel" name="labelLockedBalanceText">
                          <property name="toolTip">
                           <string>Locked ODIN or Masternode collaterals. These are excluded from zODIN minting.</string>
                          </property>
@@ -771,7 +771,7 @@
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,0">
                        <item>
-                        <widget class="QLabel" name="heading1__zOdinBalance">
+                        <widget class="QLabel" name="zOdinBalance">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -821,7 +821,7 @@
                         <number>0</number>
                        </property>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceMatureText">
+                        <widget class="QLabel" name="labelzBalanceMatureText">
                          <property name="toolTip">
                           <string>Mature: more than 20 confirmation and more than 3 mints of the same denomination after it was minted.
 These zODIN are spendable.</string>
@@ -852,7 +852,7 @@ These zODIN are spendable.</string>
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceUnconfirmedText">
+                        <widget class="QLabel" name="labelzBalanceUnconfirmedText">
                          <property name="toolTip">
                           <string>Unconfirmed: less than 20 confirmations
 Immature: confirmed, but less than 3 mints of the same denomination after it was minted</string>
@@ -883,7 +883,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceImmatureText">
+                        <widget class="QLabel" name="labelzBalanceImmatureText">
                          <property name="toolTip">
                           <string>Unconfirmed: less than 20 confirmations
 Immature: confirmed, but less than 3 mints of the same denomination after it was minted</string>
@@ -914,7 +914,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                         </widget>
                        </item>
                        <item row="4" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceText">
+                        <widget class="QLabel" name="labelzBalanceText">
                          <property name="toolTip">
                           <string>Your current zODIN balance, unconfirmed and immature zODIN included.</string>
                          </property>
