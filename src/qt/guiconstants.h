@@ -19,6 +19,7 @@ static const int STATUSBAR_ICONSIZE = 32;
 static const bool DEFAULT_SPLASHSCREEN = true;
 
 /* Brand colors */
+static const char *BRAND_COLOR_PRIMARY          = "#41C0D1";
 static const char *BRAND_COLOR_DARK             = "#1D2323";
 static const char *BRAND_COLOR_BLACK            = "#011612";
 static const char *BRAND_COLOR_WHITE            = "#FCF9F1";

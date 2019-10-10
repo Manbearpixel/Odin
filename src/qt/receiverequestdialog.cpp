@@ -136,9 +136,12 @@ void ReceiveRequestDialog::update()
     QString html;
     html += "<html><font face='verdana, arial, helvetica, sans-serif'>";
     html += "<h1 style='font-weight:normal; text-align:center;user-select:none;-webkit-user-select: none;'>" + tr("Payment information") + "</h1><br>";
-    html += "<b>" + tr("URI") + "</b>: ";
-    html += "<a style=\"color:#00CD8D;\" href=\"" + uri + "\">" + GUIUtil::HtmlEscape(uri) + "</a><br><br>";
-    html += "<b>" + tr("Address") + "</b>: " + GUIUtil::HtmlEscape(info.address) + "<br><br>";
+    html += "<b>" + tr("Payment URL") + "</b>: ";
+    html += QStringLiteral("<a style=\"color:%1;\" href=\"%2\">%3</a><br><br>")
+        .arg(BRAND_COLOR_PRIMARY)
+        .arg(uri)
+        .arg(GUIUtil::HtmlEscape(uri));
+    html += "<b>" + tr("ODIN Address") + "</b>: " + GUIUtil::HtmlEscape(info.address) + "<br><br>";
     if (info.amount)
         html += "<b>" + tr("Amount") + "</b>: <span style=background:#000000;padding:4px;>" + BitcoinUnits::formatWithUnit(model->getDisplayUnit(), info.amount) + "</span><br><br>";
     if (!info.label.isEmpty())

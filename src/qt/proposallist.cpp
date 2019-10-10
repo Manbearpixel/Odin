@@ -167,7 +167,7 @@ ProposalList::ProposalList(QWidget *parent) :
     labelOverviewHeaderLeft->setObjectName(QStringLiteral("labelOverviewHeaderLeft"));
     labelOverviewHeaderLeft->setMinimumSize(QSize(464, 60));
     labelOverviewHeaderLeft->setMaximumSize(QSize(16777215, 60));
-    labelOverviewHeaderLeft->setText(tr("Proposals"));
+    labelOverviewHeaderLeft->setText(tr("ODIN Proposals"));
     labelOverviewHeaderLeft->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
     labelOverviewHeaderLeft->setFont(fontHeaderLeft);
 

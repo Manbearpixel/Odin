@@ -78,7 +78,7 @@
      <item>
       <widget class="QPushButton" name="btnCopyURI">
        <property name="text">
-        <string>Copy &amp;URI</string>
+        <string>Copy Payment URL</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>

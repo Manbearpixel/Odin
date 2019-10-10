@@ -79,7 +79,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Send</string>
+             <string>Send ODIN</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -815,8 +815,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>944</width>
-             <height>110</height>
+             <width>938</width>
+             <height>72</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1690,12 +1690,10 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../odin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="groupCustomFee"/>
   <buttongroup name="groupFee"/>
+  <buttongroup name="groupCustomFee"/>
  </buttongroups>
 </ui>

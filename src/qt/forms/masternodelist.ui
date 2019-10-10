@@ -71,7 +71,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Masternodes</string>
+             <string>Masternode Dashboard</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -271,7 +271,7 @@
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
-                 <item>
+                  <item>
                    <widget class="QPushButton" name="configureMasternodeButton">
                     <property name="text">
                      <string>A&amp;dd Masternode</string>
