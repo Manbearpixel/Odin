@@ -308,8 +308,8 @@
                  </property>
                  <property name="font">
                   <font>
-                   <family>Montserrat</family>
-                   <weight>75</weight>
+                   <family>Rubik</family>
+                   <weight>300</weight>
                    <bold>true</bold>
                   </font>
                  </property>

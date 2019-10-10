@@ -70,9 +70,9 @@
             </property>
             <property name="font">
              <font>
-              <family>Hind</family>
+              <family>Rubik</family>
               <pointsize>48</pointsize>
-              <weight>75</weight>
+              <weight>300</weight>
               <bold>true</bold>
              </font>
             </property>

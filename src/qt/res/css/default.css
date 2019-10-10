@@ -17,6 +17,8 @@ QDialog {
   /* background: url(':/images/odin_paper_bg_repeat') repeat #FCF9F1; */
   background-color: $background;
   color: $text;
+  font-family: "Rubik", sans-serif;
+  font-weight: 400;
   /* Object highlight bg/text color */
   selection-background-color: $blue;
   selection-color: $gray-6;
@@ -234,70 +236,76 @@ QTextEdit {
 }
 /****************************************************************************************/
 
+/* Base Text Size & Color */
 QLabel {
-	/* Base Text Size & Color */
-	color: #FFFFFF;
-	/* background: rgba(0, 0, 0, 0.2);
-    border-radius: 2rem; */
+	color: $text;
+	font-family: "Rubik", sans-serif;
+	font-weight: 400;
 	margin-bottom: 1.5rem;
 	padding-top: 2rem;
 	padding-bottom: 2rem;
-	font-family: "Hind";
-	font-weight: normal;
-}
-/* QLineEdit, QTableView,
-#transactionView,
-#tableWidgetMyMasternodes{
-	font-family: "Hind";
-	font-weight: normal;
-} */
-QLabel#labelOverviewHeaderLeft {
-	font-size: 32px;
-	font-weight: 600;
-	qproperty-minimumSize: 464px 30px;
 }
 
-.QRadioButton {
-	/* Radio Button Labels */
-	color: #fff;
+QLabel#labelOverviewHeaderLeft {
+	qproperty-minimumSize: 464px 30px;
+	font-family: "Rubik", sans-serif;
+	font-weight: 500;
+	font-size: 32px;
 }
+
+QLabel#combinedBalance
+QLabel#odinBalance,
+QLabel#zOdinBalance,
+QLabel#heading1__label_4 {
+  font-family: "Rubik", sans-serif;
+	font-weight: 400;
+}
+
+/* Radio Button Labels */
+.QRadioButton {
+	color: $text;
+}
+
+/* Checkbox Labels */
 .QCheckBox {
-	/* Checkbox Labels */
-	color: rgba(255, 255, 255, 0.8);
+	color: $text;
 	background-color: transparent;
 }
+
 .QCheckBox:hover {
 	background-color: transparent;
 }
+
+/* Text Entry Fields */
 .QValidatedLineEdit,
 .QLineEdit,
 BitcoinAmountField#payAmount {
-	/* Text Entry Fields */
+	background-color: transparent;
 	border: 0;
-	font-size: 11px;
+	border-radius: 8px;
+	color: $text;
+  font-size: 12px;
+  font-weight: 300;
 	min-height: 20px;
 	outline: 0;
 	padding: 3px;
-	background-color: rgba(255, 255, 255, 0.08);
-	color: #FFFFFF;
-	padding: 0.8em 0.85em 0.8em;
-	border-radius: 8px;
-
+	padding: 10px 12px;
 }
+
 .QLineEdit:!focus {
 	/* font-size: 12px; */
 }
-QLineEdit:focus, BitcoinAmountField:focus {
-	outline: 0;
-	background-color: rgba(255, 255, 255, 0.1);
-	/* border-left:2px solid rgba(78, 105, 224,1); */
-	border:2px solid #384980;
-}
 
+QLineEdit:focus,
+BitcoinAmountField:focus {
+	outline: 0;
+	background-color: transparent;
+	border: 2px solid #384980;
+}
 
 .QValidatedLineEdit:disabled,
 .QLineEdit:disabled {
-	background-color: rgba(255, 255, 255, 0.05);
+	background-color: $gray-2;
 }
 /****************************************************************************************/
 
@@ -306,14 +314,14 @@ QLineEdit:focus, BitcoinAmountField:focus {
 ************************************/
 QPushButton {
 	background-color: $button-primary-fill;
+	border: 1px solid transparent;
+	border-radius: 3px;
 	color: $button-primary-text;
-	font-family: "Montserrat";
-	padding: 10px 20px;
+	font-family: "Rubik", sans-serif;
 	font-size: 14px;
 	font-weight: 100;
-	border-radius: 3px;
+	padding: 10px 20px;
 	text-transform: uppercase;
-	border: 1px solid transparent;
 }
 
 QPushButton:hover {
@@ -331,15 +339,6 @@ QPushButton:pressed {
 	border: 1px solid $button-primary-fill;
 	background-color: $button-primary-hover;
 }
-
-/*
-buttonChooseFee
-buttonMinimizeFee
-addButton
-selectFileButton
-
-showRequestButton:disabled
-removeRequestButton:disabled */
 
 QPushButton:disabled,
 QPushButton[objectName*="clearButton"],
@@ -375,8 +374,8 @@ QPushButton[objectName*="selectFileButton"]:pressed  {
 }
 
 
+/* Dropdown Menus */
 QComboBox {
-	/* Dropdown Menus */
 	border: 1px solid #000;
 	padding: 3px 5px 3px 5px;
 	background: #fcfcfc;
@@ -393,6 +392,7 @@ QComboBox {
 	border-radius: 8px;
 	height: 40px;
 }
+
 /*
 QComboBox QAbstractItemView {
     border-radius:8px;
@@ -403,18 +403,22 @@ QComboBox:checked {
 	background-color: rgba(255, 255, 255, 0.1);
 	border:2px solid #384980;
 }
+
 QComboBox:editable {
 	background: #00A56C;
 	color: #616161;
 	border: 0px solid transparent;
 }
+
 QComboBox::drop-down {
 	width: 25px;
 	border: 0px;
 }
+
 QComboBox::down-arrow {
 	border-image: url(':/images/downArrow') 0 0 0 0 stretch stretch;
 }
+
 QComboBox QListView {
 	background: #252f3b;
 	border: 0;
@@ -422,27 +426,34 @@ QComboBox QListView {
 	padding-left: 1px;
 	color: white;
 }
+
 QComboBox QAbstractItemView::item {
 	margin: 4px;
 	min-height: 35px;
 }
+
 QComboBox::item {
 	color: #818181;
 }
+
 QComboBox::item:alternate {
 	background: #252f3b;
 }
+
 QComboBox::item:selected {
 	border: 0px solid transparent;
 	background: #313d4b;
 	color: #FFFFFF;
 }
+
 QComboBox::indicator {
 	background-color: transparent;
 	selection-background-color: transparent;
 	color: transparent;
 	selection-color: transparent;
 }
+
+
 QAbstractSpinBox {
 	background: transparent;
 	min-height: 20px;
@@ -456,6 +467,7 @@ QAbstractSpinBox:focus {
 	background-color: rgba(255, 255, 255, 0.1);
 	border:2px solid #384980;
 }
+
 QAbstractSpinBox::up-button {
 	subcontrol-origin: border;
 	subcontrol-position: top right;
@@ -466,9 +478,11 @@ QAbstractSpinBox::up-button {
 	padding-left: 5px;
 	padding-top: 2px;
 }
+
 QAbstractSpinBox::up-arrow {
 	image: url(':/images/upArrow_small');
 }
+
 QAbstractSpinBox::down-button {
 	subcontrol-origin: border;
 	subcontrol-position: bottom right;
@@ -480,6 +494,7 @@ QAbstractSpinBox::down-button {
 	padding-left: 5px;
 	padding-bottom: 2px;
 }
+
 QAbstractSpinBox::down-arrow {
 	image: url(':/images/downArrow_small');
 }
@@ -487,38 +502,33 @@ QAbstractSpinBox::down-arrow {
 
 /* Table Header */
 QHeaderView {
-	background-color: transparent;
-  outline: 0;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	qproperty-defaultAlignment: AlignVCenter;
+	background-color: transparent;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  outline: 0;
 }
 
 /* Table Header Sections */
 QHeaderView::section {
-	/* qproperty-alignment: AlignVCenter;
-	qproperty-defaultAlignment: AlignLeft AlignVCenter;
-	qproperty-defaultAlignment: AlignVCenter; */
 	qproperty-defaultAlignment: AlignLeft AlignVCenter;
 	qproperty-alignment: left;
 	background-color: transparent;
+	border: 0;
 	color: #fff;
-	min-height:30px;
 	font-weight: bold;
 	font-size: 14px;
-	border: 0;
+	min-height:30px;
 	padding-left: 5px;
 	padding-right: 5px;
 }
+
 QHeaderView {
 	/* qproperty-defaultAlignment: AlignLeft AlignVCenter; */
 }
+
 QHeaderView::section:last {
 	qproperty-alignment: right;
 	qproperty-defaultAlignment: AlignRight;
-	/* qproperty-alignment: right;
-	qproperty-defaultAlignment: AlignRight; */
-	/* qproperty-alignment: right;
-	qproperty-defaultAlignment: AlignRight; */
 	border-right: 0;
 }
 
@@ -779,7 +789,7 @@ QDialog .QTabWidget .QWidget QComboBox {
 
 QDialog#OpenURIDialog QLabel#label {
 	/* URI Label */
-	font-weight: bold;
+	font-weight: 400;
 }
 QDialog#OpenURIDialog QPushButton#selectFileButton {
 	/* ... Button */
@@ -1160,7 +1170,7 @@ QWidget QFrame#cardFrame_Balances QLabel#labelSpendable,
 QWidget QFrame#cardFrame_Balances QLabel#labelWatchonly {
   qproperty-alignment: 'AlignVCenter | AlignCenter';
 	font-size: 14px;
-  font-weight: 500;
+  font-weight: 300;
   color: $primary;
 }
 
@@ -1170,7 +1180,7 @@ QWidget#OverviewPage QLabel#labelTransactionsStatus {
 	qproperty-alignment: 'AlignVCenter | AlignLeft';
   margin-left: 5px;
   color: $danger;
-  font-weight: 100;
+  font-weight: 300;
   font-size: 12px;
 }
 
@@ -1180,7 +1190,7 @@ QWidget#OverviewPage QLabel#labelzODINPercent {
   qproperty-alignment: 'AlignVCenter | AlignLeft';
   margin-left: 5px;
   color: $primary;
-  font-weight: 100;
+  font-weight: 300;
   font-size: 12px;
 }
 

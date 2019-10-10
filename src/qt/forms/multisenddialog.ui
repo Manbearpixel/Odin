@@ -47,9 +47,9 @@
       <widget class="QLabel" name="multiSendHeader">
        <property name="font">
         <font>
-         <family>Hind</family>
+         <family>Rubik</family>
          <pointsize>30</pointsize>
-         <weight>50</weight>
+         <weight>300</weight>
          <bold>false</bold>
         </font>
        </property>

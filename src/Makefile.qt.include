@@ -392,12 +392,9 @@ RES_CSS = \
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
 RES_TEXT = \
-  qt/res/fonts/Hind-Bold.ttf \
-  qt/res/fonts/Hind-Light.ttf \
-  qt/res/fonts/Hind-Medium.ttf \
-  qt/res/fonts/Hind-Regular.ttf \
-  qt/res/fonts/Hind-SemiBold.ttf \
-  qt/res/fonts/Montserrat-Bold.ttf
+  qt/res/fonts/Rubik-Light.ttf \
+  qt/res/fonts/Rubik-Regular.ttf \
+  qt/res/fonts/Rubik-Medium.ttf
 
 BITCOIN_RC = qt/res/odin-qt-res.rc
 
