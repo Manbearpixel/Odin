@@ -127,6 +127,13 @@ private:
     QAction* openAction;
     QAction* openBlockExplorerAction;
     QAction* showHelpMessageAction;
+    QAction* externalODIN;
+    QAction* externalCHAT;
+    QAction* externalMASH;
+    QAction* externalBLOG;
+    QAction* externalREDDIT;
+    QAction* externalDISCORD;
+    QAction* externalTELEGRAM;
     QAction* multiSendAction;
     QAction *proposalAction;
 
@@ -239,6 +246,15 @@ private slots:
     void aboutClicked();
     /** Show help message dialog */
     void showHelpMessageClicked();
+    /** Open external URL */
+    void openODIN();
+    void openCHAT();
+    void openMASH();
+    void openBLOG();
+    void openREDDIT();
+    void openDISCORD();
+    void openTELEGRAM();
+    void openExternalURL(QString url = "");
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);

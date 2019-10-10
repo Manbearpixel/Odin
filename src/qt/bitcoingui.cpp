@@ -36,10 +36,10 @@
 #include "proposallist.h"
 
 #include <iostream>
-
 #include <QAction>
 #include <QApplication>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDragEnterEvent>
 #include <QIcon>
@@ -104,6 +104,13 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             openRPCConsoleAction(0),
                                                                             openAction(0),
                                                                             showHelpMessageAction(0),
+                                                                            externalODIN(0),
+                                                                            externalCHAT(0),
+                                                                            externalMASH(0),
+                                                                            externalBLOG(0),
+                                                                            externalREDDIT(0),
+                                                                            externalDISCORD(0),
+                                                                            externalTELEGRAM(0),
                                                                             multiSendAction(0),
                                                                             proposalAction(0),
                                                                             trayIcon(0),
@@ -313,6 +320,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
 
+    // OVERVIEW
     QIcon overviewIcon;
     overviewIcon.addFile(":/icons/overview", QSize(20,20), QIcon::Normal, QIcon::On);
     overviewIcon.addFile(":/icons/overview_off", QSize(20,20), QIcon::Normal, QIcon::Off);
@@ -328,23 +336,13 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
 #endif
     tabGroup->addAction(overviewAction);
+    // These showNormalIfMinimized are needed because Send Coins and Receive Coins
+    // can be triggered from the tray menu, and need to show the GUI to be useful.
+    connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
 
-    QIcon sendCoinsIcon;
-    sendCoinsIcon.addFile(":/icons/send", QSize(40,40), QIcon::Normal, QIcon::On);
-    sendCoinsIcon.addFile(":/icons/send_off", QSize(40,40), QIcon::Normal, QIcon::Off);
 
-    sendCoinsAction = new QAction(sendCoinsIcon, tr(""), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to an ODIN address"));
-    sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
-    sendCoinsAction->setCheckable(true);
-
-#ifdef Q_OS_MAC
-    sendCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
-#else
-    sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
-#endif
-    tabGroup->addAction(sendCoinsAction);
-
+    // RECEIVE
     QIcon receiveCoinsIcon;
     receiveCoinsIcon.addFile(":/icons/receiving_addresses", QSize(40,40), QIcon::Normal, QIcon::On);
     receiveCoinsIcon.addFile(":/icons/receiving_addresses_off", QSize(40,40), QIcon::Normal, QIcon::Off);
@@ -355,12 +353,36 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     receiveCoinsAction->setCheckable(true);
 
 #ifdef Q_OS_MAC
-    receiveCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
+    receiveCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
 #else
-    receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
+    receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
 #endif
     tabGroup->addAction(receiveCoinsAction);
+    connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
 
+
+    // SEND
+    QIcon sendCoinsIcon;
+    sendCoinsIcon.addFile(":/icons/send", QSize(40,40), QIcon::Normal, QIcon::On);
+    sendCoinsIcon.addFile(":/icons/send_off", QSize(40,40), QIcon::Normal, QIcon::Off);
+
+    sendCoinsAction = new QAction(sendCoinsIcon, tr(""), this);
+    sendCoinsAction->setStatusTip(tr("Send coins to an ODIN address"));
+    sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
+    sendCoinsAction->setCheckable(true);
+
+#ifdef Q_OS_MAC
+    sendCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
+#else
+    sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
+#endif
+    tabGroup->addAction(sendCoinsAction);
+    connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
+
+
+    // HISTORY
     QIcon historyIcon;
     historyIcon.addFile(":/icons/history", QSize(40,40), QIcon::Normal, QIcon::On);
     historyIcon.addFile(":/icons/history_off", QSize(40,40), QIcon::Normal, QIcon::Off);
@@ -376,27 +398,15 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
 #endif
     tabGroup->addAction(historyAction);
+    connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
 
-    QIcon privacyIcon;
-    privacyIcon.addFile(":/icons/privacy", QSize(40,40), QIcon::Normal, QIcon::On);
-    privacyIcon.addFile(":/icons/privacy_off", QSize(40,40), QIcon::Normal, QIcon::Off);
-
-    privacyAction = new QAction(privacyIcon, tr(""), this);
-    privacyAction->setStatusTip(tr("Privacy Actions for zODIN"));
-    privacyAction->setToolTip(privacyAction->statusTip());
-    privacyAction->setCheckable(true);
-
-#ifdef Q_OS_MAC
-    privacyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
-#else
-    privacyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
-#endif
-    tabGroup->addAction(privacyAction);
 
 #ifdef ENABLE_WALLET
 
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
+        // MASTERNODE
         QIcon masternodeIcon;
         masternodeIcon.addFile(":/icons/masternodes", QSize(40,40), QIcon::Normal, QIcon::On);
         masternodeIcon.addFile(":/icons/masternodes_off", QSize(40,40), QIcon::Normal, QIcon::Off);
@@ -407,9 +417,9 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
         masternodeAction->setCheckable(true);
 
 #ifdef Q_OS_MAC
-        masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+        masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
 #else
-        masternodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+        masternodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
 #endif
         tabGroup->addAction(masternodeAction);
 
@@ -417,20 +427,9 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
         connect(masternodeAction, SIGNAL(triggered()), this, SLOT(gotoMasternodePage()));
     }
 
-    // These showNormalIfMinimized are needed because Send Coins and Receive Coins
-    // can be triggered from the tray menu, and need to show the GUI to be useful.
-    connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
-    connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
-    connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
-    connect(privacyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(privacyAction, SIGNAL(triggered()), this, SLOT(gotoPrivacyPage()));
-    connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
 #endif // ENABLE_WALLET
 
+    // PROPOSAL
     QIcon proposalIcon;
     proposalIcon.addFile(":/icons/proposal", QSize(40,40), QIcon::Normal, QIcon::On);
     proposalIcon.addFile(":/icons/proposal_off", QSize(40,40), QIcon::Normal, QIcon::Off);
@@ -441,11 +440,34 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     proposalAction->setCheckable(true);
 
 #ifdef Q_OS_MAC
-    proposalAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_7));
+    proposalAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
 #else
-    proposalAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    proposalAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
 #endif
     tabGroup->addAction(proposalAction);
+    connect(proposalAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(proposalAction, SIGNAL(triggered()), this, SLOT(gotoProposalPage()));
+
+
+    // PRIVACY
+    QIcon privacyIcon;
+    privacyIcon.addFile(":/icons/privacy", QSize(40,40), QIcon::Normal, QIcon::On);
+    privacyIcon.addFile(":/icons/privacy_off", QSize(40,40), QIcon::Normal, QIcon::Off);
+
+    privacyAction = new QAction(privacyIcon, tr(""), this);
+    privacyAction->setStatusTip(tr("Privacy Actions for zODIN"));
+    privacyAction->setToolTip(privacyAction->statusTip());
+    privacyAction->setCheckable(true);
+
+#ifdef Q_OS_MAC
+    privacyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_7));
+#else
+    privacyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+#endif
+    tabGroup->addAction(privacyAction);
+    connect(privacyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(privacyAction, SIGNAL(triggered()), this, SLOT(gotoPrivacyPage()));
+
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setStatusTip(tr("Quit application"));
@@ -538,8 +560,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     multisigSignAction = new QAction(QIcon(":/icons/editpaste"), tr("&Multisignature signing..."), this);
     multisigSignAction->setStatusTip(tr("Sign with a multisignature address"));
 
-    openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a ODIN: URI or payment request"));
+    openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Open Payment &URL..."), this);
+    openAction->setStatusTip(tr("Open an ODIN Payment URL or request file"));
 
     openBlockExplorerAction = new QAction(QIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
@@ -548,14 +570,43 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(tr("Show the ODIN Core help message to get a list with possible ODIN command-line options"));
 
+    // Official ODIN Society Links
+    externalODIN = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("More ODIN"), this);
+    externalODIN->setStatusTip(tr("Learn more about ODIN Blockchain and the ODIN Society"));
+
+    externalCHAT = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Secure Messenger"), this);
+    externalCHAT->setStatusTip(tr("Own your conversations and talk anonymously with ODIN.Chat"));
+
+    externalMASH = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Masternode Hosting"), this);
+    externalMASH->setStatusTip(tr("Use our official Masternode hosting service for easy setup"));
+
+    externalBLOG = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Latest News"), this);
+    externalBLOG->setStatusTip(tr("Read the latest news and information about ODIN Blockchain"));
+
+    externalREDDIT = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Reddit Forum"), this);
+    externalREDDIT->setStatusTip(tr("Discuss topics, ask questions, and collaborate with the ODIN Community"));
+
+    externalDISCORD = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Official Discord"), this);
+    externalDISCORD->setStatusTip(tr("The official Discord community for ODIN Blockchain"));
+
+    externalTELEGRAM = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Official Telegram"), this);
+    externalTELEGRAM->setStatusTip(tr("The official Telegram community for ODIN Blockchain"));
+
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(showHelpMessageAction, SIGNAL(triggered()), this, SLOT(showHelpMessageClicked()));
-    connect(proposalAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(proposalAction, SIGNAL(triggered()), this, SLOT(gotoProposalPage()));
+
+    // Official ODIN Society Links
+    connect(externalODIN, SIGNAL(triggered()), this, SLOT(openODIN()));
+    connect(externalCHAT, SIGNAL(triggered()), this, SLOT(openCHAT()));
+    connect(externalMASH, SIGNAL(triggered()), this, SLOT(openMASH()));
+    connect(externalBLOG, SIGNAL(triggered()), this, SLOT(openBLOG()));
+    connect(externalREDDIT, SIGNAL(triggered()), this, SLOT(openREDDIT()));
+    connect(externalDISCORD, SIGNAL(triggered()), this, SLOT(openDISCORD()));
+    connect(externalTELEGRAM, SIGNAL(triggered()), this, SLOT(openTELEGRAM()));
 
 #ifdef ENABLE_WALLET
     if (walletFrame) {
@@ -633,6 +684,17 @@ void BitcoinGUI::createMenuBar()
         tools->addAction(openBlockExplorerAction);
     }
 
+    QMenu* odin = appMenuBar->addMenu(tr("&ODIN Links"));
+    odin->addAction(externalODIN);
+    odin->addAction(externalBLOG);
+    odin->addSeparator();
+    odin->addAction(externalCHAT);
+    odin->addAction(externalMASH);
+    odin->addSeparator();
+    odin->addAction(externalREDDIT);
+    odin->addAction(externalDISCORD);
+    odin->addAction(externalTELEGRAM);
+
     QMenu* help = appMenuBar->addMenu(tr("&Help"));
     help->addAction(showHelpMessageAction);
     help->addSeparator();
@@ -656,16 +718,15 @@ void BitcoinGUI::createToolBars()
         toolbar->addWidget(topToolbarSpacer);
 
         toolbar->addAction(overviewAction);
-        toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
-        toolbar->addAction(privacyAction);
+        toolbar->addAction(sendCoinsAction);
         toolbar->addAction(historyAction);
-        toolbar->addAction(privacyAction);
         QSettings settings;
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
         toolbar->addAction(proposalAction);
+        toolbar->addAction(privacyAction);
         toolbar->setMovable(false); // remove unused icon in upper left corner
         toolbar->setOrientation(Qt::Vertical);
         toolbar->setIconSize(QSize(85,85));
@@ -884,6 +945,54 @@ void BitcoinGUI::showHelpMessageClicked()
     HelpMessageDialog* help = new HelpMessageDialog(this, false);
     help->setAttribute(Qt::WA_DeleteOnClose);
     help->show();
+}
+
+void BitcoinGUI::openODIN()
+{
+    openExternalURL("https://odinblockchain.org");
+}
+
+void BitcoinGUI::openCHAT()
+{
+    openExternalURL("https://odin.chat");
+}
+
+void BitcoinGUI::openMASH()
+{
+    openExternalURL("https://mash.odinblockchain.org");
+}
+
+void BitcoinGUI::openBLOG()
+{
+    openExternalURL("http://medium.com/@odinblockchain");
+}
+
+void BitcoinGUI::openREDDIT()
+{
+    openExternalURL("https://reddit.com/r/odinblockchain");
+}
+
+void BitcoinGUI::openDISCORD()
+{
+    openExternalURL("https://discord.gg/6qnkCpC");
+}
+
+void BitcoinGUI::openTELEGRAM()
+{
+    openExternalURL("https://t.me/odinblockchain");
+}
+
+/** Open external URLs - requires permission */
+void BitcoinGUI::openExternalURL(QString url)
+{
+    QMessageBox::StandardButton reply = QMessageBox::question(this, tr("Notice – External Link"),
+        QStringLiteral("This action will open up the following website in your default browser:<br><br><u>%1</u><br><br>To continue, hit your Enter key or press <b>Ok</b>.<br><b>Remember, never share your personal information or private keys on any social website.</b>").arg(url),
+        QMessageBox::Cancel | QMessageBox::Ok,
+        QMessageBox::Ok);
+
+    if (reply == QMessageBox::Ok) {
+        QDesktopServices::openUrl(QUrl(url));
+    }
 }
 
 #ifdef ENABLE_WALLET
