@@ -37,6 +37,7 @@ static const char *INPUT_FILL = "#313737";
 static const char *INPUT_COLOR = "#DDDEDE";
 static const char *INPUT_HOVER_FILL = "#464B4B";
 static const char *INPUT_HIGHLIGHT = "#41C0D1";
+static const char *INPUT_DISABLED_FILL = "#1B2020";
 
 
 /* Invalid field background style */

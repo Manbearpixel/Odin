@@ -290,7 +290,7 @@ BitcoinAmountField#payAmount:focus {
 
 .QValidatedLineEdit:disabled,
 .QLineEdit:disabled {
-	background-color: #1B2020;
+	background-color: $input-disabled-fill;
   border: 2px solid $input-fill;
 }
 /****************************************************************************************/
@@ -388,6 +388,11 @@ QComboBox:checked {
 	border: 2px solid #384980;
 }
 
+QComboBox:disabled {
+	background-color: $input-disabled-fill;
+  border: 2px solid $input-fill;
+}
+
 QComboBox:editable {
 	background: #00A56C;
 	color: #616161;
@@ -467,6 +472,11 @@ QAbstractSpinBox:hover {
 	outline: 0;
 }
 
+QAbstractSpinBox:disabled {
+	background-color: $input-disabled-fill;
+  border: 2px solid $input-fill;
+}
+
 QAbstractSpinBox::up-button {
 	subcontrol-origin: border;
 	subcontrol-position: top right;
@@ -512,6 +522,11 @@ AmountSpinBox::down-arrow {
 	image: url(':/images/downTriangle_light');
 }
 
+QSpinBox:disabled,
+AmountSpinBox:disabled {
+	background-color: $input-disabled-fill;
+  border: 2px solid $input-fill;
+}
 
 /* Table Header */
 QHeaderView {
@@ -718,12 +733,12 @@ QScrollBar:right-arrow {
   background: none;
 }
 QSlider::handle:horizontal {
-	background-color: #8a8a8a;
+	background-color: #eeeeee;
 	border: 0;
 	border-radius: 6px;
 }
 QSlider::sub-page:horizontal {
-	background-color: #414a55;
+	background-color: $primary;
 	border: 0;
 	border-radius: 6px;
 }

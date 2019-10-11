@@ -954,6 +954,7 @@ QString loadStyleSheet()
     styleSheet.replace("$input-color", INPUT_COLOR);
     styleSheet.replace("$input-highlight", INPUT_HIGHLIGHT);
     styleSheet.replace("$input-hover-fill", INPUT_HOVER_FILL);
+    styleSheet.replace("$input-disabled-fill", INPUT_DISABLED_FILL);
 
     // replace colors
     styleSheet.replace("$primary", "$blue");
