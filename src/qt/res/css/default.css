@@ -1,9 +1,3 @@
-/****************************************************************************************/
-
-/*************** [COLOR CODES] GREEN:#00A56C LIGHT GREEN:#00CD8D *****************/
-
-/****************************************************************************************/
-
 WalletFrame {
 	border-image: url(':/images/walletFrame_bg') 0 0 0 0 stretch stretch;
   border-top: 0px solid #000;
@@ -14,7 +8,6 @@ WalletFrame {
 
 QWidget,
 QDialog {
-  /* background: url(':/images/odin_paper_bg_repeat') repeat #FCF9F1; */
   background-color: $background;
   color: $text;
   font-family: "Rubik", sans-serif;
@@ -134,14 +127,6 @@ QToolBar > QToolButton {
   margin: 2px 0;
 	width: 100%;
 }
-
-/* QIcon {
-	opacity: 0.2;
-	border: none;
-	display: none;
-	background: none;
-	border: 0;
-} */
 
 QToolBar > QToolButton > img {
 	display: none;
@@ -280,37 +265,38 @@ QLabel#heading1__label_4 {
 .QValidatedLineEdit,
 .QLineEdit,
 BitcoinAmountField#payAmount {
-	background-color: transparent;
-	border: 0;
-	border-radius: 8px;
-	color: $text;
-  font-size: 12px;
+  background-color: $input-fill;
+  border: 0;
+  border-radius: 4px;
+  border-bottom: 3px solid transparent;
+  color: $input-color;
+  font-size: 14px;
   font-weight: 300;
-	min-height: 20px;
+  min-height: 20px;
 	outline: 0;
-	padding: 3px;
-	padding: 10px 12px;
+  padding: 5px 12px;
 }
 
-.QLineEdit:!focus {
-	/* font-size: 12px; */
-}
-
-QLineEdit:focus,
-BitcoinAmountField:focus {
+.QValidatedLineEdit:hover,
+.QValidatedLineEdit:focus,
+.QLineEdit:hover,
+.QLineEdit:focus,
+BitcoinAmountField#payAmount:hover,
+BitcoinAmountField#payAmount:focus {
+  background-color: $input-hover-fill;
+  border-bottom: 3px solid $input-highlight;
 	outline: 0;
-	background-color: transparent;
-	border: 2px solid #384980;
 }
 
 .QValidatedLineEdit:disabled,
 .QLineEdit:disabled {
-	background-color: $gray-2;
+	background-color: #1B2020;
+  border: 2px solid $input-fill;
 }
 /****************************************************************************************/
 
 /*
-**  Push buttons
+**  Buttons
 ************************************/
 QPushButton {
 	background-color: $button-primary-fill;
@@ -374,34 +360,32 @@ QPushButton[objectName*="selectFileButton"]:pressed  {
 }
 
 
-/* Dropdown Menus */
+/*
+**  Dropdowns
+************************************/
 QComboBox {
-	border: 1px solid #000;
-	padding: 3px 5px 3px 5px;
-	background: #fcfcfc;
-	min-height: 25px;
-	color: #818181;
-	border: 0;
-	font-size: 11px;
-	min-height: 20px;
-	outline: 0;
-	padding: 3px;
-	background-color: rgba(255, 255, 255, 0.08);
-	color: #FFFFFF;
-	padding: 0 0.85em 0;
-	border-radius: 8px;
-	height: 40px;
+  background-color: $input-fill;
+  border: 0;
+  border-radius: 4px;
+  border-bottom: 3px solid transparent;
+  color: $input-color;
+  font-family: "Rubik", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  min-height: 20px;
+  outline: 0;
+  padding: 5px 12px;
 }
 
-/*
-QComboBox QAbstractItemView {
-    border-radius:8px;
-    selection-background-color: lightgray;
-} */
+QComboBox:focus,
+QComboBox:hover {
+  background-color: $input-hover-fill;
+	outline: 0;
+}
 
 QComboBox:checked {
 	background-color: rgba(255, 255, 255, 0.1);
-	border:2px solid #384980;
+	border: 2px solid #384980;
 }
 
 QComboBox:editable {
@@ -410,62 +394,77 @@ QComboBox:editable {
 	border: 0px solid transparent;
 }
 
+QComboBox:on {
+	background-color: red;
+  color: blue;
+  outline: 0;
+}
+
 QComboBox::drop-down {
-	width: 25px;
-	border: 0px;
+  background-color: transparent;
+  border: 0;
+  border-left: 1px solid $input-color;
+  border-radius: 0 4px 0 4px;
+  margin: 0;
+  padding: 5px;
+  width: 20px;
+  height: 20px;
 }
 
 QComboBox::down-arrow {
-	border-image: url(':/images/downArrow') 0 0 0 0 stretch stretch;
+  image: url(':/images/downArrow_light');
+  width: 14px;
+  height: 14px;
 }
 
 QComboBox QListView {
-	background: #252f3b;
-	border: 0;
-	padding-right: 1px;
-	padding-left: 1px;
-	color: white;
-}
-
-QComboBox QAbstractItemView::item {
-	margin: 4px;
-	min-height: 35px;
+  background-color: $input-fill;
+  border: 0;
+  border-radius: 4px;
+  color: $input-color;
+  font-family: "Rubik", sans-serif;
+  font-size: 14px;
 }
 
 QComboBox::item {
-	color: #818181;
-}
-
-QComboBox::item:alternate {
-	background: #252f3b;
+  margin-top: 5px;
+  color: $input-color;
+  padding: 0 8px;
+  max-height: 30px;
+  border: 0;
 }
 
 QComboBox::item:selected {
-	border: 0px solid transparent;
-	background: #313d4b;
-	color: #FFFFFF;
+  background-color: $input-hover-fill;
 }
 
 QComboBox::indicator {
 	background-color: transparent;
-	selection-background-color: transparent;
 	color: transparent;
 	selection-color: transparent;
+	selection-background-color: transparent;
 }
 
-
+/*
+**  Numeric Input
+************************************/
 QAbstractSpinBox {
-	background: transparent;
+  background-color: $input-fill;
+  border: 0;
+  border-radius: 4px;
+  border-bottom: 3px solid transparent;
+	color: $input-color;
+  font-family: "Rubik", sans-serif;
+  font-weight: 300;
 	min-height: 20px;
-	background-color: rgba(255, 255, 255, 0.08);
-	color: #FFFFFF;
-	padding: 0.6em 0.85em 0.6em;
-	border-radius: 8px;
+	padding: 5px 12px;
 }
 
-QAbstractSpinBox:focus {
-	background-color: rgba(255, 255, 255, 0.1);
-	border:2px solid #384980;
+QAbstractSpinBox:focus,
+QAbstractSpinBox:hover {
+	background-color: $input-hover-fill;
+  border-bottom: 3px solid $input-highlight;
+	outline: 0;
 }
 
 QAbstractSpinBox::up-button {
@@ -480,7 +479,7 @@ QAbstractSpinBox::up-button {
 }
 
 QAbstractSpinBox::up-arrow {
-	image: url(':/images/upArrow_small');
+	image: url(':/images/upTriangle_light');
 }
 
 QAbstractSpinBox::down-button {
@@ -498,7 +497,21 @@ QAbstractSpinBox::down-button {
 QAbstractSpinBox::down-arrow {
 	image: url(':/images/downArrow_small');
 }
-/****************************************************************************************/
+
+QSpinBox::up-arrow,
+AmountSpinBox::up-arrow {
+	width: 10px;
+	height: 10px;
+	image: url(':/images/upTriangle_light');
+}
+
+QSpinBox::down-arrow,
+AmountSpinBox::down-arrow {
+	width: 10px;
+	height: 10px;
+	image: url(':/images/downTriangle_light');
+}
+
 
 /* Table Header */
 QHeaderView {
@@ -1076,7 +1089,6 @@ QDialog#RPCConsole QLineEdit#lineEdit {
 }
 QDialog#RPCConsole QPushButton#clearButton {
 	/* Console Clear Button */
-	background-color: transparent;
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -1372,7 +1384,6 @@ padding-bottom:20px; */
 
 QStackedWidget#SendCoinsEntry .QFrame#SendCoins > .QLabel {
 	/* Send Coin Entry Labels */
-	/* background-color:#00CD8D; */
 	min-width: 102px;
 	font-weight: 500;
 	font-size: 16px;
@@ -1574,19 +1585,6 @@ QWidget#ReceiveCoinsDialog .QFrame#frame2 .QLabel#label_3 {
 	font-size: 16px;
 	padding-right: 5px;
 }
-QWidget#ReceiveCoinsDialog .QFrame#frame2 QPushButton#clearButton {
-	/* Clear Button */
-	background-color: transparent;
-	border: 2px solid #707780;
-	color: #707780;
-}
-QWidget#ReceiveCoinsDialog .QFrame#frame2 QPushButton#clearButton:hover {
-	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: .01 #f6f6f6, stop: .1 rgba(240, 240, 240, 255), stop: .95 rgba(240, 240, 240, 255), stop: 1 #ebebeb);
-	color: #333;
-}
-QWidget#ReceiveCoinsDialog .QFrame#frame2 QPushButton#clearButton:pressed {
-	border: 1px solid #9e9e9e;
-}
 /* Show Button */
 /* QWidget#ReceiveCoinsDialog .QFrame#frame QPushButton#showRequestButton {
 	background-color: transparent;
@@ -1766,7 +1764,7 @@ QLineEdit {
 QHeaderView::down-arrow {
 	width: 8px;
 	height: 8px;
-	image: url(:/images/downArrow);
+	image: url(':/images/downTriangle_light');
 	subcontrol-position: right center;
 	subcontrol-origin: margin;
 	margin-right: 8px;
@@ -1774,32 +1772,12 @@ QHeaderView::down-arrow {
 QHeaderView::up-arrow {
 	width: 8px;
 	height: 8px;
-	image: url(:/images/upArrow);
+	image: url(':/images/upTriangle_light');
 	subcontrol-position: right center;
 	subcontrol-origin: margin;
 	margin-right: 8px;
 }
-/* #ProposalList QHeaderView::down-arrow {
-        width:6px;
-        height:6px;
-        image: url(:/images/downArrow);
-        subcontrol-position: right top;
-        subcontrol-origin: margin;
-        margin-right:8px;
-    } */
 
-QSpinBox::up-arrow,
-AmountSpinBox::up-arrow {
-	width: 10px;
-	height: 10px;
-	image: url(:/images/upArrow);
-}
-QSpinBox::down-arrow,
-AmountSpinBox::down-arrow {
-	width: 10px;
-	height: 10px;
-	image: url(:/images/downArrow);
-}
 #labelStakingIcon {
 	width: 16px;
 }

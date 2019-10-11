@@ -950,6 +950,11 @@ QString loadStyleSheet()
     styleSheet.replace("$progressbarfill", "$blue");
     styleSheet.replace("$progressbartext", "$white");
 
+    styleSheet.replace("$input-fill", INPUT_FILL);
+    styleSheet.replace("$input-color", INPUT_COLOR);
+    styleSheet.replace("$input-highlight", INPUT_HIGHLIGHT);
+    styleSheet.replace("$input-hover-fill", INPUT_HOVER_FILL);
+
     // replace colors
     styleSheet.replace("$primary", "$blue");
     styleSheet.replace("$info", "$dark-blue");

@@ -32,6 +32,13 @@ static const char *BRAND_COLOR_YELLOW           = "#C4943F";
 static const char *BRAND_COLOR_GREEN            = "#619772";
 static const char *BRAND_COLOR_GREEN_LIGHTER    = "#88A881";
 
+/* App colors */
+static const char *INPUT_FILL = "#313737";
+static const char *INPUT_COLOR = "#DDDEDE";
+static const char *INPUT_HOVER_FILL = "#464B4B";
+static const char *INPUT_HIGHLIGHT = "#41C0D1";
+
+
 /* Invalid field background style */
 #define STYLE_INVALID "background:#FF8080"
 
