@@ -400,8 +400,6 @@ QComboBox:editable {
 }
 
 QComboBox:on {
-	background-color: red;
-  color: blue;
   outline: 0;
 }
 
@@ -1645,8 +1643,8 @@ QDialog#ReceiveRequestDialog QTextEdit {
 
 /**************************** TRANSACTIONS PAGE *****************************************/
 
+/* Address Filter */
 TransactionView QLineEdit {
-	/* Address Filter */
 	margin-bottom: 2px;
 	margin-right: 1px;
 	min-width: 111px;
@@ -1656,15 +1654,21 @@ TransactionView QComboBox {
 	margin-bottom: 1px;
 	margin-right: 1px;
 }
+
+/* Example of setObjectName for widgets without name */
 QLabel#transactionSumLabel {
-	/* Example of setObjectName for widgets without name */
 	color: #FFF;
 	font-weight: bold;
 }
+
+/* Example of setObjectName for widgets without name */
 QLabel#transactionSum {
-	/* Example of setObjectName for widgets without name */
 	color: #FFF;
 	font-size: 22px;
+}
+
+QFrame#transactionViewDateRange {
+  margin-bottom: 20px;
 }
 /**************************** TRANSACTION DETAILS DIALOG ********************************/
 
@@ -1705,29 +1709,88 @@ QWidget#PrivacyDialog .QPushButton {
 QWidget#MasternodeList .QFrame#frameList {
 	background-color: transparent;
 }
-/********************************* CALENDAR WIDGET **************************************/
 
+/*
+**  Calendar
+************************************/
+
+/* DateTime Input */
+QDateTimeEdit {
+  height: 20px;
+}
+
+QDateTimeEdit::drop-down {
+  background-color: transparent;
+  border: 0;
+  border-left: 1px solid $input-color;
+  margin: 0;
+  margin-top: 3px;
+  padding: 5px;
+  width: 20px;
+  height: 15px;
+}
+
+QDateTimeEdit::down-arrow {
+  image: url(':/images/downArrow_light');
+  width: 14px;
+  height: 14px;
+}
+
+/* Calendar */
 QCalendarView {
-	border: 1px solid #333;
+	border: 2px solid #333;
 }
+
+/* Calendar widget navigation bar */
 QCalendarWidget QWidget#qt_calendar_navigationbar {
-	/* Calendar widget navigation bar */
-	background-color: #00CD8D;
-	font-weight: bold;
+	background-color: $black;
+	font-weight: 400;
 }
+
+/* Calendar widget days */
 QCalendarWidget QAbstractItemView {
-	/* Calendar widget days */
 	alternate-background-color: #dedbe5;
 	background-color: #fff;
 }
+
+/* Calendar widget weekdays in month */
 QCalendarWidget QAbstractItemView:enabled {
-	/* Calendar widget weekdays in month */
 	color: #333;
 }
+
+/* Calendar widget days not in month */
 QCalendarWidget QAbstractItemView:disabled {
-	/* Calendar widget days not in month */
 	color: #818181;
 }
+
+QCalendarWidget QToolButton {
+  color: $text;
+  font-size: 14px;
+  icon-size: 14px, 14px;
+  background-color: $black;
+}
+
+QCalendarWidget QMenu {
+  width: 120px;
+  left: 20px;
+  background-color: $input-fill;
+}
+
+QCalendarWidget QMenu::item {
+  border: 0;
+  color: $input-color;
+  font-size: 14px;
+  padding: 0 8px;
+  margin-top: 5px;
+  max-height: 30px;
+}
+
+QCalendarWidget QMenu::item:selected {
+  background-color: $input-hover-fill;
+  color: $input-color;
+}
+
+
 #ToolbarSpacer {
 	max-height: 1px;
 	height: 1px;

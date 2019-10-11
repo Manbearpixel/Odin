@@ -88,7 +88,7 @@ TransactionView::TransactionView(QWidget* parent) : QWidget(parent), model(0), t
     typeWidget->addItem(tr("Sent to"), TransactionFilterProxy::TYPE(TransactionRecord::SendToAddress) | TransactionFilterProxy::TYPE(TransactionRecord::SendToOther));
 
 /* Obsolete Obfuscation entries. Remove once the corresponding TYPES are removed:
- * 
+ *
     typeWidget->addItem(tr("Obfuscated"), TransactionFilterProxy::TYPE(TransactionRecord::Obfuscated));
     typeWidget->addItem(tr("Obfuscation Make Collateral Inputs"), TransactionFilterProxy::TYPE(TransactionRecord::ObfuscationMakeCollaterals));
     typeWidget->addItem(tr("Obfuscation Create Denominations"), TransactionFilterProxy::TYPE(TransactionRecord::ObfuscationCreateDenominations));
@@ -387,7 +387,7 @@ void TransactionView::exportClicked()
     if (fExport) {
         emit message(tr("Exporting Successful"), tr("The transaction history was successfully saved to %1.").arg(filename),
                      CClientUIInterface::MSG_INFORMATION);
-    } 
+    }
     else {
         emit message(tr("Exporting Failed"), tr("There was an error trying to save the transaction history to %1.").arg(filename),
                      CClientUIInterface::MSG_ERROR);
@@ -503,13 +503,14 @@ QWidget* TransactionView::createDateRangeWidget()
     dateRangeWidget = new QFrame();
     dateRangeWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
     dateRangeWidget->setContentsMargins(1, 1, 1, 1);
+    dateRangeWidget->setObjectName("transactionViewDateRange");
     QHBoxLayout* layout = new QHBoxLayout(dateRangeWidget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addSpacing(23);
     layout->addWidget(new QLabel(tr("Range:")));
 
     dateFrom = new QDateTimeEdit(this);
-    dateFrom->setDisplayFormat("dd/MM/yy");
+    dateFrom->setDisplayFormat("MMM d, yyyy");
     dateFrom->setCalendarPopup(true);
     dateFrom->setMinimumWidth(100);
     dateFrom->setDate(QDate::currentDate().addDays(-7));
@@ -517,7 +518,7 @@ QWidget* TransactionView::createDateRangeWidget()
     layout->addWidget(new QLabel(tr("to")));
 
     dateTo = new QDateTimeEdit(this);
-    dateTo->setDisplayFormat("dd/MM/yy");
+    dateTo->setDisplayFormat("MMM d, yyyy");
     dateTo->setCalendarPopup(true);
     dateTo->setMinimumWidth(100);
     dateTo->setDate(QDate::currentDate());
