@@ -946,7 +946,7 @@ int GetZerocoinStartHeight()
 }
 
 libzerocoin::ZerocoinParams* GetZerocoinParams(int nHeight) {
-    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params(); 
+    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params();
 }
 
 void FindMints(vector<CMintMeta> vMintsToFind, vector<CMintMeta>& vMintsToUpdate, vector<CMintMeta>& vMissingMints)
@@ -1712,7 +1712,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 hash.ToString(),
                 nFees, ::minRelayTxFee.GetFee(nSize) * 10000);
 
-        
+
         unsigned int scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
         if (!Params().RequireStandard()) {
             scriptVerifyFlags = GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
@@ -1834,7 +1834,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
             }
         }
     }
-    
+
     // Check for conflicts with in-memory transactions
     if (!tx.IsZerocoinSpend()) {
         LOCK(pool.cs); // protect pool.mapNextTx
@@ -2162,14 +2162,14 @@ int64_t GetBlockValue(int nHeight, bool fBudgetBlock)
    * Y2 Midgard:    Block   665,485 -   1,192,526 =      20 Ø ~366 days
    * Y3 Nidhogg:    Block 1,192,526 -             =      15 Ø ~365 days
    * Y4 ONWARDS:    Block 1,192,526               =      15 Ø
-   * 
+   *
    * PoW Schedule -  0% to proposals
    * PoS Schedule - 10% to proposals for all phases starting in Ragnarök
    * 90% distributed to Stake wallet and Masternode
-   * 
+   *
    * 1 Day    =  ~1440 Blocks
    * 1 Month  = ~43800 Blocks
-   * 
+   *
    * ~1.4813x faster in initial blockchain growth
    */
 
@@ -3048,7 +3048,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             if (!view.HaveInputs(tx))
                 return state.DoS(100, error("ConnectBlock() : inputs missing/spent"),
                     REJECT_INVALID, "bad-txns-inputs-missingorspent");
-            
+
             // Check that zODIN mints are not already known
             if (tx.IsZerocoinMint()) {
                 for (auto& out : tx.vout) {
@@ -4122,7 +4122,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
     if (block.IsProofOfStake()) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos >= 0) {
-            if (IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
+            if (IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
                 if (block.vtx[0].vout.size() != 2)
                     return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
                 if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
@@ -4397,7 +4397,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
         if(block.nVersion < Params().Zerocoin_HeaderVersion())
             return state.DoS(50, error("CheckBlockHeader() : block version must be above 4 after ZerocoinStartHeight"),
             REJECT_INVALID, "block-version");
-        
+
         vector<CBigNum> vBlockSerials;
         for (const CTransaction& tx : block.vtx) {
             if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime))
@@ -4453,7 +4453,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
     if (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos != -1) {
-            if (!IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
+            if (!IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
                 if (fDebug) {
                     LogPrintf("CheckBlock() : staking-on-segwit is not enabled.\n");
                 }
@@ -4473,7 +4473,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
             }
 
             CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
-            
+
             if (memcmp(hashWitness.begin(), &block.vtx[0].vout[commitpos].scriptPubKey[6], 32)) {
                 return state.DoS(100, error("%s : witness merkle commitment mismatch", __func__), REJECT_INVALID, "bad-witness-merkle-match", true);
             }
