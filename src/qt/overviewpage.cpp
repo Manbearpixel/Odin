@@ -27,7 +27,7 @@
 #include <QSettings>
 #include <QTimer>
 
-#define DECORATION_SIZE 48
+#define DECORATION_SIZE 44
 #define ICON_OFFSET 16
 #define NUM_ITEMS 9
 
@@ -50,7 +50,7 @@ public:
         QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
         QRect mainRect = option.rect;
         mainRect.moveLeft(ICON_OFFSET);
-        QRect decorationRect(mainRect.topLeft(), QSize(DECORATION_SIZE, DECORATION_SIZE));
+        QRect decorationRect(mainRect.topLeft(), QSize(DECORATION_SIZE - 10, DECORATION_SIZE - 10));
         int xspace = DECORATION_SIZE + 8;
         int ypad = 6;
         int halfheight = (mainRect.height() - 2 * ypad) / 2;
@@ -107,7 +107,7 @@ public:
         }
         painter->drawText(amountRect, Qt::AlignRight | Qt::AlignVCenter, amountText);
 
-        painter->setPen(COLOR_BLACK);
+        painter->setPen(foreground);
         painter->drawText(amountRect, Qt::AlignLeft | Qt::AlignVCenter, GUIUtil::dateTimeStr(date));
 
         painter->restore();
@@ -151,7 +151,9 @@ OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
 
     // init "out of sync" warning labels
     ui->labelWalletStatus->setText("(" + tr("out of sync") + ")");
+    ui->labelWalletStatus->setStyleSheet(QStringLiteral("color: %1").arg(BRAND_COLOR_RED_LIGHTER));
     ui->labelTransactionsStatus->setText("(" + tr("out of sync") + ")");
+    ui->labelTransactionsStatus->setStyleSheet(QStringLiteral("color: %1").arg(BRAND_COLOR_RED_LIGHTER));
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
@@ -186,13 +188,13 @@ void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBala
     }
 
     double dPercentage = 100.0 - dzPercentage;
-    
+
     szODINPercentage = "(" + QLocale(QLocale::system()).toString(dzPercentage, 'f', nPrecision) + " %)";
     sODINPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
-    
+
 }
 
-void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
+void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                               const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                               const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
 {
@@ -215,7 +217,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     // ODIN Balance
     CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount odinAvailableBalance = balance - immatureBalance - nLockedBalance;
-    CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance + watchImmatureBalance;    
+    CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance + watchImmatureBalance;
     CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
     // zODIN Balance
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
@@ -228,32 +230,34 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     CAmount sumTotalBalance = nTotalBalance + zerocoinBalance;
 
     // ODIN labels
-    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, odinAvailableBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelLockedBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nLockedBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nTotalBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, odinAvailableBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelLockedBalance->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nLockedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelTotal->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nTotalBalance, false, BitcoinUnits::separatorAlways));
 
     // Watchonly labels
-    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchImmatureBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchLocked->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nWatchOnlyLockedBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nTotalWatchBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, watchOnlyBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchImmature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, watchImmatureBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchLocked->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nWatchOnlyLockedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchTotal->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nTotalWatchBalance, false, BitcoinUnits::separatorAlways));
 
     // zODIN labels
-    ui->labelzBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, zerocoinBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelzBalanceUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedZerocoinBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelzBalanceMature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, matureZerocoinBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelzBalanceImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureZerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalance->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, zerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalanceUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, unconfirmedZerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalanceMature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, matureZerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalanceImmature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, immatureZerocoinBalance, false, BitcoinUnits::separatorAlways));
 
     // Combined labels
-    ui->labelBalancez->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, availableTotalBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelTotalz->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, sumTotalBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelBalancez->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, availableTotalBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelTotalz->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, sumTotalBalance, false, BitcoinUnits::separatorAlways));
 
     // Percentage labels
     ui->labelODINPercent->setText(sPercentage);
+    ui->labelODINPercent->setStyleSheet(QStringLiteral("color: %1").arg(BRAND_COLOR_BLUE));
     ui->labelzODINPercent->setText(szPercentage);
+    ui->labelzODINPercent->setStyleSheet(QStringLiteral("color: %1").arg(BRAND_COLOR_BLUE));
 
     // Adjust bubble-help according to AutoMint settings
     QString automintHelp = tr("Current percentage of zODIN.\nIf AutoMint is enabled this percentage will settle around the configured AutoMint percentage (default = 10%).\n");
@@ -271,7 +275,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     QSettings settings;
     bool settingShowAllBalances = !settings.value("fHideZeroBalances").toBool();
     bool showSumAvailable = settingShowAllBalances || sumTotalBalance != availableTotalBalance;
-    ui->heading3__labelBalanceTextz->setVisible(showSumAvailable);
+    ui->labelBalanceTextz->setVisible(showSumAvailable);
     ui->labelBalancez->setVisible(showSumAvailable);
     bool showODINAvailable = settingShowAllBalances || odinAvailableBalance != nTotalBalance;
     bool showWatchOnlyODINAvailable = watchOnlyBalance != nTotalWatchBalance;
@@ -283,26 +287,26 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     bool showWatchOnlyImmature = watchImmatureBalance != 0;
     bool showWatchOnly = nTotalWatchBalance != 0;
     ui->labelBalance->setVisible(showODINAvailable || showWatchOnlyODINAvailable);
-    ui->heading3__labelBalanceText->setVisible(showODINAvailable || showWatchOnlyODINAvailable);
+    ui->labelBalanceText->setVisible(showODINAvailable || showWatchOnlyODINAvailable);
     ui->labelWatchAvailable->setVisible(showODINAvailable && showWatchOnly);
     ui->labelUnconfirmed->setVisible(showODINPending || showWatchOnlyODINPending);
-    ui->heading3__labelPendingText->setVisible(showODINPending || showWatchOnlyODINPending);
+    ui->labelPendingText->setVisible(showODINPending || showWatchOnlyODINPending);
     ui->labelWatchPending->setVisible(showODINPending && showWatchOnly);
     ui->labelLockedBalance->setVisible(showODINLocked || showWatchOnlyODINLocked);
-    ui->heading3__labelLockedBalanceText->setVisible(showODINLocked || showWatchOnlyODINLocked);
+    ui->labelLockedBalanceText->setVisible(showODINLocked || showWatchOnlyODINLocked);
     ui->labelWatchLocked->setVisible(showODINLocked && showWatchOnly);
     ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature); // for symmetry reasons also show immature label when the watch-only one is shown
-    ui->heading3__labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
+    ui->labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
     ui->labelWatchImmature->setVisible(showImmature && showWatchOnly); // show watch-only immature balance
     bool showzODINAvailable = settingShowAllBalances || zerocoinBalance != matureZerocoinBalance;
     bool showzODINUnconfirmed = settingShowAllBalances || unconfirmedZerocoinBalance != 0;
     bool showzODINImmature = settingShowAllBalances || immatureZerocoinBalance != 0;
     ui->labelzBalanceMature->setVisible(showzODINAvailable);
-    ui->heading3__labelzBalanceMatureText->setVisible(showzODINAvailable);
+    ui->labelzBalanceMatureText->setVisible(showzODINAvailable);
     ui->labelzBalanceUnconfirmed->setVisible(showzODINUnconfirmed);
-    ui->heading3__labelzBalanceUnconfirmedText->setVisible(showzODINUnconfirmed);
+    ui->labelzBalanceUnconfirmedText->setVisible(showzODINUnconfirmed);
     ui->labelzBalanceImmature->setVisible(showzODINImmature);
-    ui->heading3__labelzBalanceImmatureText->setVisible(showzODINImmature);
+    ui->labelzBalanceImmatureText->setVisible(showzODINImmature);
     bool showPercentages = ! (zerocoinBalance == 0 && nTotalBalance == 0);
     ui->labelODINPercent->setVisible(showPercentages);
     ui->labelzODINPercent->setVisible(showPercentages);
@@ -364,9 +368,9 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
         // Keep up to date with wallet
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(),
-                   model->getZerocoinBalance(), model->getUnconfirmedZerocoinBalance(), model->getImmatureZerocoinBalance(), 
+                   model->getZerocoinBalance(), model->getUnconfirmedZerocoinBalance(), model->getImmatureZerocoinBalance(),
                    model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this, 
+        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
                          SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));

@@ -1,4 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2018-2018 The Phore developers
+// Copyright (c) 2019 The ODIN developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -43,6 +45,11 @@ QFont bitcoinAddressFont();
 
 // Set up widgets for address and amounts
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent);
+void setupAliasWidget(QValidatedLineEdit* widget, QWidget* parent);
+void setupIPWidget(QValidatedLineEdit* widget, QWidget* parent);
+void setupPrivKeyWidget(QValidatedLineEdit* widget, QWidget* parent);
+void setupTXIDWidget(QValidatedLineEdit* widget, QWidget* parent);
+void setupTXIDIndexWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupAmountWidget(QLineEdit* widget, QWidget* parent);
 
 // Parse "odin:" URI into recipient object, return true on successful parsing

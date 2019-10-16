@@ -57,7 +57,7 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 
 /**
  * MAIN NET CHECKPOINTS
- * 
+ *
  */
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
@@ -79,7 +79,7 @@ static const Checkpoints::CCheckpointData data = {
 
 /**
  * TEST NET CHECKPOINTS
- * 
+ *
  */
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
     boost::assign::map_list_of
@@ -96,7 +96,7 @@ static const Checkpoints::CCheckpointData dataTestnet = {
 
 /**
  * REGRESSION TEST NET CHECKPOINTS
- * 
+ *
  */
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
     boost::assign::map_list_of
@@ -168,17 +168,17 @@ class CMainParams : public CChainParams
         nLastPOWBlock           = 200; // Last Proof-of-Work block
         nModifierUpdateBlock    = 200;
         nMinStakeAge            = 60 * 60 * 1; // 1 hour
-        
+
         // MODIFIER_INTERVAL: time to elapse before new modifier is computed
         // MODIFIER_RATIO: ratio of group interval length between the last group and the first group
         nModifierInterval = 60;
         nModifierIntervalRatio = 3;
-        
+
         // BUDGET_PERCENT: % of block reward that goes to community proposals
         // BUDGET_COLLATERAL: amount of Ø required to submit a community proposal
         // MASTERNODE_REWARD: % of block reward that goes to masternodes
         // MASTERNODE_COLLATERAL: amount of Ø required for a masternode
-        nBudgetPercent                = 10; 
+        nBudgetPercent                = 10;
         nBudgetSubmissionCollateral   = 50;
         nMasternodeRewardPercent      = 60;
         nRequiredMasternodeCollateral = 25000 * COIN;
@@ -444,7 +444,7 @@ public:
         // Remove seeding nodes
         vFixedSeeds.clear();
         vSeeds.clear();
-      
+
         bech32_hrp = "odr";
 
         fMiningRequiresPeers = false;

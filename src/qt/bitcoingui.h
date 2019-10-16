@@ -30,6 +30,7 @@ class UnitDisplayStatusBarControl;
 class WalletFrame;
 class WalletModel;
 class MasternodeList;
+class ProposalList;
 
 class CWallet;
 
@@ -126,7 +127,15 @@ private:
     QAction* openAction;
     QAction* openBlockExplorerAction;
     QAction* showHelpMessageAction;
+    QAction* externalODIN;
+    QAction* externalCHAT;
+    QAction* externalMASH;
+    QAction* externalBLOG;
+    QAction* externalREDDIT;
+    QAction* externalDISCORD;
+    QAction* externalTELEGRAM;
     QAction* multiSendAction;
+    QAction *proposalAction;
 
     QSystemTrayIcon* trayIcon;
     QMenu* trayIconMenu;
@@ -197,8 +206,6 @@ public slots:
 
 private slots:
 #ifdef ENABLE_WALLET
-    /** Reset iconography for primary toolbar action menu */
-    void resetToolbarActionIcons();
     /** Switch to overview (home) page */
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
@@ -213,6 +220,8 @@ private slots:
     void gotoPrivacyPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to proposal page */
+    void gotoProposalPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
@@ -237,6 +246,15 @@ private slots:
     void aboutClicked();
     /** Show help message dialog */
     void showHelpMessageClicked();
+    /** Open external URL */
+    void openODIN();
+    void openCHAT();
+    void openMASH();
+    void openBLOG();
+    void openREDDIT();
+    void openDISCORD();
+    void openTELEGRAM();
+    void openExternalURL(QString url = "");
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);

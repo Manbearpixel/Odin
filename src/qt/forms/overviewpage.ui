@@ -43,7 +43,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1">
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -86,12 +86,12 @@
             <number>0</number>
            </property>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_Header" stretch="1,0,1">
+            <layout class="QHBoxLayout" name="horizontalLayout_Header" stretch="1">
              <property name="spacing">
               <number>6</number>
              </property>
              <item>
-              <widget class="QLabel" name="pageHeading__labelOverviewHeaderLeft">
+              <widget class="QLabel" name="labelOverviewHeaderLeft">
                <property name="minimumSize">
                 <size>
                  <width>464</width>
@@ -112,50 +112,10 @@
                 </font>
                </property>
                <property name="text">
-                <string>OVERVIEW</string>
+                <string>Wallet Overview</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_Header">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="labelOverviewHeaderRight">
-               <property name="minimumSize">
-                <size>
-                 <width>464</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>14</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -228,10 +188,16 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_5">
+                     <property name="spacing">
+                      <number>6</number>
+                     </property>
+                     <property name="sizeConstraint">
+                      <enum>QLayout::SetNoConstraint</enum>
+                     </property>
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0">
                        <item>
-                        <widget class="QLabel" name="heading1__combinedBalance">
+                        <widget class="QLabel" name="combinedBalance">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -240,9 +206,9 @@
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>12</pointsize>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <pointsize>24</pointsize>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="toolTip">
@@ -288,31 +254,15 @@
                       </layout>
                      </item>
                      <item>
-                      <widget class="Line" name="line_CombinedBalance">
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>1</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>1</height>
-                        </size>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
                       <layout class="QGridLayout" name="gridLayout_3">
-                       <property name="spacing">
+                       <property name="horizontalSpacing">
                         <number>12</number>
                        </property>
+                       <property name="verticalSpacing">
+                        <number>0</number>
+                       </property>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="heading3__labelBalanceTextz">
+                        <widget class="QLabel" name="labelBalanceTextz">
                          <property name="text">
                           <string>Available:</string>
                          </property>
@@ -322,8 +272,8 @@
                         <widget class="QLabel" name="labelBalancez">
                          <property name="font">
                           <font>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -344,7 +294,7 @@
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QLabel" name="heading3__labelTotalTextz">
+                        <widget class="QLabel" name="labelTotalTextz">
                          <property name="text">
                           <string>Total:</string>
                          </property>
@@ -354,8 +304,8 @@
                         <widget class="QLabel" name="labelTotalz">
                          <property name="font">
                           <font>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -383,7 +333,7 @@
                          <property name="sizeHint" stdset="0">
                           <size>
                            <width>40</width>
-                           <height>20</height>
+                           <height>0</height>
                           </size>
                          </property>
                         </spacer>
@@ -418,7 +368,7 @@
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_4">
                        <item>
-                        <widget class="QLabel" name="heading1__odinBalance">
+                        <widget class="QLabel" name="odinBalance">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -427,9 +377,9 @@
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>12</pointsize>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <pointsize>24</pointsize>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="text">
@@ -460,28 +410,12 @@
                       </layout>
                      </item>
                      <item>
-                      <widget class="Line" name="line_Balance">
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>1</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>1</height>
-                        </size>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
                       <layout class="QGridLayout" name="gridLayout">
-                       <property name="spacing">
+                       <property name="horizontalSpacing">
                         <number>12</number>
+                       </property>
+                       <property name="verticalSpacing">
+                        <number>0</number>
                        </property>
                        <item row="0" column="1">
                         <widget class="QLabel" name="labelSpendable">
@@ -504,7 +438,7 @@
                         </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="heading3__labelBalanceText">
+                        <widget class="QLabel" name="labelBalanceText">
                          <property name="text">
                           <string>Available:</string>
                          </property>
@@ -561,7 +495,7 @@
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QLabel" name="heading3__labelPendingText">
+                        <widget class="QLabel" name="labelPendingText">
                          <property name="text">
                           <string>Pending:</string>
                          </property>
@@ -618,7 +552,7 @@
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QLabel" name="heading3__labelImmatureText">
+                        <widget class="QLabel" name="labelImmatureText">
                          <property name="text">
                           <string>Immature:</string>
                          </property>
@@ -675,7 +609,7 @@
                         </widget>
                        </item>
                        <item row="4" column="0">
-                        <widget class="QLabel" name="heading3__labelLockedBalanceText">
+                        <widget class="QLabel" name="labelLockedBalanceText">
                          <property name="toolTip">
                           <string>Locked ODIN or Masternode collaterals. These are excluded from zODIN minting.</string>
                          </property>
@@ -735,7 +669,7 @@
                         </widget>
                        </item>
                        <item row="5" column="0">
-                        <widget class="QLabel" name="heading3__labelTotalText">
+                        <widget class="QLabel" name="labelTotalText">
                          <property name="toolTip">
                           <string>Your current ODIN balance, unconfirmed and immature transactions included</string>
                          </property>
@@ -837,7 +771,7 @@
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,0">
                        <item>
-                        <widget class="QLabel" name="heading1__zOdinBalance">
+                        <widget class="QLabel" name="zOdinBalance">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -846,9 +780,9 @@
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>12</pointsize>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <pointsize>24</pointsize>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="text">
@@ -879,31 +813,15 @@
                       </layout>
                      </item>
                      <item>
-                      <widget class="Line" name="line_ZerocoinBalance">
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>1</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>1</height>
-                        </size>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
                       <layout class="QGridLayout" name="gridLayout_5">
-                       <property name="spacing">
+                       <property name="horizontalSpacing">
                         <number>12</number>
                        </property>
+                       <property name="verticalSpacing">
+                        <number>0</number>
+                       </property>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceMatureText">
+                        <widget class="QLabel" name="labelzBalanceMatureText">
                          <property name="toolTip">
                           <string>Mature: more than 20 confirmation and more than 3 mints of the same denomination after it was minted.
 These zODIN are spendable.</string>
@@ -934,7 +852,7 @@ These zODIN are spendable.</string>
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceUnconfirmedText">
+                        <widget class="QLabel" name="labelzBalanceUnconfirmedText">
                          <property name="toolTip">
                           <string>Unconfirmed: less than 20 confirmations
 Immature: confirmed, but less than 3 mints of the same denomination after it was minted</string>
@@ -965,7 +883,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceImmatureText">
+                        <widget class="QLabel" name="labelzBalanceImmatureText">
                          <property name="toolTip">
                           <string>Unconfirmed: less than 20 confirmations
 Immature: confirmed, but less than 3 mints of the same denomination after it was minted</string>
@@ -996,7 +914,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                         </widget>
                        </item>
                        <item row="4" column="0">
-                        <widget class="QLabel" name="heading3__labelzBalanceText">
+                        <widget class="QLabel" name="labelzBalanceText">
                          <property name="toolTip">
                           <string>Your current zODIN balance, unconfirmed and immature zODIN included.</string>
                          </property>
@@ -1082,7 +1000,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_1" stretch="0,0,0,0,0">
+                 <layout class="QVBoxLayout" name="verticalLayout_1" stretch="0,0,0,0">
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
@@ -1095,9 +1013,9 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                       </property>
                       <property name="font">
                        <font>
-                        <pointsize>12</pointsize>
-                        <weight>75</weight>
-                        <bold>true</bold>
+                        <pointsize>24</pointsize>
+                        <weight>50</weight>
+                        <bold>false</bold>
                        </font>
                       </property>
                       <property name="text">
@@ -1138,25 +1056,6 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                      </spacer>
                     </item>
                    </layout>
-                  </item>
-                  <item>
-                   <widget class="Line" name="line">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>1</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>1</height>
-                     </size>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
                   </item>
                   <item>
                    <widget class="QListView" name="listTransactions">

@@ -33,6 +33,11 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
     ui->receiveButton->setIcon(QIcon());
     ui->showRequestButton->setIcon(QIcon());
     ui->removeRequestButton->setIcon(QIcon());
+    ui->reqLabel->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    //ui->reqAmount->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    //needs to be handled within bitcoinamountfield.cpp
+    ui->reqMessage->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    
 #endif
 
     // configure bech32 checkbox, disable if launched with legacy as default:
@@ -83,6 +88,7 @@ void ReceiveCoinsDialog::setModel(WalletModel* model)
         tableView->setSelectionMode(QAbstractItemView::ContiguousSelection);
         tableView->setColumnWidth(RecentRequestsTableModel::Date, DATE_COLUMN_WIDTH);
         tableView->setColumnWidth(RecentRequestsTableModel::Label, LABEL_COLUMN_WIDTH);
+       // tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignRight);
 
         connect(tableView->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this,

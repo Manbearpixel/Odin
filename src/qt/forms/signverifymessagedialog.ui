@@ -142,10 +142,6 @@
            <property name="text">
             <string>Sign &amp;Message</string>
            </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
-           </property>
            <property name="autoDefault">
             <bool>false</bool>
            </property>
@@ -158,10 +154,6 @@
            </property>
            <property name="text">
             <string>Clear &amp;All</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -264,7 +256,11 @@
         </layout>
        </item>
        <item>
-        <widget class="QPlainTextEdit" name="messageIn_VM"/>
+        <widget class="QPlainTextEdit" name="messageIn_VM">
+         <property name="styleSheet">
+          <string notr="true">border:0;</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QValidatedLineEdit" name="signatureIn_VM"/>
@@ -279,10 +275,6 @@
            <property name="text">
             <string>Verify &amp;Message</string>
            </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/transaction_0</normaloff>:/icons/transaction_0</iconset>
-           </property>
            <property name="autoDefault">
             <bool>false</bool>
            </property>
@@ -295,10 +287,6 @@
            </property>
            <property name="text">
             <string>Clear &amp;All</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="autoDefault">
             <bool>false</bool>

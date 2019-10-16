@@ -205,9 +205,10 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
     if (nBlockEnd < pindexPrev->nHeight)
         throw runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
 
+
     if (!IsValidDestinationString(params[4].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid ODIN address");
-    
+
     CTxDestination address = DecodeDestination(params[4].get_str());
 
     // Parse ODIN address
@@ -974,7 +975,12 @@ UniValue mnfinalbudget(const UniValue& params, bool fHelp)
         UniValue resultObj(UniValue::VOBJ);
 
         std::vector<CFinalizedBudget*> winningFbs = budget.GetFinalizedBudgets();
-        BOOST_FOREACH (CFinalizedBudget* finalizedBudget, winningFbs) {
+        BOOST_FOREACH(CFinalizedBudget* finalizedBudget, winningFbs)
+        {
+            // Ignore old finalized budgets to avoid displaying misleading error
+            // messages about missing proposals.  Include the previous final budget cycle.
+            if (finalizedBudget->GetBlockStart() < (chainActive.Tip()->nHeight - GetBudgetPaymentCycleBlocks())) continue;
+
             UniValue bObj(UniValue::VOBJ);
             bObj.push_back(Pair("FeeTX", finalizedBudget->nFeeTXHash.ToString()));
             bObj.push_back(Pair("Hash", finalizedBudget->GetHash().ToString()));
