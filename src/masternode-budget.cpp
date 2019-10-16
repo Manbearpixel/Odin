@@ -41,6 +41,12 @@ int GetBudgetPaymentCycleBlocks()
     return 1000;
 }
 
+CAmount GetAvailableBudget(int nHeight)
+{
+  CAmount nSubsidy = GetBlockValue(nHeight, true);
+  return nSubsidy * GetBudgetPaymentCycleBlocks();
+}
+
 bool IsBudgetCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash, std::string& strError, int64_t& nTime, int& nConf, bool fBudgetFinalization)
 {
     CTransaction txCollateral;

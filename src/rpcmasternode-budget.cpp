@@ -664,6 +664,25 @@ UniValue getnextsuperblock(const UniValue& params, bool fHelp)
     return nNext;
 }
 
+UniValue getnextsuperblockbudget(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getnextsuperblockbudget\n"
+            "\nDisplay the budget for the next Superblock\n"
+
+            "\nResult:\n"
+            "n      (numeric) Amount of ODIN Coins available for the next super block\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getnextsuperblockbudget", "") + HelpExampleRpc("getnextsuperblockbudget", ""));
+
+    CBlockIndex* pindexPrev = chainActive.Tip();
+    if (!pindexPrev) return "unknown";
+
+    int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+    return ValueFromAmount(GetAvailableBudget(nNext));
+}
+
 UniValue getbudgetprojection(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)

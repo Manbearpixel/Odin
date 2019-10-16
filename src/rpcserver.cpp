@@ -376,6 +376,7 @@ static const CRPCCommand vRPCCommands[] =
         {"odin", "mnbudgetvote", &mnbudgetvote, true, true, false},
         {"odin", "getbudgetvotes", &getbudgetvotes, true, true, false},
         {"odin", "getnextsuperblock", &getnextsuperblock, true, true, false},
+        {"odin", "getnextsuperblockbudget", &getnextsuperblockbudget, true, true, false},
         {"odin", "getbudgetprojection", &getbudgetprojection, true, true, false},
         {"odin", "getbudgetinfo", &getbudgetinfo, true, true, false},
         {"odin", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
