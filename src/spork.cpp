@@ -127,8 +127,10 @@ int64_t GetSporkValue(int nSporkID)
         if (nSporkID == SPORK_10_MASTERNODE_PAY_UPDATED_NODES) r = SPORK_10_MASTERNODE_PAY_UPDATED_NODES_DEFAULT;
         if (nSporkID == SPORK_13_ENABLE_SUPERBLOCKS) r = SPORK_13_ENABLE_SUPERBLOCKS_DEFAULT;
         if (nSporkID == SPORK_14_NEW_PROTOCOL_ENFORCEMENT) r = SPORK_14_NEW_PROTOCOL_ENFORCEMENT_DEFAULT;
+        if (nSporkID == SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) r = SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2_DEFAULT;
         if (nSporkID == SPORK_16_ZEROCOIN_MAINTENANCE_MODE) r = SPORK_16_ZEROCOIN_MAINTENANCE_MODE_DEFAULT;
         if (nSporkID == SPORK_17_SEGWIT_ACTIVATION) r = SPORK_17_SEGWIT_ACTIVATION_DEFAULT;
+        if (nSporkID == SPORK_18_SEGWIT_ON_COINBASE) r = SPORK_18_SEGWIT_ON_COINBASE_DEFAULT;
 
         if (r == -1) LogPrintf("GetSpork::Unknown Spork %d\n", nSporkID);
     }
@@ -257,6 +259,11 @@ bool CSporkManager::SetPrivKey(std::string strPrivKey)
 
 int CSporkManager::GetSporkIDByName(std::string strName)
 {
+    // Protocol sporks
+    if (strName == "SPORK_14_NEW_PROTOCOL_ENFORCEMENT") return SPORK_14_NEW_PROTOCOL_ENFORCEMENT;
+    if (strName == "SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2") return SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2;
+
+    // Other sporks
     if (strName == "SPORK_2_SWIFTTX") return SPORK_2_SWIFTTX;
     if (strName == "SPORK_3_SWIFTTX_BLOCK_FILTERING") return SPORK_3_SWIFTTX_BLOCK_FILTERING;
     if (strName == "SPORK_5_MAX_VALUE") return SPORK_5_MAX_VALUE;
@@ -267,12 +274,17 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if (strName == "SPORK_13_ENABLE_SUPERBLOCKS") return SPORK_13_ENABLE_SUPERBLOCKS;
     if (strName == "SPORK_16_ZEROCOIN_MAINTENANCE_MODE") return SPORK_16_ZEROCOIN_MAINTENANCE_MODE;
     if (strName == "SPORK_17_SEGWIT_ACTIVATION") return SPORK_17_SEGWIT_ACTIVATION;
-
+    if (strName == "SPORK_18_SEGWIT_ON_COINBASE") return SPORK_18_SEGWIT_ON_COINBASE;
     return -1;
 }
 
 std::string CSporkManager::GetSporkNameByID(int id)
 {
+    // Protocol sporks
+    if (id == SPORK_14_NEW_PROTOCOL_ENFORCEMENT) return "SPORK_14_NEW_PROTOCOL_ENFORCEMENT";
+    if (id == SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) return "SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2";
+
+    // Other sporks
     if (id == SPORK_2_SWIFTTX) return "SPORK_2_SWIFTTX";
     if (id == SPORK_3_SWIFTTX_BLOCK_FILTERING) return "SPORK_3_SWIFTTX_BLOCK_FILTERING";
     if (id == SPORK_5_MAX_VALUE) return "SPORK_5_MAX_VALUE";
@@ -283,6 +295,6 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if (id == SPORK_13_ENABLE_SUPERBLOCKS) return "SPORK_13_ENABLE_SUPERBLOCKS";
     if (id == SPORK_16_ZEROCOIN_MAINTENANCE_MODE) return "SPORK_16_ZEROCOIN_MAINTENANCE_MODE";
     if (id == SPORK_17_SEGWIT_ACTIVATION) return "SPORK_17_SEGWIT_ACTIVATION";
-
+    if (id == SPORK_18_SEGWIT_ON_COINBASE) return "SPORK_18_SEGWIT_ON_COINBASE";
     return "Unknown";
 }

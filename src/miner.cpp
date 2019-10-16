@@ -239,7 +239,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             int64_t nTxSigOpsCost = mi->second.GetSigOpCost();
             if (nBlockSigOpsCost + nTxSigOpsCost >= MAX_BLOCK_SIGOPS_COST)
                 continue;
-            
+
             nBlockSigOpsCost += nTxSigOpsCost;
             pblocktemplate->vTxSigOpsCost.push_back(nTxSigOpsCost);
 
@@ -500,6 +500,25 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         }
         pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(pblock->vtx[0]);
 
+        if (fProofOfStake) {
+            if (! IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
+                bool fHaveWitness = false;
+                for (size_t t = 1; t < pblock->vtx.size(); t++) {
+                    if (!pblock->vtx[t].wit.IsNull()) {
+                        fHaveWitness = true;
+                        break;
+                    }
+                }
+                if (fHaveWitness) {
+                    if (fDebug) {
+                        LogPrintf("CreateNewBlock : staking-on-segwit block found but the feature is not enabled.\n");
+                    }
+                    return NULL;
+                }
+            }
+        }
+
+
         CValidationState state;
         if (!TestBlockValidity(state, *pblock, pindexPrev, false, false)) {
             mempool.clear();
@@ -607,7 +626,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 continue;
             }
 
-            while (chainActive.Tip()->nTime < 1504595227 || vNodes.empty() || pwallet->IsLocked() || 
+            while (chainActive.Tip()->nTime < 1504595227 || vNodes.empty() || pwallet->IsLocked() ||
                    nReserveBalance >= pwallet->GetBalance() || !masternodeSync.IsSynced()) {
                 nLastCoinStakeSearchInterval = 0;
                 MilliSleep(5000);
