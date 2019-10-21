@@ -354,7 +354,9 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
 
-        vSeeds.push_back(CDNSSeedData("tor1-testnet.odinblockchain.org", "tor1-testnet.odinblockchain.org")); // MN 00
+        vSeeds.push_back(CDNSSeedData("valknut1.odinblockchain.org", "valknut1.odinblockchain.org")); // MN 01
+        vSeeds.push_back(CDNSSeedData("valknut2.odinblockchain.org", "valknut2.odinblockchain.org")); // MN 02
+        vSeeds.push_back(CDNSSeedData("valknut3.odinblockchain.org", "valknut3.odinblockchain.org")); // MN 03
 
         // Testnet odin addresses start with 'x'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 137);
