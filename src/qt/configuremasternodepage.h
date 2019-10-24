@@ -86,6 +86,7 @@ public slots:
 
 private:
     void saveCurrentRow();
+    bool validateMasternode();
 	int counters;
 	QString mnAliasCache;
     Ui::ConfigureMasternodePage* ui;
