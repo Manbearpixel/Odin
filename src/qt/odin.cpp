@@ -481,6 +481,8 @@ void BitcoinApplication::initializeResult(int retval)
         // ODIN: URIs or payment requests:
         connect(paymentServer, SIGNAL(receivedPaymentRequest(SendCoinsRecipient)),
             window, SLOT(handlePaymentRequest(SendCoinsRecipient)));
+        connect(paymentServer, SIGNAL(receivedMASHRequest(MasternodeConfig)),
+            window, SLOT(handleMASHRequest(MasternodeConfig)));
         connect(window, SIGNAL(receivedURI(QString)),
             paymentServer, SLOT(handleURIOrFile(QString)));
         connect(paymentServer, SIGNAL(message(QString, QString, unsigned int)),

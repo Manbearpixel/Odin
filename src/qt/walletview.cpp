@@ -351,6 +351,11 @@ bool WalletView::handlePaymentRequest(const SendCoinsRecipient& recipient)
     return sendCoinsPage->handlePaymentRequest(recipient);
 }
 
+bool WalletView::handleMASHRequest(const MasternodeConfig& mnConfig)
+{
+    return masternodeListPage->handleMASHRequest(mnConfig);
+}
+
 void WalletView::showOutOfSyncWarning(bool fShow)
 {
     overviewPage->showOutOfSyncWarning(fShow);

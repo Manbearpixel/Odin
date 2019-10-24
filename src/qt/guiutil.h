@@ -22,6 +22,7 @@
 
 class QValidatedLineEdit;
 class SendCoinsRecipient;
+class MasternodeConfig;
 
 QT_BEGIN_NAMESPACE
 class QAbstractItemView;
@@ -56,6 +57,10 @@ void setupAmountWidget(QLineEdit* widget, QWidget* parent);
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out);
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out);
 QString formatBitcoinURI(const SendCoinsRecipient& info);
+
+// Parse "odin:mash" URI into MasternodeConfig object, return true on success
+bool parseMASHURI(const QUrl& uri, MasternodeConfig* out);
+bool parseMASHURI(QString uri, MasternodeConfig* out);
 
 // Returns true if given address+amount meets "dust" definition
 bool isDust(const QString& address, const CAmount& amount);

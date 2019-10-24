@@ -54,6 +54,9 @@ ConfigureMasternodePage::ConfigureMasternodePage(Mode mode, QWidget* parent) : Q
 	GUIUtil::setupTXIDIndexWidget(ui->outputIdEdit, this);
 
     switch (mode) {
+        case ImportConfigureMasternode:
+            setWindowTitle(tr("Import Masternode Alias"));
+            break;
         case NewConfigureMasternode:
             setWindowTitle(tr("New Masternode Alias"));
             break;
@@ -151,6 +154,7 @@ void ConfigureMasternodePage::saveCurrentRow()
     if (!validateMasternode()) return;
 
     switch (mode) {
+        case ImportConfigureMasternode:
         case NewConfigureMasternode:
             if(ui->aliasEdit->text().toStdString().empty() ||
                 ui->vpsIpEdit->text().toStdString().empty() ||

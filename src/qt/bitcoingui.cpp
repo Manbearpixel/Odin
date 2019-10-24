@@ -1412,6 +1412,19 @@ bool BitcoinGUI::handlePaymentRequest(const SendCoinsRecipient& recipient)
     return false;
 }
 
+bool BitcoinGUI::handleMASHRequest(const MasternodeConfig& mnConfig)
+{
+    showNormalIfMinimized();
+    gotoMasternodePage();
+
+    // URI has to be valid
+    if (walletFrame && walletFrame->handleMASHRequest(mnConfig)) {
+        return true;
+    }
+
+    return false;
+}
+
 void BitcoinGUI::setEncryptionStatus(int status)
 {
     switch (status) {

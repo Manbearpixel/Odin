@@ -11,6 +11,7 @@
 class BitcoinGUI;
 class ClientModel;
 class SendCoinsRecipient;
+class MasternodeConfig;
 class WalletModel;
 class WalletView;
 class TradingDialog;
@@ -36,6 +37,7 @@ public:
     void removeAllWallets();
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
+    bool handleMASHRequest(const MasternodeConfig& mnConfig);
 
     void showOutOfSyncWarning(bool fShow);
 
