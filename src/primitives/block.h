@@ -16,8 +16,8 @@
 static const unsigned int MAX_BLOCK_SIZE_CURRENT = 2000000;
 static const unsigned int MAX_BLOCK_SIZE_LEGACY = 1000000;
 
-// @todo remove after segwit - testnet: 2019-10-25
-static const unsigned int SEGWIT_ACTIVATION_TIME = 1571979600;
+// @todo remove after segwit - testnet: UTC 2019-10-29 01:30:00
+static const unsigned int SEGWIT_ACTIVATION_TIME = 1572312600;
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
