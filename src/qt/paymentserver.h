@@ -95,6 +95,9 @@ signals:
     // Fired when a valid payment request is received
     void receivedPaymentRequest(SendCoinsRecipient);
 
+    // Fired when a valid MASH request is received
+    void receivedMASHRequest(MasternodeConfig);
+
     // Fired when a valid PaymentACK is received
     void receivedPaymentACK(const QString& paymentACKMsg);
 

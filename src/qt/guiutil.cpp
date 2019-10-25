@@ -277,6 +277,67 @@ QString formatBitcoinURI(const SendCoinsRecipient& info)
 
     return ret;
 }
+bool parseMASHURI(const QUrl& uri, MasternodeConfig* outputConfig)
+{
+    // return if URI is not valid or is no ODIN: URI
+    if (!uri.isValid() || uri.scheme() != QString(URI_SCHEME))
+        return false;
+
+    if (!uri.path().contains("mash"))
+        return false;
+
+
+#if QT_VERSION < 0x050000
+    QList<QPair<QString, QString> > items = uri.queryItems(QUrl::PrettyDecoded);
+#else
+    QUrlQuery uriQuery(uri);
+    QList<QPair<QString, QString> > items = uriQuery.queryItems(QUrl::PrettyDecoded);
+#endif
+
+    MasternodeConfig mnConfig;
+
+    for (QList<QPair<QString, QString> >::iterator i = items.begin(); i != items.end(); i++) {
+        if (i->first == "alias") {
+            mnConfig.alias = i->second;
+        }
+
+        if (i->first == "ipAddress") {
+            // unescape any characters (such as [,])
+            mnConfig.ipAddress = QUrl::fromPercentEncoding(i->second.toLatin1());
+        }
+
+        if (i->first == "privKey") {
+            mnConfig.privKey = i->second;
+        }
+
+        if (i->first == "txHash") {
+            mnConfig.txHash = i->second;
+        }
+
+        if (i->first == "txOutputId") {
+            mnConfig.txOutputId = i->second;
+        }
+    }
+
+    if (outputConfig) {
+        *outputConfig = mnConfig;
+    }
+
+    return true;
+}
+
+bool parseMASHURI(QString uri, MasternodeConfig* mnConfig)
+{
+    // Convert odin:// to odin:
+    //
+    //    Cannot handle this later, because odin:// will cause Qt to see the part after // as host,
+    //    which will lower-case it (and thus invalidate the address).
+    if (uri.startsWith(URI_SCHEME "://", Qt::CaseInsensitive)) {
+        uri.replace(0, std::strlen(URI_SCHEME) + 3, URI_SCHEME ":");
+    }
+    QUrl uriInstance(uri);
+    return parseMASHURI(uriInstance, mnConfig);
+}
 
 bool isDust(const QString& address, const CAmount& amount)
 {

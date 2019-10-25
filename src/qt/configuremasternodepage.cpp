@@ -22,8 +22,8 @@
 #include "masternodeman.h"
 #include "masternodelist.h"
 #include "wallet.h"
-
 #include <univalue.h>
+
 #include <QIcon>
 #include <QMenu>
 #include <QString>
@@ -54,12 +54,15 @@ ConfigureMasternodePage::ConfigureMasternodePage(Mode mode, QWidget* parent) : Q
 	GUIUtil::setupTXIDIndexWidget(ui->outputIdEdit, this);
 
     switch (mode) {
-    case NewConfigureMasternode:
-        setWindowTitle(tr("New Masternode Alias"));
-        break;
-    case EditConfigureMasternode:
-        setWindowTitle(tr("Edit Masternode Alias"));
-        break;
+        case ImportConfigureMasternode:
+            setWindowTitle(tr("Import Masternode Alias"));
+            break;
+        case NewConfigureMasternode:
+            setWindowTitle(tr("New Masternode Alias"));
+            break;
+        case EditConfigureMasternode:
+            setWindowTitle(tr("Edit Masternode Alias"));
+            break;
     }
 
 }
@@ -69,21 +72,19 @@ ConfigureMasternodePage::~ConfigureMasternodePage()
     delete ui;
 }
 
-
-void ConfigureMasternodePage::loadAlias(QString strAlias)
-{
-   ui->aliasEdit->setText(strAlias);
-}
-
 void ConfigureMasternodePage::counter(int counter)
 {
    setCounters(counter);
 }
 
-
 void ConfigureMasternodePage::MNAliasCache(QString MnAliasCache)
 {
    setMnAliasCache(MnAliasCache);
+}
+
+void ConfigureMasternodePage::loadAlias(QString strAlias)
+{
+   ui->aliasEdit->setText(strAlias);
 }
 
 void ConfigureMasternodePage::loadIP(QString strIP)
@@ -106,31 +107,96 @@ void ConfigureMasternodePage::loadOutputIndex(QString strOutputIndex)
    ui->outputIdEdit->setText(strOutputIndex);
 }
 
+bool ConfigureMasternodePage::validateMasternode()
+{
+    std::string strError = "";
+
+    // RegEx for Masternode IP Address validation
+    QRegExp ipRx("^(?:[0-9.]+|(?:\\[[0-9a-fA-F:]+\\]))(:[0-9]+)$");
+
+    // Validation for Masternode Private Key
+    CBitcoinSecret privKeyStr;
+    bool privKeyGood = privKeyStr.SetString(ui->privKeyEdit->text().toStdString().c_str());
+
+    if (ui->aliasEdit->text().toStdString().empty()) {
+        strError = "Masternode Alias cannot be empty.";
+    } else if (ui->vpsIpEdit->text().toStdString().empty()) {
+        strError = "Masternode IP Address cannot be empty.";
+    } else if (!ui->vpsIpEdit->text().contains(ipRx)) {
+        strError = "Masternode IP Address is invalid."
+            "\nIt should be either an IPv4 or IPv6 address and include the port."
+            "\nIPv4 Example: 123.123.123.123:22100"
+            "\nIPv6 Example: [2a01:4f8:c2c:5b9c:e513::6]:22100";
+    } else if (ui->privKeyEdit->text().toStdString().empty()) {
+        strError = "Private Key cannot be empty.";
+    } else if (!privKeyGood) {
+        strError = "Private Key is invalid."
+            "\nTo generate a valid Masternode private key click 'Autofill Private Key' below "
+            "\nor enter 'masternode genkey' into the Debug Console.";
+    } else if (ui->outputEdit->text().toStdString().size() < 64) {
+        strError = "Invalid Output TX, it should look like:"
+            "\n(3bcf71c20dcbac71f43e06ab4b43f7dcb6f32b45f2e0de641bbe0f3989d74ba8)";
+    } else if (ui->outputIdEdit->text().toStdString().empty()) {
+        strError = "Output ID cannot be empty.";
+    }
+
+    if (!strError.empty())
+    {
+        QMessageBox::critical(this, tr("Masternode Save Error"), QString::fromStdString(strError));
+        return false;
+    }
+
+    return true;
+}
 
 void ConfigureMasternodePage::saveCurrentRow()
 {
+    if (!validateMasternode()) return;
 
     switch (mode) {
-    case NewConfigureMasternode:
-		if(ui->aliasEdit->text().toStdString().empty() || ui->vpsIpEdit->text().toStdString().empty() || ui->privKeyEdit->text().toStdString().empty() || ui->outputEdit->text().toStdString().empty() || ui->outputIdEdit->text().toStdString().empty()) {
-			break;
-		}
-		masternodeConfig.add(ui->aliasEdit->text().toStdString(), ui->vpsIpEdit->text().toStdString(), ui->privKeyEdit->text().toStdString(), ui->outputEdit->text().toStdString(), ui->outputIdEdit->text().toStdString());
-		masternodeConfig.writeToMasternodeConf();
-        break;
-    case EditConfigureMasternode:
-		if(ui->aliasEdit->text().toStdString().empty() || ui->vpsIpEdit->text().toStdString().empty() || ui->privKeyEdit->text().toStdString().empty() || ui->outputEdit->text().toStdString().empty() || ui->outputIdEdit->text().toStdString().empty()) {
-			break;
-		}
+        case ImportConfigureMasternode:
+        case NewConfigureMasternode:
+            if(ui->aliasEdit->text().toStdString().empty() ||
+                ui->vpsIpEdit->text().toStdString().empty() ||
+                ui->privKeyEdit->text().toStdString().empty() ||
+                ui->outputEdit->text().toStdString().empty() ||
+                ui->outputIdEdit->text().toStdString().empty()) {
+                break;
+            }
 
-	    QString MnAlias = getMnAliasCache();
-		ConfigureMasternodePage::updateAlias(ui->aliasEdit->text().toStdString(), ui->vpsIpEdit->text().toStdString(), ui->privKeyEdit->text().toStdString(), ui->outputEdit->text().toStdString(), ui->outputIdEdit->text().toStdString(), MnAlias.toStdString());
-		break;
+            masternodeConfig.add(
+                ui->aliasEdit->text().toStdString(),
+                ui->vpsIpEdit->text().toStdString(),
+                ui->privKeyEdit->text().toStdString(),
+                ui->outputEdit->text().toStdString(),
+                ui->outputIdEdit->text().toStdString());
+
+            masternodeConfig.writeToMasternodeConf();
+            break;
+        case EditConfigureMasternode:
+            if(ui->aliasEdit->text().toStdString().empty() ||
+                ui->vpsIpEdit->text().toStdString().empty() ||
+                ui->privKeyEdit->text().toStdString().empty() ||
+                ui->outputEdit->text().toStdString().empty() ||
+                ui->outputIdEdit->text().toStdString().empty()) {
+                break;
+            }
+
+            QString MnAlias = getMnAliasCache();
+            ConfigureMasternodePage::updateAlias(ui->aliasEdit->text().toStdString(),
+                ui->vpsIpEdit->text().toStdString(),
+                ui->privKeyEdit->text().toStdString(),
+                ui->outputEdit->text().toStdString(),
+                ui->outputIdEdit->text().toStdString(),
+                MnAlias.toStdString());
+            break;
     }
 }
 
 void ConfigureMasternodePage::accept()
 {
+    if (!validateMasternode()) return;
+
 	saveCurrentRow();
 	emit accepted();
     QDialog::accept();

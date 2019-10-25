@@ -35,6 +35,16 @@ QT_BEGIN_NAMESPACE
 class QTimer;
 QT_END_NAMESPACE
 
+class MasternodeConfig
+{
+public:
+    QString alias;
+    QString ipAddress;
+    QString privKey;
+    QString txHash;
+    QString txOutputId;
+};
+
 class SendCoinsRecipient
 {
 public:
@@ -215,7 +225,7 @@ public:
     string GetUniqueWalletBackupName();
     void loadReceiveRequests(std::vector<std::string>& vReceiveRequests);
     bool saveReceiveRequest(const std::string& sAddress, const int64_t nId, const std::string& sRequest);
-    
+
     OutputType getDefaultAddressType() const;
 
 private:
@@ -255,8 +265,8 @@ private:
 
 signals:
     // Signal that balance in wallet changed
-    void balanceChanged(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
-                        const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance, 
+    void balanceChanged(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
+                        const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                         const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
 
     // Encryption status of wallet changed

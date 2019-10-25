@@ -42,7 +42,8 @@ class ConfigureMasternodePage : public QDialog
 public:
     enum Mode {
         NewConfigureMasternode,
-        EditConfigureMasternode
+        EditConfigureMasternode,
+        ImportConfigureMasternode
     };
 
     explicit ConfigureMasternodePage(Mode mode, QWidget* parent);
@@ -86,6 +87,7 @@ public slots:
 
 private:
     void saveCurrentRow();
+    bool validateMasternode();
 	int counters;
 	QString mnAliasCache;
     Ui::ConfigureMasternodePage* ui;

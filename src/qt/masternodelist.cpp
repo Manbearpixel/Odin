@@ -489,3 +489,36 @@ void MasternodeList::on_UpdateButton_clicked()
 {
     updateMyNodeList(true);
 }
+
+bool MasternodeList::handleMASHRequest(const MasternodeConfig& mnConfig)
+{
+    ConfigureMasternodePage dlg(ConfigureMasternodePage::EditConfigureMasternode, this);
+
+    dlg.loadAlias(mnConfig.alias);
+	dlg.loadIP(mnConfig.ipAddress);
+	dlg.loadPrivKey(mnConfig.privKey);
+	dlg.loadTxHash(mnConfig.txHash);
+	dlg.loadOutputIndex(mnConfig.txOutputId);
+	dlg.MNAliasCache(mnConfig.alias);
+
+    if ( QDialog::Accepted == dlg.exec() )
+    {
+        while (ui->tableWidgetMyMasternodes->rowCount() > 0)
+        {
+            ui->tableWidgetMyMasternodes->removeRow(0);
+        }
+
+        // clear cache
+        masternodeConfig.clear();
+
+        // parse masternode.conf
+        std::string strErr;
+        if (!masternodeConfig.read(strErr)) {
+            LogPrintf("Error reading masternode configuration file: \n");
+        }
+
+        updateMyNodeList(true);
+    }
+
+    return true;
+}

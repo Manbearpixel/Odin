@@ -96,6 +96,15 @@ bool WalletFrame::handlePaymentRequest(const SendCoinsRecipient& recipient)
     return walletView->handlePaymentRequest(recipient);
 }
 
+bool WalletFrame::handleMASHRequest(const MasternodeConfig& mnConfig)
+{
+    WalletView* walletView = currentWalletView();
+    if (!walletView)
+        return false;
+
+    return walletView->handleMASHRequest(mnConfig);
+}
+
 void WalletFrame::showOutOfSyncWarning(bool fShow)
 {
     bOutOfSync = fShow;

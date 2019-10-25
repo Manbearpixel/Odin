@@ -29,6 +29,7 @@ class MasternodeList;
 }
 
 class ClientModel;
+class MasternodeConfig;
 class WalletModel;
 
 QT_BEGIN_NAMESPACE
@@ -49,6 +50,7 @@ public:
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
 	void deleteAlias(std::string Alias);
+    bool handleMASHRequest(const MasternodeConfig& mnConfig);
 
 private:
     QMenu* contextMenu;

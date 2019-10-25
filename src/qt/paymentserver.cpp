@@ -399,6 +399,12 @@ void PaymentServer::handleURIOrFile(const QString& s)
             return;
         } else // normal URI
         {
+            MasternodeConfig mnConfig;
+            if (GUIUtil::parseMASHURI(s, &mnConfig)) {
+                emit receivedMASHRequest(mnConfig);
+                return;
+            }
+
             SendCoinsRecipient recipient;
             if (GUIUtil::parseBitcoinURI(s, &recipient)) {
 
@@ -406,13 +412,15 @@ void PaymentServer::handleURIOrFile(const QString& s)
 
                     emit message(tr("URI handling"), tr("Invalid payment address %1").arg(recipient.address),
                         CClientUIInterface::MSG_ERROR);
-                } else
+                } else {
                     emit receivedPaymentRequest(recipient);
-            } else
-                emit message(tr("URI handling"),
-                    tr("URI cannot be parsed! This can be caused by an invalid ODIN address or malformed URI parameters."),
-                    CClientUIInterface::ICON_WARNING);
+                }
+                return;
+            }
 
+            emit message(tr("URI handling"),
+                tr("URI cannot be parsed! This can be caused by an invalid ODIN address or malformed URI parameters."),
+                CClientUIInterface::ICON_WARNING);
             return;
         }
     }
