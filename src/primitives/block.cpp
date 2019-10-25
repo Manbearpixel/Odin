@@ -177,53 +177,67 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
     }
     else
     {
-        LogPrintf("Signing block... nTime=%d\n", GetBlockTime());
-
         // @todo remove after segwit
-        if (GetBlockTime() >= SEGWIT_ACTIVATION_TIME)
-        {
-		    // from Lux coin
-            return vtx[0].vout[0].IsEmpty() && vtx.size() > 1 && vtx[1].IsCoinStake();
-        }
-        else
-        {
-            const CTxOut& txout = vtx[1].vout[1];
+        // if (GetBlockTime() >= SEGWIT_ACTIVATION_TIME)
+        // {
+		//     // from Lux coin
+        //     return vtx[0].vout[0].IsEmpty() && vtx.size() > 1 && vtx[1].IsCoinStake();
+        // }
 
-            if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+        const CTxOut& txout = vtx[1].vout[1];
+
+        if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+            return false;
+
+        if (whichType == TX_PUBKEYHASH)
+        {
+
+            CKeyID keyID;
+            keyID = CKeyID(uint160(vSolutions[0]));
+
+            CKey key;
+            if (!keystore.GetKey(keyID, key))
                 return false;
 
-            if (whichType == TX_PUBKEYHASH)
-            {
+            //vector<unsigned char> vchSig;
+            if (!key.Sign(GetHash(), vchBlockSig))
+                return false;
 
-                CKeyID keyID;
-                keyID = CKeyID(uint160(vSolutions[0]));
+            return true;
 
-                CKey key;
-                if (!keystore.GetKey(keyID, key))
-                    return false;
-
-                //vector<unsigned char> vchSig;
-                if (!key.Sign(GetHash(), vchBlockSig))
-                    return false;
-
-                return true;
-
-            }
-            else if(whichType == TX_PUBKEY)
-            {
-                CKeyID keyID;
-                keyID = CPubKey(vSolutions[0]).GetID();
-                CKey key;
-                if (!keystore.GetKey(keyID, key))
-                    return false;
-
-                //vector<unsigned char> vchSig;
-                if (!key.Sign(GetHash(), vchBlockSig))
-                    return false;
-
-                return true;
-            }
         }
+        else if (whichType == TX_PUBKEY)
+        {
+            CKeyID keyID;
+            keyID = CPubKey(vSolutions[0]).GetID();
+            CKey key;
+            if (!keystore.GetKey(keyID, key))
+                return false;
+
+            //vector<unsigned char> vchSig;
+            if (!key.Sign(GetHash(), vchBlockSig))
+                return false;
+
+            return true;
+        }
+        else if (whichType == TX_WITNESS_V0_SCRIPTHASH || whichType == TX_WITNESS_V0_KEYHASH)
+        {
+            CKeyID keyID;
+            keyID = CKeyID(uint160(vSolutions[0]));
+
+            CKey key;
+            if (!keystore.GetKey(keyID, key)) {
+                return false;
+            }
+
+            if (!key.SignCompact(GetHash(), vchBlockSig)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        LogPrintf("SignBlock: unknow kernel type: %d \n", whichType);
     }
 
     LogPrintf("Sign failed\n");
@@ -236,11 +250,11 @@ bool CBlock::CheckBlockSignature() const
         return vchBlockSig.empty();
 
     // @todo remove after segwit
-    if (IsProofOfStake() && GetBlockTime() >= SEGWIT_ACTIVATION_TIME)
-    {
-		// from Lux coin
-        return vtx[0].vout[0].IsEmpty();
-    }
+    // if (IsProofOfStake() && GetBlockTime() >= SEGWIT_ACTIVATION_TIME)
+    // {
+	// 	// from Lux coin
+    //     return vtx[0].vout[0].IsEmpty();
+    // }
 
     std::vector<valtype> vSolutions;
     txnouttype whichType;
@@ -277,9 +291,8 @@ bool CBlock::CheckBlockSignature() const
 
         return pubkey.Verify(GetHash(), vchBlockSig);
     }
-    else if (GetBlockTime() >= SEGWIT_ACTIVATION_TIME && whichType == TX_WITNESS_V0_KEYHASH)
-    {   // @todo remove after segwit
-
+    else if (whichType == TX_WITNESS_V0_SCRIPTHASH || whichType == TX_WITNESS_V0_KEYHASH)
+    {
         CPubKey pubkey;
         if (vchBlockSig.empty()) {
             return false;

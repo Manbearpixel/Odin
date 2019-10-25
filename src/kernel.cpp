@@ -398,7 +398,7 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
     if (!GetTransaction(txin.prevout.hash, txPrev, hashBlock, true))
         return error("CheckProofOfStake() : INFO: read txPrev failed");
 
-    //verify signature and script
+    // verify signature and script
     // @todo remove after segwit activation
     bool hasWitness = (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && tx.wit.vtxinwit.size() > 0);
     if (!VerifyScript(txin.scriptSig,

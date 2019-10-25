@@ -3248,7 +3248,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         }
     }
 
-    
+
     // delete old entries
     for (auto it = mapStakeSpent.begin(); it != mapStakeSpent.end();) {
         if (it->second < pindex->nHeight - Params().MaxReorganizationDepth()) {
@@ -3259,7 +3259,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             it++;
         }
     }
-    
+
 
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
@@ -4163,31 +4163,26 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
     if (block.IsProofOfStake()) {
         // @todo remove after segwit activation
-        if (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION)) {
-            int commitpos = GetWitnessCommitmentIndex(block);
-            if (commitpos >= 0) {
-                if (IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
-                    if (block.vtx[0].vout.size() != 2)
-                        return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
-                    if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
-                        return state.DoS(100, error("CheckBlock() : coinbase must be unspendable for proof-of-stake block"));
-                }
-                else {
-                    return state.DoS(100, error("CheckBlock() : staking-on-segwit is not enabled"));
-                }
+        int commitpos = GetWitnessCommitmentIndex(block);
+        if (commitpos >= 0) {
+            if (IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
+                if (block.vtx[0].vout.size() != 2)
+                    return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+                if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
+                    return state.DoS(100, error("CheckBlock() : coinbase must be unspendable for proof-of-stake block"));
             }
             else {
-                if (block.vtx[0].vout.size() != 1)
-                    return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+                return state.DoS(100, error("CheckBlock() : staking-on-segwit is not enabled"));
             }
-            // Coinbase output should be empty if proof-of-stake block
-            if (!block.vtx[0].vout[0].IsEmpty()) {
-                return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
-            }
-        } else {
-            if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty()) {
-                return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
-            }
+        }
+        else {
+            if (block.vtx[0].vout.size() != 1)
+                return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+        }
+
+        // Coinbase output should be empty if proof-of-stake block
+        if (!block.vtx[0].vout[0].IsEmpty()) {
+            return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
         }
 
         // Second transaction must be coinstake, the rest must not be
@@ -4349,19 +4344,20 @@ static int GetWitnessCommitmentIndex(const CBlock& block)
 {
     int commitpos = -1;
     // @todo remove after segwit activation
-    if (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && block.vtx.size() <= 0) {
-        return commitpos;
-    }
-
-    for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
-        if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 &&
-            block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN &&
-            block.vtx[0].vout[o].scriptPubKey[1] == 0x24 &&
-            block.vtx[0].vout[o].scriptPubKey[2] == 0xaa &&
-            block.vtx[0].vout[o].scriptPubKey[3] == 0x21 &&
-            block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 &&
-            block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
-            commitpos = o;
+    // if (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && block.vtx.size() <= 0) {
+    //     return commitpos;
+    // }
+    if (block.vtx.size() > 1) {
+        for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
+            if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 &&
+                block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN &&
+                block.vtx[0].vout[o].scriptPubKey[1] == 0x24 &&
+                block.vtx[0].vout[o].scriptPubKey[2] == 0xaa &&
+                block.vtx[0].vout[o].scriptPubKey[3] == 0x21 &&
+                block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 &&
+                block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
+                commitpos = o;
+            }
         }
     }
 
