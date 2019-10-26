@@ -570,10 +570,10 @@ QHeaderView::section:hover {
 .QTableView,
 #transactionView,
 #tableWidgetMyMasternodes {
-  background: transparent;
+  background: $background;
+	alternate-background-color: $background;
   border: 0;
   border-bottom: 1px solid $gray-1;
-	alternate-background-color: transparent;
 	padding-right: 12px;
 }
 
