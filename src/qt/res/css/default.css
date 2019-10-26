@@ -571,7 +571,8 @@ QHeaderView::section:hover {
 #transactionView,
 #tableWidgetMyMasternodes {
   background: $background;
-	alternate-background-color: $background;
+  alternate-background-color: $background;
+  color: $text;
   border: 0;
   border-bottom: 1px solid $gray-1;
 	padding-right: 12px;
@@ -579,11 +580,13 @@ QHeaderView::section:hover {
 
 /* Table Item */
 QTableView::item,
+.QTableView::item,
 #transactionView::item,
 #tableWidgetMyMasternodes::item {
-	background-color: transparent;
+  background: $background;
+	alternate-background-color: $background;
+  color: $text;
 	font-size: 12px;
-	color: white;
 	border: 0;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	padding-right: 12px;
@@ -593,10 +596,8 @@ QTableView::item,
 
 /* Table Item Selected */
 QTableView::item:selected {
-	/* background-color:#00CD8D; */
-	/* background-color:rgba(0,209,136,0.25); */
 	background: #313d4b;
-  color: #fff;
+  color: $text;
 }
 
 /* Table Background */
