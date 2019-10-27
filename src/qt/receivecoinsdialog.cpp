@@ -37,7 +37,7 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent),
     //ui->reqAmount->setAttribute(Qt::WA_MacShowFocusRect, 0);
     //needs to be handled within bitcoinamountfield.cpp
     ui->reqMessage->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    
+
 #endif
 
     // configure bech32 checkbox, disable if launched with legacy as default:
@@ -83,7 +83,7 @@ void ReceiveCoinsDialog::setModel(WalletModel* model)
         tableView->verticalHeader()->hide();
         tableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         tableView->setModel(model->getRecentRequestsTableModel());
-        tableView->setAlternatingRowColors(true);
+        tableView->setAlternatingRowColors(false);
         tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
         tableView->setSelectionMode(QAbstractItemView::ContiguousSelection);
         tableView->setColumnWidth(RecentRequestsTableModel::Date, DATE_COLUMN_WIDTH);
@@ -155,7 +155,7 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
         if (address_type != OUTPUT_TYPE_LEGACY) {
             address_type = ui->useBech32->isChecked() ? OUTPUT_TYPE_BECH32 : OUTPUT_TYPE_DEFAULT;
         }
-        address = model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "", address_type);        
+        address = model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "", address_type);
     }
     SendCoinsRecipient info(address, label,
         ui->reqAmount->value(), ui->reqMessage->text());

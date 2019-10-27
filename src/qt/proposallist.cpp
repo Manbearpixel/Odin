@@ -187,7 +187,7 @@ ProposalList::ProposalList(QWidget *parent) :
     horizontalLayout_Header->setObjectName(QStringLiteral("horizontalLayout_Header"));
 
     QTableView *view = new QTableView(this);
-    view->setAlternatingRowColors(true);
+    view->setAlternatingRowColors(false);
     view->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     view->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
 
@@ -278,7 +278,7 @@ ProposalList::ProposalList(QWidget *parent) :
 
     proposalList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     proposalList->setModel(proposalProxyModel);
-    proposalList->setAlternatingRowColors(true);
+    proposalList->setAlternatingRowColors(false);
     proposalList->setSelectionBehavior(QAbstractItemView::SelectRows);
     proposalList->setSortingEnabled(true);
     proposalList->sortByColumn(ProposalTableModel::StartDate, Qt::DescendingOrder);
