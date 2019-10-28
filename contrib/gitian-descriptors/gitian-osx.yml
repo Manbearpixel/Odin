@@ -1,5 +1,5 @@
 ---
-name: "odin-osx-1.6.1"
+name: "odin-osx-1.6.5"
 enable_cache: true
 suites:
 - "trusty"
