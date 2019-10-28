@@ -40,6 +40,7 @@ public:
     enum MessageClass {
         MC_ERROR,
         MC_DEBUG,
+        CMD_INFO,
         CMD_REQUEST,
         CMD_REPLY,
         CMD_ERROR

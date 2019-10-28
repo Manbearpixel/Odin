@@ -6,15 +6,27 @@ The following is a list of assets used in the bitcoin source and their proper at
 * Site: [ODIN Brand Graphics](https://github.com/odinblockchain/Brand-Graphics)
 
 ### Assets Used
-	src/qt/res/icons/connect*.png, src/qt/res/icons/tx*.png,
-  src/qt/res/src/inout.svg, src/qt/res/icons/history.png,
-  src/qt/res/icons/receive.png, src/qt/res/icons/send.png,
-  src/qt/res/icons/synced.png, src/qt/res/icons/overview.png,
-  src/qt/res/icons/transaction*.png, src/qt/res/movies/*.png,
-  src/qt/res/icons/bitcoin.icns, src/qt/res/src/bitcoin.ico,
-  src/qt/res/src/bitcoin.png, src/qt/res/src/bitcoin_testnet.png,
-  docs/bitcoin_logo_doxygen.png, src/qt/res/images/splash.png,
-  src/qt/res/images/splash_testnet.png
+* src/qt/res/icons/connect*.png
+* src/qt/res/icons/staking_*.png
+* src/qt/res/icons/tx_*.png
+* src/qt/res/src/inout.svg
+* src/qt/res/icons/history.png
+* src/qt/res/icons/receive.png
+* src/qt/res/icons/send.png
+* src/qt/res/icons/synced.png
+* src/qt/res/icons/overview.png
+* src/qt/res/icons/masternodes.png
+* src/qt/res/icons/privacy.png
+* src/qt/res/icons/proposal.png
+* src/qt/res/icons/transaction*.png
+* src/qt/res/movies/*.png
+* src/qt/res/icons/bitcoin.icns
+* src/qt/res/src/bitcoin.ico
+* src/qt/res/src/bitcoin.png
+* src/qt/res/src/bitcoin_testnet.png
+* docs/bitcoin_logo_doxygen.png
+* src/qt/res/images/splash.png
+* src/qt/res/images/splash_testnet.png
 
 -----------------------
 
@@ -23,7 +35,7 @@ The following is a list of assets used in the bitcoin source and their proper at
 * Site: [David Vignoni](http://www.icon-king.com)
 
 ### Assets Used
-	src/qt/res/icons/clock*.png, 
+	src/qt/res/icons/clock*.png,
 	src/qt/res/src/clock_green.svg, src/qt/res/src/clock1.svg,
 	src/qt/res/src/clock2.svg, src/qt/res/src/clock3.svg,
 	src/qt/res/src/clock4.svg, src/qt/res/src/clock5.svg,
@@ -61,7 +73,7 @@ Everaldo (Everaldo Coelho)
 ### Info
 * Icon Pack: Kids
 * Designer: Everaldo (Everaldo Coelho)
-* License: GNU/GPL 
+* License: GNU/GPL
 * Site: [http://findicons.com/icon/17102/reload?id=17102](http://findicons.com/icon/17102/reload?id=17102)
 
 ### Assets Used
@@ -86,4 +98,18 @@ Jonas Schnelli
 * License: MIT
 
 ### Assets Used
-	
+
+### Info
+* Designer: Kawalan Icon, ID
+* License: Creative Commons CCBY
+
+### Assets Used
+* attention, UI Glyph Collection
+
+### Info
+* Designer: Fengquan Li, CN
+* License: Creative Commons CCBY
+
+### Assets Used
+* Atom, Cute game icons Collection
+* Download, Cute game icons Collection

@@ -10,6 +10,10 @@
         <file alias="connect_2">res/icons/connect2_16.png</file>
         <file alias="connect_3">res/icons/connect3_16.png</file>
         <file alias="connect_4">res/icons/connect4_16.png</file>
+        <file alias="cmd-error">res/icons/cmd-error.png</file>
+        <file alias="cmd-info">res/icons/cmd-info.png</file>
+        <file alias="cmd-input">res/icons/cmd-input.png</file>
+        <file alias="cmd-output">res/icons/cmd-output.png</file>
         <file alias="debugwindow">res/icons/debugwindow.png</file>
         <file alias="edit">res/icons/edit.png</file>
         <file alias="editcopy">res/icons/editcopy.png</file>
@@ -60,6 +64,7 @@
         <file alias="transaction_5">res/icons/clock5.png</file>
         <file alias="tx_inout">res/icons/tx_inout.png</file>
         <file alias="tx_input">res/icons/tx_input.png</file>
+        <file alias="tx_large">res/icons/tx_large.png</file>
         <file alias="tx_mined">res/icons/tx_mined.png</file>
         <file alias="tx_staked">res/icons/tx_staked.png</file>
         <file alias="tx_output">res/icons/tx_output.png</file>
