@@ -14,6 +14,7 @@
 #include "masternodeman.h"
 #include "obfuscation.h"
 #include "util.h"
+#include "utilmoneystr.h"
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -1502,9 +1503,15 @@ bool CBudgetProposal::IsValid(std::string& strError, bool fCheckCollateral)
     //     }
     // }
 
+    CAmount totalBudget = budget.GetTotalBudget(nBlockStart);
+
     // can only pay out 10% of the possible coins (min value of coins)
-    if (nAmount > budget.GetTotalBudget(nBlockStart)) {
-        strError = "Proposal " + strProposalName + ": Payment more than max";
+    if (nAmount > totalBudget) {
+        strError = "Proposal " +
+            strProposalName +
+            ": Payment more than max for cycle. (" +
+            FormatMoney(totalBudget) +
+            " ODIN)";
         return false;
     }
 
