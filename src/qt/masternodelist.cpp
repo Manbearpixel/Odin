@@ -492,7 +492,7 @@ void MasternodeList::on_UpdateButton_clicked()
 
 bool MasternodeList::handleMASHRequest(const MasternodeConfig& mnConfig)
 {
-    ConfigureMasternodePage dlg(ConfigureMasternodePage::EditConfigureMasternode, this);
+    ConfigureMasternodePage dlg(ConfigureMasternodePage::ImportConfigureMasternode, this);
 
     dlg.loadAlias(mnConfig.alias);
 	dlg.loadIP(mnConfig.ipAddress);
