@@ -2,7 +2,7 @@
 // Copyright (c) 2012-2013 The PPCoin developers
 // Copyright (c) 2015-2017 The PIVX developers
 // Copyright (c) 2017-2018 The Phore developers
-// Copyright (c) 2018 The ODIN developers 
+// Copyright (c) 2018 The ODIN developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,6 +14,7 @@
 #include "kernel.h"
 #include "script/interpreter.h"
 #include "timedata.h"
+#include "spork.h"
 #include "util.h"
 
 using namespace std;
@@ -242,19 +243,10 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
 // modifier about a selection interval later than the coin generating the kernel
 bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int& nStakeModifierHeight, int64_t& nStakeModifierTime, bool fPrintProofOfStake)
 {
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() - hashBlockFrom:%s\n", hashBlockFrom.ToString().c_str());
-
     nStakeModifier = 0;
     if (!mapBlockIndex.count(hashBlockFrom))
         return error("GetKernelStakeModifier() : block not indexed");
     const CBlockIndex* pindexFrom = mapBlockIndex[hashBlockFrom];
-
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() - pindexFrom:%s\n", pindexFrom->ToString().c_str());
-
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() chainActive height:%d\n", chainActive.Height());
 
     nStakeModifierHeight = pindexFrom->nHeight;
     nStakeModifierTime = pindexFrom->GetBlockTime();
@@ -262,16 +254,17 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
     const CBlockIndex* pindex = pindexFrom;
     CBlockIndex* pindexNext = chainActive[pindexFrom->nHeight + 1];
 
-    //TODO:pixel
-    // LogPrintf(">>GetKernelStakeModifier() - height:%d, pindexNext:%s\n", pindexFrom->nHeight, pindexNext->ToString().c_str());
-
     // loop to find the stake modifier later by a selection interval
     while (nStakeModifierTime < pindexFrom->GetBlockTime() + nStakeModifierSelectionInterval) {
-      //TODO:pixel
-      // LogPrintf(">>GetKernelStakeModifier() - LOOP nStakeModifierTime=%d < pindexFromBlockTime=%d + nStakeModifierSelectionInterval=%d\n", nStakeModifierTime, pindexFrom->GetBlockTime(), nStakeModifierSelectionInterval);
-      
       if (!pindexNext) {
           // Should never happen
+          LogPrint("stake", "GetKernelStakeModifier() pindexFrom.height=%d pindexFrom.blockTime=%d nStakeModifierTime=%d nStakeModifierSelectionInterval=%d\n",
+            pindexFrom->nHeight,
+            pindexFrom->GetBlockTime(),
+            nStakeModifierTime,
+            nStakeModifierSelectionInterval
+          );
+
           return error("Null pindexNext\n");
       }
 
@@ -329,7 +322,12 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTra
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
     if (!GetKernelStakeModifier(blockFrom.GetHash(), nStakeModifier, nStakeModifierHeight, nStakeModifierTime, fPrintProofOfStake)) {
-        LogPrintf("CheckStakeKernelHash(): failed to get kernel stake modifier \n");
+        LogPrint("stake", "CheckStakeKernelHash(): failed to get kernel stake modifier... nStakeModifier=%d nStakeModifierHeight=%d, nStakeModifierTime=%d, fPrintProofOfStake=%d \n",
+            nStakeModifier,
+            nStakeModifierHeight,
+            nStakeModifierTime,
+            fPrintProofOfStake
+        );
         return false;
     }
 
@@ -387,9 +385,6 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTra
 // Check kernel hash target and coinstake signature
 bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
 {
-    //TODO:pixel
-    // LogPrintf(">>CheckProofOfStake() block:%s\n", block.ToString().c_str());
-
     const CTransaction tx = block.vtx[1];
     if (!tx.IsCoinStake())
         return error("CheckProofOfStake() : called on non-coinstake %s", tx.GetHash().ToString().c_str());
@@ -403,9 +398,16 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
     if (!GetTransaction(txin.prevout.hash, txPrev, hashBlock, true))
         return error("CheckProofOfStake() : INFO: read txPrev failed");
 
-    //verify signature and script
-    if (!VerifyScript(txin.scriptSig, txPrev.vout[txin.prevout.n].scriptPubKey, NULL, STANDARD_SCRIPT_VERIFY_FLAGS, TransactionSignatureChecker(&tx, 0, txPrev.vout[txin.prevout.n].nValue)))
+    // verify signature and script
+    // @todo remove after segwit activation
+    bool hasWitness = (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && tx.wit.vtxinwit.size() > 0);
+    if (!VerifyScript(txin.scriptSig,
+                        txPrev.vout[txin.prevout.n].scriptPubKey,
+                        hasWitness ? &tx.wit.vtxinwit[0].scriptWitness : NULL,
+                        STANDARD_SCRIPT_VERIFY_FLAGS,
+                        TransactionSignatureChecker(&tx, 0, txPrev.vout[txin.prevout.n].nValue))) {
         return error("CheckProofOfStake() : VerifySignature failed on coinstake %s", tx.GetHash().ToString().c_str());
+    }
 
     CBlockIndex* pindex = NULL;
     BlockMap::iterator it = mapBlockIndex.find(hashBlock);
@@ -424,7 +426,7 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
 
     unsigned int nInterval = 0;
     unsigned int nTime = block.nTime;
-    if (!CheckStakeKernelHash(block.nBits, blockprev, txPrev, txin.prevout, nTime, nInterval, true, hashProofOfStake, fDebug) && (nTime > 1505247602))
+    if (!CheckStakeKernelHash(block.nBits, blockprev, txPrev, txin.prevout, nTime, nInterval, true, hashProofOfStake, fDebug))
       return error("CheckProofOfStake() : INFO: check kernel failed on coinstake %s, hashProof=%s \n", tx.GetHash().ToString().c_str(), hashProofOfStake.ToString().c_str()); // may occur during initial download or if behind on block chain sync
 
     return true;

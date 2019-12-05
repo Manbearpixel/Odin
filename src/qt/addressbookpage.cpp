@@ -39,6 +39,8 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     ui->exportButton->setIcon(QIcon());
 #endif
 
+    ui->tableView->setAlternatingRowColors(false);
+
     switch (mode) {
     case ForSelection:
         switch (tab) {

@@ -1461,7 +1461,7 @@ https://www.transifex.com/</translation>
         <translation>Liczba</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. %1)</source>
+        <source>Enter an ODIN address (e.g. %1)</source>
         <translation>Wprowadź adres ODIN (np. %1)</translation>
     </message>
     <message>

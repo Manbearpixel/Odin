@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
+    // Copyright (c) 2011-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -41,7 +41,7 @@ bool WalletFrame::addWallet(const QString& name, WalletModel* walletModel)
     if (!gui || !clientModel || !walletModel || mapWalletViews.count(name) > 0)
         return false;
 
-    WalletView* walletView = new WalletView(this);
+    WalletView* walletView = new WalletView(walletStack);
     walletView->setBitcoinGUI(gui);
     walletView->setClientModel(clientModel);
     walletView->setWalletModel(walletModel);
@@ -94,6 +94,15 @@ bool WalletFrame::handlePaymentRequest(const SendCoinsRecipient& recipient)
         return false;
 
     return walletView->handlePaymentRequest(recipient);
+}
+
+bool WalletFrame::handleMASHRequest(const MasternodeConfig& mnConfig)
+{
+    WalletView* walletView = currentWalletView();
+    if (!walletView)
+        return false;
+
+    return walletView->handleMASHRequest(mnConfig);
 }
 
 void WalletFrame::showOutOfSyncWarning(bool fShow)
@@ -151,6 +160,13 @@ void WalletFrame::gotoSendCoinsPage(QString addr)
     QMap<QString, WalletView*>::const_iterator i;
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoSendCoinsPage(addr);
+}
+
+void WalletFrame::gotoProposalPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoProposalPage();
 }
 
 void WalletFrame::gotoSignMessageTab(QString addr)

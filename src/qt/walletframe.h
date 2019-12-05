@@ -11,6 +11,7 @@
 class BitcoinGUI;
 class ClientModel;
 class SendCoinsRecipient;
+class MasternodeConfig;
 class WalletModel;
 class WalletView;
 class TradingDialog;
@@ -36,6 +37,7 @@ public:
     void removeAllWallets();
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
+    bool handleMASHRequest(const MasternodeConfig& mnConfig);
 
     void showOutOfSyncWarning(bool fShow);
 
@@ -62,8 +64,14 @@ public slots:
     void gotoPrivacyPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+
     /** Switch to explorer page */
     void gotoBlockExplorerPage();
+
+    /** Switch to proposal page */
+    void gotoProposalPage();
+
+
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */

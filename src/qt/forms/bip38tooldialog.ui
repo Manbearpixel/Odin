@@ -30,7 +30,7 @@
        <item>
         <widget class="QLabel" name="infoLabel_ENC">
          <property name="text">
-          <string>Please Enter a ODIN Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</string>
+          <string>Please Enter an ODIN address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -72,6 +72,9 @@
           <widget class="QToolButton" name="addressBookButton_ENC">
            <property name="toolTip">
             <string>Choose previously used address</string>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
            </property>
            <property name="text">
             <string/>
@@ -190,10 +193,6 @@
            <property name="text">
             <string>Encrypt &amp;Key</string>
            </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
-           </property>
            <property name="autoDefault">
             <bool>false</bool>
            </property>
@@ -206,10 +205,6 @@
            </property>
            <property name="text">
             <string>Clear &amp;All</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -361,10 +356,6 @@
            <property name="text">
             <string>Decrypt &amp;Key</string>
            </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/transaction_0</normaloff>:/icons/transaction_0</iconset>
-           </property>
            <property name="autoDefault">
             <bool>false</bool>
            </property>
@@ -377,10 +368,6 @@
            </property>
            <property name="text">
             <string>Clear &amp;All</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="autoDefault">
             <bool>false</bool>

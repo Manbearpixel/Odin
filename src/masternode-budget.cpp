@@ -14,6 +14,7 @@
 #include "masternodeman.h"
 #include "obfuscation.h"
 #include "util.h"
+#include "utilmoneystr.h"
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -35,10 +36,16 @@ int GetBudgetPaymentCycleBlocks()
     // Amount of blocks in a months period of time (using 1 minutes per block)
     // estimate 30 blocks an hour * hours in a day * avg. days in a month
     if (Params().NetworkID() == CBaseChainParams::MAIN)
-      return (60 * 24 * 30); 
+      return (60 * 24 * 30);
 
-    // for testing purposes
-    return 1000;
+    // for testing purposes -- every 12 hours
+    return (60 * 12);
+}
+
+CAmount GetAvailableBudget(int nHeight)
+{
+  CAmount nSubsidy = GetBlockValue(nHeight, true);
+  return nSubsidy * GetBudgetPaymentCycleBlocks();
 }
 
 bool IsBudgetCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash, std::string& strError, int64_t& nTime, int& nConf, bool fBudgetFinalization)
@@ -165,15 +172,14 @@ void CBudgetManager::SubmitFinalBudget()
         LogPrint("mnbudget","CBudgetManager::SubmitFinalBudget - nSubmittedHeight(=%ld) < nBlockStart(=%ld) condition not fulfilled.\n", nSubmittedHeight, nBlockStart);
         return;
     }
- 
-    // Submit final budget during the last 2 days (2880 blocks) before payment for Mainnet, about 9 minutes (9 blocks) for Testnet
+
+    // Submit final budget during the last 2 days (2880 blocks) before payment for Mainnet
     int finalizationWindow = ((GetBudgetPaymentCycleBlocks() / 30) * 2);
 
+    // Testnet -- set window 2 hours before payment (120 blocks)
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
-        // NOTE: 9 blocks for testnet is way to short to have any masternode submit an automatic vote on the finalized(!) budget,
-        //       because those votes are only submitted/relayed once every 56 blocks in CFinalizedBudget::AutoCheck()
-
-        finalizationWindow = 64; // 56 + 4 finalization confirmations + 4 minutes buffer for propagation
+        // NOTE: votes are only submitted/relayed once every 56 blocks in CFinalizedBudget::AutoCheck()
+        finalizationWindow = (60 * 2);
     }
 
     int nFinalizationStart = nBlockStart - finalizationWindow;
@@ -687,7 +693,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
         ++it;
     }
 
-    LogPrint("mnbudget","CBudgetManager::IsTransactionValid() - nHighestCount: %lli, 5%% of Masternodes: %lli mapFinalizedBudgets.size(): %ld\n", 
+    LogPrint("mnbudget","CBudgetManager::IsTransactionValid() - nHighestCount: %lli, 5%% of Masternodes: %lli mapFinalizedBudgets.size(): %ld\n",
               nHighestCount, nFivePercent, mapFinalizedBudgets.size());
     /*
         If budget doesn't have 5% of the network votes, then we should pay a masternode instead
@@ -705,7 +711,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
         strProposals = pfinalizedBudget->GetProposals();
 
         LogPrint("mnbudget","CBudgetManager::IsTransactionValid - checking budget (%s) with blockstart %lli, blockend %lli, nBlockHeight %lli, votes %lli, nCountThreshold %lli\n",
-                 strProposals.c_str(), pfinalizedBudget->GetBlockStart(), pfinalizedBudget->GetBlockEnd(), 
+                 strProposals.c_str(), pfinalizedBudget->GetBlockStart(), pfinalizedBudget->GetBlockEnd(),
                  nBlockHeight, pfinalizedBudget->GetVoteCount(), nCountThreshold);
 
         if (pfinalizedBudget->GetVoteCount() > nCountThreshold) {
@@ -730,7 +736,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
     if (!fThreshold) {
         transactionStatus = TrxValidationStatus::VoteThreshold;
     }
-    
+
     // We looked through all of the known budgets
     return transactionStatus;
 }
@@ -907,7 +913,7 @@ CAmount CBudgetManager::GetTotalBudget(int nHeight)
 
   CAmount nSubsidy = GetBlockValue(nHeight, true);
 
-  return nSubsidy * Params().GetBudgetPercent() * GetBudgetPaymentCycleBlocks();
+  return nSubsidy * GetBudgetPaymentCycleBlocks();
 }
 
 void CBudgetManager::NewBlock()
@@ -1497,9 +1503,15 @@ bool CBudgetProposal::IsValid(std::string& strError, bool fCheckCollateral)
     //     }
     // }
 
+    CAmount totalBudget = budget.GetTotalBudget(nBlockStart);
+
     // can only pay out 10% of the possible coins (min value of coins)
-    if (nAmount > budget.GetTotalBudget(nBlockStart)) {
-        strError = "Proposal " + strProposalName + ": Payment more than max";
+    if (nAmount > totalBudget) {
+        strError = "Proposal " +
+            strProposalName +
+            ": Payment more than max for cycle. (" +
+            FormatMoney(totalBudget) +
+            " ODIN)";
         return false;
     }
 
@@ -2041,7 +2053,7 @@ bool CFinalizedBudget::IsValid(std::string& strError, bool fCheckCollateral)
 
     // Remove budgets where the last payment (from max. 100) ends before 2 budget-cycles before the current one
     int nMaxAge = nBlockStart - (2 * GetBudgetPaymentCycleBlocks());
-    
+
     if (GetBlockEnd() < nMaxAge) {
         strError = strprintf("Budget " + strBudgetName + " (" + strProposals + ") (ends at block %ld) too old and obsolete", GetBlockEnd());
         return false;
@@ -2061,7 +2073,7 @@ bool CFinalizedBudget::IsPaidAlready(uint256 nProposalHash, int nBlockHeight)
         nPaidBlockHeight = (*it).second;
         if((nPaidBlockHeight < GetBlockStart()) || (nPaidBlockHeight > GetBlockEnd())) {
             nOldProposalHash = (*it).first;
-            LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d from old cycle deleted\n", 
+            LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d from old cycle deleted\n",
                       nOldProposalHash.ToString().c_str(), nPaidBlockHeight);
             mapPayment_History.erase(it++);
         }
@@ -2074,7 +2086,7 @@ bool CFinalizedBudget::IsPaidAlready(uint256 nProposalHash, int nBlockHeight)
     if(mapPayment_History.count(nProposalHash) == 0) {
         // New proposal payment, insert into map for checks with later blocks from this cycle
         mapPayment_History.insert(std::pair<uint256, int>(nProposalHash, nBlockHeight));
-        LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d added to payment history\n", 
+        LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d added to payment history\n",
                   nProposalHash.ToString().c_str(), nBlockHeight);
         return false;
     }
@@ -2098,7 +2110,7 @@ TrxValidationStatus CFinalizedBudget::IsTransactionValid(const CTransaction& txN
 
     bool paid = false;
     BOOST_FOREACH (CTxOut out, txNew.vout) {
-        LogPrint("mnbudget","CFinalizedBudget::IsTransactionValid - nCurrentBudgetPayment=%d, payee=%s == out.scriptPubKey=%s, amount=%ld == out.nValue=%ld\n", 
+        LogPrint("mnbudget","CFinalizedBudget::IsTransactionValid - nCurrentBudgetPayment=%d, payee=%s == out.scriptPubKey=%s, amount=%ld == out.nValue=%ld\n",
                  nCurrentBudgetPayment, vecBudgetPayments[nCurrentBudgetPayment].payee.ToString().c_str(), out.scriptPubKey.ToString().c_str(),
                  vecBudgetPayments[nCurrentBudgetPayment].nAmount, out.nValue);
 

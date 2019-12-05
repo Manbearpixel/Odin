@@ -14,9 +14,31 @@ static const int MODEL_UPDATE_DELAY = 1000;
 static const int MAX_PASSPHRASE_SIZE = 1024;
 
 /* ODIN GUI -- Size of icons in status bar */
-static const int STATUSBAR_ICONSIZE = 16;
+static const int STATUSBAR_ICONSIZE = 32;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
+
+/* Brand colors */
+static const char *BRAND_COLOR_PRIMARY          = "#41C0D1";
+static const char *BRAND_COLOR_DARK             = "#1D2323";
+static const char *BRAND_COLOR_BLACK            = "#011612";
+static const char *BRAND_COLOR_WHITE            = "#FCF9F1";
+static const char *BRAND_COLOR_BLUE             = "#41C0D1";
+static const char *BRAND_COLOR_BLUE_DARKER      = "#00A8B6";
+static const char *BRAND_COLOR_ORANGE           = "#DD6B40";
+static const char *BRAND_COLOR_RED              = "#CC4F49";
+static const char *BRAND_COLOR_RED_LIGHTER      = "#CC6666";
+static const char *BRAND_COLOR_YELLOW           = "#C4943F";
+static const char *BRAND_COLOR_GREEN            = "#619772";
+static const char *BRAND_COLOR_GREEN_LIGHTER    = "#88A881";
+
+/* App colors */
+static const char *INPUT_FILL = "#313737";
+static const char *INPUT_COLOR = "#DDDEDE";
+static const char *INPUT_HOVER_FILL = "#464B4B";
+static const char *INPUT_HIGHLIGHT = "#41C0D1";
+static const char *INPUT_DISABLED_FILL = "#1B2020";
+
 
 /* Invalid field background style */
 #define STYLE_INVALID "background:#FF8080"

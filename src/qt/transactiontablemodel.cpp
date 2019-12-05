@@ -376,13 +376,16 @@ QVariant TransactionTableModel::txAddressDecoration(const TransactionRecord* wtx
     switch (wtx->type) {
     case TransactionRecord::Generated:
     case TransactionRecord::StakeMint:
+        return QIcon(":/icons/tx_staked");
     case TransactionRecord::MNReward:
         return QIcon(":/icons/tx_mined");
     case TransactionRecord::RecvWithObfuscation:
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::RecvFromOther:
     case TransactionRecord::RecvFromZerocoinSpend:
-        return QIcon(":/icons/tx_input");
+        return (wtx->debit >= 25000 * COIN || wtx->credit >= 25000 * COIN)
+            ? QIcon(":/icons/tx_large")
+            : QIcon(":/icons/tx_input");
     case TransactionRecord::SendToAddress:
     case TransactionRecord::SendToOther:
     case TransactionRecord::ZerocoinSpend:

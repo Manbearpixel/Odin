@@ -239,7 +239,7 @@
         <translation>&amp;BIP 38 加密</translation>
     </message>
     <message>
-        <source>Enter a ODIN Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter an ODIN address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>输入您要使用BIP 38加密的ODIN地址。在中间框中输入密码。按加密计算加密私钥。</translation>
     </message>
     <message>

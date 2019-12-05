@@ -27,8 +27,11 @@
     <enum>QFrame::Sunken</enum>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="spacing">
+    <property name="horizontalSpacing">
      <number>12</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>10</number>
     </property>
     <item row="0" column="0">
      <widget class="QLabel" name="payToLabel">
@@ -53,6 +56,12 @@
         <property name="toolTip">
          <string>The ODIN address to send the payment to</string>
         </property>
+        <property name="inputMask">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>Enter an ODIN address (e.g. OCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -66,6 +75,12 @@
         <property name="icon">
          <iconset>
           <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
         </property>
         <property name="shortcut">
          <string>Alt+A</string>
@@ -122,6 +137,12 @@
      <widget class="QLineEdit" name="addAsLabel">
       <property name="toolTip">
        <string>Enter a label for this address to add it to the list of used addresses</string>
+      </property>
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Enter a label for this address to add it to your address book</string>
       </property>
      </widget>
     </item>

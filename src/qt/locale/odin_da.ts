@@ -239,7 +239,7 @@
         <translation>BIP 38 kryptografering</translation>
     </message>
     <message>
-        <source>Enter a ODIN Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter an ODIN address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>Indtast den ODIN adresse De ønsker at kryptografere ved hjælp af BIP 38. Indtast et kodeord i den midterste boks. Klik på krypter for at generere den kryptograferede private nøgle.</translation>
     </message>
     <message>
@@ -1365,9 +1365,9 @@ Adresse: %4
 To Add: enter percentage to give and ODIN address to add to the MultiSend vector.
 To Delete: Enter address to delete and press delete.
 MultiSend will not be activated unless you have clicked Activate</source>
-        <translation>Multisend tillader at De automatisk kan sende op til 100% af Deres belønninger fra såvel indskud som masternodebelønninger til en liste over andre ODIN adressater når den er tilstrækkelig stor. 
-For at tilføje: Indtast procentsatsen De ønsker at overføre samt den ODIN adresse som skal modtage via Multisendsystemet. 
-For at fjerne: Indtast adressen som skal slettes og klik på slet. 
+        <translation>Multisend tillader at De automatisk kan sende op til 100% af Deres belønninger fra såvel indskud som masternodebelønninger til en liste over andre ODIN adressater når den er tilstrækkelig stor.
+For at tilføje: Indtast procentsatsen De ønsker at overføre samt den ODIN adresse som skal modtage via Multisendsystemet.
+For at fjerne: Indtast adressen som skal slettes og klik på slet.
 Multisend vil ikke fungere med mindre systemet er aktiveret.</translation>
     </message>
     <message>
@@ -1451,7 +1451,7 @@ Multisend vil ikke fungere med mindre systemet er aktiveret.</translation>
     <message>
         <source> is invalid.
 Please check the address and try again.</source>
-        <translation>er ikke gyldig. 
+        <translation>er ikke gyldig.
 Kontroller adressen og prøv igen.</translation>
     </message>
     <message>
@@ -2095,7 +2095,7 @@ https://www.transifex.com/</translation>
         <translation>Beløb</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. %1)</source>
+        <source>Enter an ODIN address (e.g. %1)</source>
         <translation>Indtast en ODIN adresse (F.eks. %1)</translation>
     </message>
     <message>
@@ -3819,7 +3819,7 @@ https://www.transifex.com/</translation>
     </message>
     <message>
         <source>Distributed under the MIT software license, see the accompanying file COPYING or &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</source>
-        <translation>Distribueret under MIT software licensen. Se den vedlaget fil COPYING eller 
+        <translation>Distribueret under MIT software licensen. Se den vedlaget fil COPYING eller
 &lt;http://www.opensource.org/licenses/mit-license.php&gt;. </translation>
     </message>
     <message>

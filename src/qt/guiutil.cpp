@@ -1,9 +1,12 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2018 The Phore developers
+// Copyright (c) 2019 The ODIN developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "guiconstants.h"
 #include "guiutil.h"
 
 #include "bitcoinaddressvalidator.h"
@@ -110,10 +113,70 @@ void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a ODIN address (e.g. %1)").arg("oRBrSswefQ6aqQqgZ3New6Ws5QYSCXdqgL"));
+    widget->setPlaceholderText(QObject::tr("Enter an ODIN address (e.g. %1)").arg("oRBrSswefQ6aqQqgZ3New6Ws5QYSCXdqgL"));
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
+}
+
+void setupAliasWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a Masternode Alias (e.g. %1)").arg("mn1"));
+#endif
+}
+
+void setupIPWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a VPS IP (e.g. %1)").arg("127.0.0.2:11771"));
+#endif
+}
+
+void setupPrivKeyWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a Private Key (e.g. %1)").arg("93HaYBVUCYjEMeeH1Y4sBGLALQZE1Yc1K64xiqgX37tGBDQL8Xt"));
+#endif
+}
+
+void setupTXIDWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a TX Output (e.g. %1)").arg("2bcd3c84c84f87eaa86e4e56834c92937a07f9e18718810b92e0d0324456a57c"));
+#endif
+}
+
+void setupTXIDIndexWidget(QValidatedLineEdit* widget, QWidget* parent)
+{
+    parent->setFocusProxy(widget);
+
+    widget->setFont(bitcoinAddressFont());
+#if QT_VERSION >= 0x040700
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter a TX Index (e.g. %1)").arg("1"));
+#endif
 }
 
 void setupAmountWidget(QLineEdit* widget, QWidget* parent)
@@ -213,6 +276,67 @@ QString formatBitcoinURI(const SendCoinsRecipient& info)
     }
 
     return ret;
+}
+bool parseMASHURI(const QUrl& uri, MasternodeConfig* outputConfig)
+{
+    // return if URI is not valid or is no ODIN: URI
+    if (!uri.isValid() || uri.scheme() != QString(URI_SCHEME))
+        return false;
+
+    if (!uri.path().contains("mash"))
+        return false;
+
+
+#if QT_VERSION < 0x050000
+    QList<QPair<QString, QString> > items = uri.queryItems(QUrl::PrettyDecoded);
+#else
+    QUrlQuery uriQuery(uri);
+    QList<QPair<QString, QString> > items = uriQuery.queryItems(QUrl::PrettyDecoded);
+#endif
+
+    MasternodeConfig mnConfig;
+
+    for (QList<QPair<QString, QString> >::iterator i = items.begin(); i != items.end(); i++) {
+        if (i->first == "alias") {
+            mnConfig.alias = i->second;
+        }
+
+        if (i->first == "ipAddress") {
+            // unescape any characters (such as [,])
+            mnConfig.ipAddress = QUrl::fromPercentEncoding(i->second.toLatin1());
+        }
+
+        if (i->first == "privKey") {
+            mnConfig.privKey = i->second;
+        }
+
+        if (i->first == "txHash") {
+            mnConfig.txHash = i->second;
+        }
+
+        if (i->first == "txOutputId") {
+            mnConfig.txOutputId = i->second;
+        }
+    }
+
+    if (outputConfig) {
+        *outputConfig = mnConfig;
+    }
+
+    return true;
+}
+
+bool parseMASHURI(QString uri, MasternodeConfig* mnConfig)
+{
+    // Convert odin:// to odin:
+    //
+    //    Cannot handle this later, because odin:// will cause Qt to see the part after // as host,
+    //    which will lower-case it (and thus invalidate the address).
+    if (uri.startsWith(URI_SCHEME "://", Qt::CaseInsensitive)) {
+        uri.replace(0, std::strlen(URI_SCHEME) + 3, URI_SCHEME ":");
+    }
+    QUrl uriInstance(uri);
+    return parseMASHURI(uriInstance, mnConfig);
 }
 
 bool isDust(const QString& address, const CAmount& amount)
@@ -836,17 +960,22 @@ QString loadStyleSheet()
     QSettings settings;
     QString cssFilePath;
 
-    QString theme             = settings.value("theme", "").toString();
+    QString theme = settings.value("theme", "default").toString();
+    if (theme == "") {
+        theme = "default";
+    }
+    LogPrintf("[THEME] Theme Loaded '%s'\n", theme.toStdString());
+
     QString localThemePath    = QString(":/css/") + theme;
     QString externalThemePath = (GetDataDir() / "themes/").string().c_str() + theme;
 
     if (QFile::exists(localThemePath)) {
-        LogPrintf("[THEME] Detected Local Theme '%s'\n", theme.toStdString());
+        LogPrintf("[THEME] Detected Local Theme Path '%s'\n", localThemePath.toStdString());
         settings.setValue("fCSSexternal", false);
         cssFilePath = localThemePath;
     }
     else if (QFile::exists(externalThemePath)) {
-        LogPrintf("[THEME] Detected External Theme '%s'\n", theme.toStdString());
+        LogPrintf("[THEME] Detected External Theme Path '%s'\n", externalThemePath.toStdString());
         settings.setValue("fCSSexternal", true);
         cssFilePath = externalThemePath;
     }
@@ -862,6 +991,63 @@ QString loadStyleSheet()
     if (qFile.open(QFile::ReadOnly)) {
         styleSheet = QLatin1String(qFile.readAll());
     }
+
+    // buttons
+    styleSheet.replace("$button-default-fill", "$gray-2");
+    styleSheet.replace("$button-default-hover", "transparent");
+    styleSheet.replace("$button-default-text", "$gray-2");
+    styleSheet.replace("$button-default-hover-text", "$gray-1");
+
+    styleSheet.replace("$button-primary-fill", "$primary");
+    styleSheet.replace("$button-primary-hover", "#369EAC");
+    styleSheet.replace("$button-primary-text", "$white");
+
+    // bottom status bar
+    styleSheet.replace("$statusbarbg", "$black");
+    styleSheet.replace("$statusbartext", "$gray-4");
+
+    // progress bars
+    styleSheet.replace("$progressbarbg", "$dark");
+    styleSheet.replace("$progressbarfill", "$blue");
+    styleSheet.replace("$progressbartext", "$white");
+
+    styleSheet.replace("$input-fill", INPUT_FILL);
+    styleSheet.replace("$input-color", INPUT_COLOR);
+    styleSheet.replace("$input-highlight", INPUT_HIGHLIGHT);
+    styleSheet.replace("$input-hover-fill", INPUT_HOVER_FILL);
+    styleSheet.replace("$input-disabled-fill", INPUT_DISABLED_FILL);
+
+    // replace colors
+    styleSheet.replace("$primary", "$blue");
+    styleSheet.replace("$info", "$dark-blue");
+    styleSheet.replace("$success", "$green");
+    styleSheet.replace("$warning", "$orange");
+    styleSheet.replace("$danger", "$yellow");
+    styleSheet.replace("$background", "$dark");
+    styleSheet.replace("$text", "$white");
+
+    // colors
+    styleSheet.replace("$dark", BRAND_COLOR_DARK);
+    styleSheet.replace("$blue", BRAND_COLOR_BLUE);
+    styleSheet.replace("$dark-blue", BRAND_COLOR_BLUE_DARKER);
+    styleSheet.replace("$orange", BRAND_COLOR_ORANGE);
+    styleSheet.replace("$red", BRAND_COLOR_RED);
+    styleSheet.replace("$red-lighter", BRAND_COLOR_RED_LIGHTER);
+    styleSheet.replace("$yellow", BRAND_COLOR_YELLOW);
+    styleSheet.replace("$green", BRAND_COLOR_GREEN);
+    styleSheet.replace("$light-green", BRAND_COLOR_GREEN_LIGHTER);
+
+    // light/dark tones
+    styleSheet.replace("$white", BRAND_COLOR_WHITE);
+    styleSheet.replace("$black", BRAND_COLOR_BLACK);
+    styleSheet.replace("$light-gray", "#F9F7F3");
+    styleSheet.replace("$gray-1", "#7F7F8E");
+    styleSheet.replace("$gray-2", "#9E9EA9");
+    styleSheet.replace("$gray-3", "#BFBFC6");
+    styleSheet.replace("$gray-4", "#DDE1E3");
+    styleSheet.replace("$gray-5", "#EAEAEE");
+    styleSheet.replace("$gray-6", "#F4F4F6");
+    styleSheet.replace("$gray-7", "F9F9F9");
 
     return styleSheet;
 }

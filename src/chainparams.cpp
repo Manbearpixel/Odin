@@ -57,7 +57,7 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 
 /**
  * MAIN NET CHECKPOINTS
- * 
+ *
  */
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
@@ -66,12 +66,13 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
      ( 1000, uint256("0xa039641b0d00eb71b3ff0ac7c9cfe4b782908bddaf7e16e10b24760263185fbc"))
      ( 3000, uint256("0x71d1e02eef9f59adb3ec14fdba2aa5806b1740e0a0297f318831e960c68b21e2"))
      ( 4995, uint256("0x1bc38e92d23938cd8448b0aa14480f03a8ea899a8a2200cfc68bb69f264543c8"))
-    ( 88061, uint256("0x198ccea2db058e2726593655d8a0761d3c8d237f29b2ee0453f038a473d5f2b4"));
+    ( 88061, uint256("0x198ccea2db058e2726593655d8a0761d3c8d237f29b2ee0453f038a473d5f2b4"))
+   ( 620820, uint256("0x873f82a25d6a39b5ff74bfdbae542dc985915484d75e2cbe4eaadb88eced39db"));
 
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1543391873, // * UNIX timestamp of last checkpoint block
-    180986,     // * total number of transactions between genesis and last checkpoint
+    1575337940, // * UNIX timestamp of last checkpoint block
+    1266569,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2880        // * estimated number of transactions per day after checkpoint
 };
@@ -79,7 +80,7 @@ static const Checkpoints::CCheckpointData data = {
 
 /**
  * TEST NET CHECKPOINTS
- * 
+ *
  */
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
     boost::assign::map_list_of
@@ -96,7 +97,7 @@ static const Checkpoints::CCheckpointData dataTestnet = {
 
 /**
  * REGRESSION TEST NET CHECKPOINTS
- * 
+ *
  */
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
     boost::assign::map_list_of
@@ -168,17 +169,17 @@ class CMainParams : public CChainParams
         nLastPOWBlock           = 200; // Last Proof-of-Work block
         nModifierUpdateBlock    = 200;
         nMinStakeAge            = 60 * 60 * 1; // 1 hour
-        
+
         // MODIFIER_INTERVAL: time to elapse before new modifier is computed
         // MODIFIER_RATIO: ratio of group interval length between the last group and the first group
         nModifierInterval = 60;
         nModifierIntervalRatio = 3;
-        
+
         // BUDGET_PERCENT: % of block reward that goes to community proposals
         // BUDGET_COLLATERAL: amount of Ø required to submit a community proposal
         // MASTERNODE_REWARD: % of block reward that goes to masternodes
         // MASTERNODE_COLLATERAL: amount of Ø required for a masternode
-        nBudgetPercent                = 10; 
+        nBudgetPercent                = 10;
         nBudgetSubmissionCollateral   = 50;
         nMasternodeRewardPercent      = 60;
         nRequiredMasternodeCollateral = 25000 * COIN;
@@ -317,7 +318,7 @@ public:
         bnProofOfWorkLimit      = ~uint256(0) >> 1;
         nLastPOWBlock           = 200;      // Last Proof-of-Work block
         nModifierUpdateBlock    = 200;
-        nMinStakeAge            = 60 * 60;  // 1 minute
+        nMinStakeAge            = 60;       // 1 minute
 
         // Modifier interval: time to elapse before new modifier is computed
         // Set to 3-hour for production network and 20-minute for test network
@@ -354,7 +355,9 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
 
-        vSeeds.push_back(CDNSSeedData("tor1-testnet.odinblockchain.org", "tor1-testnet.odinblockchain.org")); // MN 00
+        vSeeds.push_back(CDNSSeedData("valknut1.odinblockchain.org", "valknut1.odinblockchain.org")); // MN 01
+        vSeeds.push_back(CDNSSeedData("valknut2.odinblockchain.org", "valknut2.odinblockchain.org")); // MN 02
+        vSeeds.push_back(CDNSSeedData("valknut3.odinblockchain.org", "valknut3.odinblockchain.org")); // MN 03
 
         // Testnet odin addresses start with 'x'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 137);
@@ -444,7 +447,7 @@ public:
         // Remove seeding nodes
         vFixedSeeds.clear();
         vSeeds.clear();
-      
+
         bech32_hrp = "odr";
 
         fMiningRequiresPeers = false;

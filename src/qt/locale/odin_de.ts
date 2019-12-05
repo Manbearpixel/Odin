@@ -239,7 +239,7 @@
         <translation>&amp;BIP 38 Verschlüsselung</translation>
     </message>
     <message>
-        <source>Enter a ODIN Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter an ODIN address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>Gib eine ODIN Adresse ein welche mit BIP 38 verschlüsselt werden soll. Gib ein Passwort in die mittleren Box ein. Drücke auf verschlüsseln, um den privaten schlüssel zu errechenen.</translation>
     </message>
     <message>
@@ -2401,7 +2401,7 @@ https://www.transifex.com/</translation>
 </translation>
     </message>
     <message>
-        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware. 
+        <source>Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware.
 Please be patient...</source>
         <translation>Starten von ResetMintZerocoin: Erneutes Scannen der kompletten Blockchain. Das benötigt, je nach Hardware, bis zu 30 Minuten .
 Bitte haben Sie etwas Geduld...</translation>
@@ -2458,7 +2458,7 @@ Bitte haben Sie etwas Geduld...</translation>
     </message>
     <message>
         <source>Spending Zerocoin.
-Computationally expensive, might need several minutes depending on the selected Security Level and your hardware. 
+Computationally expensive, might need several minutes depending on the selected Security Level and your hardware.
 Please be patient...</source>
         <translation>Zerocoin ausgeben.
 Rechnerisch aufwändig. Kann je nach ausgewähltem Sicherheitsstufe und Ihrer Hardware mehrere Minuten benötigen
@@ -2516,7 +2516,7 @@ Bitte haben Sie Geduld...</translation>
         <translation>Betrag</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. %1)</source>
+        <source>Enter an ODIN address (e.g. %1)</source>
         <translation>ODIN-Adresse eingeben (z.B. %1)</translation>
     </message>
     <message>
@@ -4889,7 +4889,7 @@ Beispiel: alertnotify=echo %%s | mail -s "ODIN Alert" admin@foo.com
     <message>
         <source> mints deleted
 </source>
-        <translation>Prägungen gelöscht 
+        <translation>Prägungen gelöscht
 </translation>
     </message>
     <message>

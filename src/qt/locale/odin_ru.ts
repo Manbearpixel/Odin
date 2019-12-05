@@ -235,7 +235,7 @@
         <translation>&amp;BIP 38 Шифрование</translation>
     </message>
     <message>
-        <source>Enter a ODIN Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter an ODIN address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>Введите ODIN адрес, которым вы хотите зашифровать, используя BIP 38. Введите пароль в среднем поле. Нажмите "Зашифровать", чтобы создать зашиврованный секретный ключ.</translation>
     </message>
     <message>
@@ -2191,7 +2191,7 @@ https://www.transifex.com/</translation>
         <translation>Сумма</translation>
     </message>
     <message>
-        <source>Enter a ODIN address (e.g. %1)</source>
+        <source>Enter an ODIN address (e.g. %1)</source>
         <translation>Введите адрес ODIN (например %1)</translation>
     </message>
     <message>

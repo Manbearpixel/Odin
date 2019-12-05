@@ -33,6 +33,7 @@ forms/askpassphrasedialog.ui
 forms/bip38tooldialog.ui
 forms/blockexplorer.ui
 forms/coincontroldialog.ui
+forms/configuremasternodepage.ui
 forms/editaddressdialog.ui
 forms/helpmessagedialog.ui
 forms/intro.ui
@@ -44,6 +45,7 @@ forms/openuridialog.ui
 forms/optionsdialog.ui
 forms/overviewpage.ui
 forms/privacydialog.ui
+forms/proposaldialog.ui
 forms/receivecoinsdialog.ui
 forms/receiverequestdialog.ui
 forms/rpcconsole.ui

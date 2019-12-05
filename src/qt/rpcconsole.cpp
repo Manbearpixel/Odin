@@ -65,10 +65,10 @@ const struct {
     const char* url;
     const char* source;
 } ICON_MAPPING[] = {
-    {"cmd-request", ":/icons/tx_input"},
-    {"cmd-reply", ":/icons/tx_output"},
-    {"cmd-error", ":/icons/tx_output"},
-    {"misc", ":/icons/tx_inout"},
+    {"cmd-request", ":/icons/cmd-input"},
+    {"cmd-reply", ":/icons/cmd-output"},
+    {"cmd-error", ":/icons/cmd-error"},
+    {"misc", ":/icons/cmd-error"},
     {NULL, NULL}};
 
 /* Object for executing console RPC commands in a separate thread.
@@ -275,6 +275,7 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
 
     // Install event filter for up and down arrow
     ui->lineEdit->installEventFilter(this);
+    ui->lineEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->messagesWidget->installEventFilter(this);
 
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
@@ -514,6 +515,9 @@ void RPCConsole::setClientModel(ClientModel* model)
 static QString categoryClass(int category)
 {
     switch (category) {
+    case RPCConsole::CMD_INFO:
+        return "cmd-info";
+        break;
     case RPCConsole::CMD_REQUEST:
         return "cmd-request";
         break;
@@ -629,11 +633,11 @@ void RPCConsole::clear()
         "table { }"
         "td.time { color: #808080; padding-top: 3px; } "
         "td.message { font-family: Courier, Courier New, Lucida Console, monospace; font-size: 12px; } " // Todo: Remove fixed font-size
-        "td.cmd-request { color: #006060; } "
+        "td.cmd-request { color: #AAAAAA; } "
         "td.cmd-error { color: red; } "
-        "b { color: #006060; } ");
+        "b { color: #619772; } ");
 
-    message(CMD_REPLY, (tr("Welcome to the ODIN RPC console.") + "<br>" +
+    message(RPCConsole::CMD_INFO, (tr("Welcome to the ODIN RPC console.") + "<br>" +
                            tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                            tr("Type <b>help</b> for an overview of available commands.")),
         true);
@@ -652,7 +656,7 @@ void RPCConsole::message(int category, const QString& message, bool html)
     QString timeString = time.toString();
     QString out;
     out += "<table><tr><td class=\"time\" width=\"65\">" + timeString + "</td>";
-    out += "<td class=\"icon\" width=\"32\"><img src=\"" + categoryClass(category) + "\"></td>";
+    out += "<td class=\"icon\" width=\"24\"><img src=\"" + categoryClass(category) + "\"></td>";
     out += "<td class=\"message " + categoryClass(category) + "\" valign=\"middle\">";
     if (html)
         out += message;

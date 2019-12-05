@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin developers
+// Copyright (c) 2012-2013 The PPCoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
 // Copyright (c) 2017-2018 The Phore developers
@@ -71,6 +72,14 @@ CCriticalSection cs_main;
 BlockMap mapBlockIndex;
 map<uint256, uint256> mapProofOfStake;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
+
+// maps any spent outputs in the past maxreorgdepth blocks to the height it was spent
+// this means for incoming blocks, we can check that their stake output was not spent before
+// the incoming block tried to use it as a staking input. We can also prevent block spam
+// attacks because then we can check that either the staking input is available in the current
+// active chain, or the staking input was spent in the past 100 blocks after the height
+// of the incoming block.
+map<COutPoint, int> mapStakeSpent;
 map<unsigned int, unsigned int> mapHashedBlocks;
 CChain chainActive;
 CBlockIndex* pindexBestHeader = NULL;
@@ -946,7 +955,7 @@ int GetZerocoinStartHeight()
 }
 
 libzerocoin::ZerocoinParams* GetZerocoinParams(int nHeight) {
-    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params(); 
+    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params();
 }
 
 void FindMints(vector<CMintMeta> vMintsToFind, vector<CMintMeta>& vMintsToUpdate, vector<CMintMeta>& vMissingMints)
@@ -1712,7 +1721,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 hash.ToString(),
                 nFees, ::minRelayTxFee.GetFee(nSize) * 10000);
 
-        
+
         unsigned int scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
         if (!Params().RequireStandard()) {
             scriptVerifyFlags = GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
@@ -1834,7 +1843,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
             }
         }
     }
-    
+
     // Check for conflicts with in-memory transactions
     if (!tx.IsZerocoinSpend()) {
         LOCK(pool.cs); // protect pool.mapNextTx
@@ -2162,20 +2171,27 @@ int64_t GetBlockValue(int nHeight, bool fBudgetBlock)
    * Y2 Midgard:    Block   665,485 -   1,192,526 =      20 Ø ~366 days
    * Y3 Nidhogg:    Block 1,192,526 -             =      15 Ø ~365 days
    * Y4 ONWARDS:    Block 1,192,526               =      15 Ø
-   * 
+   *
    * PoW Schedule -  0% to proposals
    * PoS Schedule - 10% to proposals for all phases starting in Ragnarök
    * 90% distributed to Stake wallet and Masternode
-   * 
+   *
    * 1 Day    =  ~1440 Blocks
    * 1 Month  = ~43800 Blocks
-   * 
+   *
    * ~1.4813x faster in initial blockchain growth
    */
 
   int64_t nBudgetMultiplier = COIN;
-  if (!fBudgetBlock)
-    nBudgetMultiplier = COIN - (Params().GetBudgetPercent() * CENT);
+  CAmount nBudgetPercent = Params().GetBudgetPercent();
+
+  // For budget "Super" blocks, nBudgetMultiplier should be (COIN - (the remainder of allocation))
+  // For regular blocks, nBudgetMultiplier should be (COIN - budget%)
+  if (fBudgetBlock) {
+    nBudgetMultiplier = COIN - ((100 - nBudgetPercent) * CENT);
+  } else {
+    nBudgetMultiplier = COIN - (nBudgetPercent * CENT);
+  }
 
   CAmount nSubsidy = 15 * nBudgetMultiplier;
 
@@ -2588,6 +2604,9 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
                 if (coins->vout.size() < out.n + 1)
                     coins->vout.resize(out.n + 1);
                 coins->vout[out.n] = undo.txout;
+
+                // erase the spent input
+                mapStakeSpent.erase(out);
             }
         }
     }
@@ -3048,7 +3067,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             if (!view.HaveInputs(tx))
                 return state.DoS(100, error("ConnectBlock() : inputs missing/spent"),
                     REJECT_INVALID, "bad-txns-inputs-missingorspent");
-            
+
             // Check that zODIN mints are not already known
             if (tx.IsZerocoinMint()) {
                 for (auto& out : tx.vout) {
@@ -3218,6 +3237,29 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (fAddrIndex)
         if (!pblocktree->AddAddrIndex(vPosAddrid))
             return state.Error("Failed to write address index");
+
+    // add new entries
+    for (const CTransaction tx: block.vtx) {
+        if (tx.IsCoinBase() || tx.IsZerocoinSpend())
+            continue;
+        for (const CTxIn in: tx.vin) {
+            LogPrint("map", "mapStakeSpent: Insert %s | %u\n", in.prevout.ToString(), pindex->nHeight);
+            mapStakeSpent.insert(std::make_pair(in.prevout, pindex->nHeight));
+        }
+    }
+
+
+    // delete old entries
+    for (auto it = mapStakeSpent.begin(); it != mapStakeSpent.end();) {
+        if (it->second < pindex->nHeight - Params().MaxReorganizationDepth()) {
+            LogPrint("map", "mapStakeSpent: Erase %s | %u\n", it->first.ToString(), it->second);
+            it = mapStakeSpent.erase(it);
+        }
+        else {
+            it++;
+        }
+    }
+
 
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
@@ -4057,21 +4099,26 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
     return true;
 }
 
+static int GetWitnessCommitmentIndex(const CBlock& block);
 bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig)
 {
     // These are checks that are independent of context.
 
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
-    if (!CheckBlockHeader(block, state, block.IsProofOfWork()))
+    if (!CheckBlockHeader(block, state, block.IsProofOfWork())) {
         return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
             REJECT_INVALID, "bad-header", true);
+    }
 
     // Check timestamp
     LogPrint("debug", "%s: block=%s  is proof of stake=%d\n", __func__, block.GetHash().ToString().c_str(), block.IsProofOfStake());
-    if (block.GetBlockTime() > GetAdjustedTime() + (block.IsProofOfStake() ? 180 : 7200)) // 3 minute future drift for PoS
+
+    // 3 minute future drift for PoS
+    if (block.GetBlockTime() > GetAdjustedTime() + (block.IsProofOfStake() ? 180 : 7200)) {
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
             REJECT_INVALID, "time-too-new");
+    }
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
@@ -4096,30 +4143,57 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
     // checks that use witness data may be performed here.
 
     // Size limits
-    if (block.vtx.empty() || block.vtx.size() > MAX_BLOCK_BASE_SIZE || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) > MAX_BLOCK_BASE_SIZE)
+    if (block.vtx.empty() ||
+        block.vtx.size() > MAX_BLOCK_BASE_SIZE ||
+        ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) > MAX_BLOCK_BASE_SIZE) {
         return state.DoS(100, error("CheckBlock() : size limits failed"),
             REJECT_INVALID, "bad-blk-length");
+    }
 
     // First transaction must be coinbase, the rest must not be
-    if (block.vtx.empty() || !block.vtx[0].IsCoinBase())
+    if (block.vtx.empty() || !block.vtx[0].IsCoinBase()) {
         return state.DoS(100, error("CheckBlock() : first tx is not coinbase"),
             REJECT_INVALID, "bad-cb-missing");
-    for (unsigned int i = 1; i < block.vtx.size(); i++)
+    }
+    for (unsigned int i = 1; i < block.vtx.size(); i++) {
         if (block.vtx[i].IsCoinBase())
             return state.DoS(100, error("CheckBlock() : more than one coinbase"),
                 REJECT_INVALID, "bad-cb-multiple");
+    }
 
     if (block.IsProofOfStake()) {
+        // @todo remove after segwit activation
+        int commitpos = GetWitnessCommitmentIndex(block);
+        if (commitpos >= 0) {
+            if (IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
+                if (block.vtx[0].vout.size() != 2)
+                    return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+                if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
+                    return state.DoS(100, error("CheckBlock() : coinbase must be unspendable for proof-of-stake block"));
+            }
+            else {
+                return state.DoS(100, error("CheckBlock() : staking-on-segwit is not enabled"));
+            }
+        }
+        else {
+            if (block.vtx[0].vout.size() != 1)
+                return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+        }
+
         // Coinbase output should be empty if proof-of-stake block
-        if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
+        if (!block.vtx[0].vout[0].IsEmpty()) {
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
+        }
 
         // Second transaction must be coinstake, the rest must not be
-        if (block.vtx.empty() || !block.vtx[1].IsCoinStake())
+        if (block.vtx.empty() || !block.vtx[1].IsCoinStake()) {
             return state.DoS(100, error("CheckBlock() : second tx is not coinstake"));
-        for (unsigned int i = 2; i < block.vtx.size(); i++)
+        }
+
+        for (unsigned int i = 2; i < block.vtx.size(); i++) {
             if (block.vtx[i].IsCoinStake())
                 return state.DoS(100, error("CheckBlock() : more than one coinstake"));
+        }
     }
 
     // ----------- swiftTX transaction scanning -----------
@@ -4187,42 +4261,32 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
 bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 {
-  //TODO:pixel
-  // LogPrintf(">>CheckWork() block:%s\n", block.ToString().c_str());
+    if (pindexPrev == NULL)
+      return error("%s: null pindexPrev for block %s", __func__, block.GetHash().GetHex());
 
-  if (pindexPrev == NULL)
-      return error("%s : null pindexPrev for block %s", __func__, block.GetHash().ToString().c_str());
+    unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
+    const CChainParams& chainParams = Params();
 
-  unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
+    if (block.IsProofOfWork() && pindexPrev->nHeight + 1 > chainParams.LAST_POW_BLOCK())
+      return error("%s: reject proof-of-work at height %d", __func__, pindexPrev->nHeight + 1);
 
-  if (block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= 68589)) {
-    double n1 = ConvertBitsToDouble(block.nBits);
-    double n2 = ConvertBitsToDouble(nBitsRequired);
+    if (block.nBits != nBitsRequired)
+      return error("%s: incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
 
-    if (abs(n1 - n2) > n1 * 0.5)
-        return error("%s : incorrect proof of work (DGW pre-fork) - %f %f %f at %d", __func__, abs(n1 - n2), n1, n2, pindexPrev->nHeight + 1);
+    if (block.IsProofOfStake()) {
+        uint256 hashProofOfStake;
+        uint256 hash = block.GetHash();
 
-    return true;
-  }
+        if(!CheckProofOfStake(block, hashProofOfStake)) {
+            LogPrintf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
+            return false;
+        }
 
-  if (block.nBits != nBitsRequired)
-    return error("%s : incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
-
-  if (block.IsProofOfStake()) {
-    uint256 hashProofOfStake;
-    uint256 hash = block.GetHash();
-
-    // const int nHeight = (pindexPrev == NULL) ? 0 : pindexPrev->nHeight + 1;
-    if(!CheckProofOfStake(block, hashProofOfStake)) {
-      LogPrintf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
-      return false;
+        if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
+            mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
     }
 
-    if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
-      mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
-  }
-
-  return true;
+    return true;
 }
 
 bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, CBlockIndex* const pindexPrev)
@@ -4279,11 +4343,24 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 static int GetWitnessCommitmentIndex(const CBlock& block)
 {
     int commitpos = -1;
-    for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
-        if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 && block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[0].vout[o].scriptPubKey[1] == 0x24 && block.vtx[0].vout[o].scriptPubKey[2] == 0xaa && block.vtx[0].vout[o].scriptPubKey[3] == 0x21 && block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
-            commitpos = o;
+    // @todo remove after segwit activation
+    // if (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && block.vtx.size() <= 0) {
+    //     return commitpos;
+    // }
+    if (block.vtx.size() > 1) {
+        for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
+            if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 &&
+                block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN &&
+                block.vtx[0].vout[o].scriptPubKey[1] == 0x24 &&
+                block.vtx[0].vout[o].scriptPubKey[2] == 0xaa &&
+                block.vtx[0].vout[o].scriptPubKey[3] == 0x21 &&
+                block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 &&
+                block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
+                commitpos = o;
+            }
         }
     }
+
     return commitpos;
 }
 
@@ -4366,7 +4443,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
         if(block.nVersion < Params().Zerocoin_HeaderVersion())
             return state.DoS(50, error("CheckBlockHeader() : block version must be above 4 after ZerocoinStartHeight"),
             REJECT_INVALID, "block-version");
-        
+
         vector<CBigNum> vBlockSerials;
         for (const CTransaction& tx : block.vtx) {
             if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime))
@@ -4422,15 +4499,27 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
     if (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos != -1) {
+            if (!IsSporkActive(SPORK_18_SEGWIT_ON_COINBASE)) {
+                if (fDebug) {
+                    LogPrintf("CheckBlock() : staking-on-segwit is not enabled.\n");
+                }
+                return false;
+            }
+
+
             bool malleated = false;
             uint256 hashWitness = BlockWitnessMerkleRoot(block, &malleated);
             // The malleation check is ignored; as the transaction tree itself
             // already does not permit it, it is impossible to trigger in the
             // witness tree.
-            if (block.vtx[0].wit.vtxinwit.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
+			      if (block.vtx[0].wit.vtxinwit.size() != 1 ||
+                block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.size() != 1 ||
+                block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
                 return state.DoS(100, error("%s : invalid witness nonce size", __func__), REJECT_INVALID, "bad-witness-nonce-size", true);
             }
+
             CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
+
             if (memcmp(hashWitness.begin(), &block.vtx[0].vout[commitpos].scriptPubKey[6], 32)) {
                 return state.DoS(100, error("%s : witness merkle commitment mismatch", __func__), REJECT_INVALID, "bad-witness-merkle-match", true);
             }
@@ -4571,6 +4660,54 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     }
 
     int nHeight = pindex->nHeight;
+
+    if (block.IsProofOfStake()) {
+        LOCK(cs_main);
+
+        CCoinsViewCache coins(pcoinsTip);
+
+        if (!coins.HaveInputs(block.vtx[1])) {
+            // the inputs are spent at the chain tip so we should look at the recently spent outputs
+
+            for (CTxIn in : block.vtx[1].vin) {
+                auto it = mapStakeSpent.find(in.prevout);
+                if (it == mapStakeSpent.end()) {
+                    return false;
+                }
+                if (it->second < pindexPrev->nHeight) {
+                    return false;
+                }
+            }
+        }
+
+        // if this is on a fork
+        if (!chainActive.Contains(pindexPrev) && pindexPrev != NULL) {
+            // start at the block we're adding on to
+            CBlockIndex *last = pindexPrev;
+
+            // while that block is not on the main chain
+            while (!chainActive.Contains(last) && last != NULL) {
+                CBlock bl;
+                ReadBlockFromDisk(bl, last);
+                // loop through every spent input from said block
+                for (CTransaction t : bl.vtx) {
+                    for (CTxIn in: t.vin) {
+                        // loop through every spent input in the staking transaction of the new block
+                        for (CTxIn stakeIn : block.vtx[1].vin) {
+                            // if they spend the same input
+                            if (stakeIn.prevout == in.prevout) {
+                                // reject the block
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                // go to the parent block
+                last = last->pprev;
+            }
+        }
+    }
 
     // Write block to history file
     try {
@@ -5952,6 +6089,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (pfrom->nVersion < CADDR_TIME_VERSION && addrman.size() > 1000)
             return true;
         if (vAddr.size() > 1000) {
+            LOCK(cs_main);
             LogPrintf("Misbehaving: Address older than 1000 %u\n", vAddr.size());
             Misbehaving(pfrom->GetId(), 20);
             return error("message addr size() = %u", vAddr.size());
@@ -6688,8 +6826,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 //       it was the one which was commented out
 int ActiveProtocol()
 {
-    // if (IsSporkActive(SPORK_17_SEGWIT_ACTIVATION)) TODO: Is this needed? - pixxl 8/27
-    if (IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT)) //TODO: Why removed? - pixxl 8/28
+    if (IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
+    // if (IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
       return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }

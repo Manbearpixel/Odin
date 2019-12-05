@@ -7,6 +7,7 @@
 
 #include "amount.h"
 #include "masternodelist.h"
+#include "proposallist.h"
 
 #include <QStackedWidget>
 
@@ -20,6 +21,7 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class BlockExplorer;
+
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -54,6 +56,8 @@ public:
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
 
+    bool handleMASHRequest(const MasternodeConfig& mnConfig);
+
     void showOutOfSyncWarning(bool fShow);
 
 private:
@@ -67,8 +71,10 @@ private:
     SendCoinsDialog* sendCoinsPage;
     BlockExplorer* explorerWindow;
     MasternodeList* masternodeListPage;
+    QWidget* proposalListPage;
 
     TransactionView* transactionView;
+    ProposalList* proposalList;
 
     QProgressDialog* progressDialog;
     QLabel* transactionSum;
@@ -84,6 +90,8 @@ public slots:
     void gotoBlockExplorerPage();
     /** Switch to privacy page */
     void gotoPrivacyPage();
+    /** Switch to proposal page */
+    void gotoProposalPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
@@ -101,7 +109,6 @@ public slots:
     void gotoBip38Tool();
 
     /** Show incoming transaction notification for new transactions.
-
         The new items are those between start and end inclusive, under the given parent item.
     */
     void processNewTransaction(const QModelIndex& parent, int start, int /*end*/);

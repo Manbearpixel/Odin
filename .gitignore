@@ -86,6 +86,7 @@ src/leveldb/build_config.mk
 Makefile
 odin-qt
 odin-Qt.app
+*.app
 
 # Unit-tests
 Makefile.test
@@ -128,3 +129,4 @@ qa/pull-tester/test.*/*
 cmake-build-debug
 
 cache
+*.autosave
